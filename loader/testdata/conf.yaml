@@ -1,0 +1,79 @@
+title: caixw
+titleSeparator: " | "
+subtitle: 好记性不如烂笔头
+uptime: 2016-03-06T00:00:01+08:00
+language: cmn-Hans
+pageSize: 20
+longDateFormat: 2006-01-02 15:04
+shortDateFormat: 2006-01-02
+theme: default
+outdated: 8760h # 24*365 小时，遵守 time.ParseDuration 语法
+
+# 程序图标
+icon:
+  url: /favicon.png
+  type: image/png
+  sizes: 256x256
+
+
+# 默认的作者信息
+author:
+  name: caixw
+  url: https://caixw.io
+
+# 默认的版权信息
+license:
+  text: 署名 4.0 国际 (CC BY 4.0)
+  url: https://creativecommons.org/licenses/by/4.0/deed.zh
+  rel: license
+  title: 版本信息
+
+# 导航菜单栏
+menus:
+  - url: /
+    title: 首页
+    text: 首页
+    icon: home
+
+  - url: /tags.xml
+    title: 标签
+    text: 标签
+    icon: tags
+
+  - url: /archives.xml
+    title: 归档
+    text: 归档
+    icon: archive
+
+  - url: /posts/2020/about.xml
+    title: 关于
+    text: 关于
+    icon: info
+
+  - url: /rss.xml
+    title: RSS
+    text: RSS 订阅
+    icon: rss
+
+
+# 归档
+archive:
+  order: desc
+  type: year
+  format: 2006 年
+
+# atom 的配置，为空表示没有
+atom:
+  size: 20
+
+# rss 的配置，为空表示没有
+rss:
+  size: 20
+
+# sitemap 的配置，为空表示没有
+sitemap:
+  priority: 0.5
+  changefreq: monthly
+  enableTag: true
+  postPriority: 0.6
+  postChangefreq: weekly
