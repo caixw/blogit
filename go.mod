@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/issue9/assert v1.4.1
+	github.com/issue9/errwrap v0.2.0
 	github.com/issue9/sliceutil v0.6.0
 	github.com/issue9/validation v0.2.0
 	github.com/yuin/goldmark v1.3.0
