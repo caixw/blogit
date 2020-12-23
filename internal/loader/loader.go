@@ -86,6 +86,10 @@ func Load(dir string) (*Data, error) {
 		return nil, err
 	}
 
+	if err := data.checkTags(); err != nil {
+		return nil, err
+	}
+
 	return data, nil
 }
 

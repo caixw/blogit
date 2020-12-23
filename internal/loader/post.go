@@ -45,8 +45,9 @@ type Post struct {
 	// 关联的标签列表
 	//
 	// 标签名为各个标签的 slug 值，可以保证其唯一。
-	// 最终会被解析到 Tags 中，TagString 会被废弃。
-	Tags []string `yaml:"tags"`
+	// 最终会被解析到 TagString 中，TagString 会被废弃。
+	TagString []string `yaml:"tags"`
+	Tags      []*Tag   `yaml:"-"`
 
 	// Outdated 用户记录文章的一个过时情况，可以由以下几种值构成：
 	// - created 表示该篇文章以创建时间来计算其是否已经过时，该值也是默认值；
@@ -155,7 +156,7 @@ func (p *Post) sanitize(dir, path string, conf *Config) *FieldError {
 	p.Slug = slug
 	p.Permalink = conf.BuildURL(slug + ".xml")
 
-	if len(p.Tags) == 0 {
+	if len(p.TagString) == 0 {
 		return &FieldError{Field: "tags", Message: "不能为空"}
 	}
 

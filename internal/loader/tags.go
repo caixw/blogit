@@ -5,6 +5,7 @@ package loader
 import (
 	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/issue9/sliceutil"
 )
@@ -14,10 +15,14 @@ type Tag struct {
 	Title     string `yaml:"title"`
 	HTMLTitle string `yaml:"-"`
 
-	Slug      string `yaml:"slug"`            // 唯一名称
-	Color     string `yaml:"color,omitempty"` // 标签颜色。若未指定，则继承父容器
-	Content   string `yaml:"content"`         // 对该标签的详细描述
-	Permalink string `yaml:"-"`
+	Slug    string `yaml:"slug"`            // 唯一名称
+	Color   string `yaml:"color,omitempty"` // 标签颜色。若未指定，则继承父容器
+	Content string `yaml:"content"`         // 对该标签的详细描述
+
+	Permalink string    `yaml:"-"`
+	Posts     int       `yaml:"-"`
+	Created   time.Time `yaml:"-"`
+	Modified  time.Time `yaml:"-"`
 }
 
 func (data *Data) loadTags(filename string) error {
@@ -37,6 +42,38 @@ func (data *Data) loadTags(filename string) error {
 	}
 
 	data.Tags = tags
+	return nil
+}
+
+func (data *Data) checkTags() error {
+	for _, p := range data.Posts {
+		p.Tags = make([]*Tag, 0, len(p.TagString))
+
+		for _, tag := range p.TagString {
+			t := data.findTagByName(tag)
+			if t == nil {
+				return &FieldError{File: p.Slug, Message: "不存在", Field: "tags." + tag}
+			}
+			p.Tags = append(p.Tags, t)
+
+			if t.Created.Before(p.Created) {
+				t.Created = p.Created
+			}
+
+			if t.Modified.Before(p.Modified) {
+				t.Modified = p.Modified
+			}
+		}
+	}
+	return nil
+}
+
+func (data *Data) findTagByName(slug string) *Tag {
+	for _, t := range data.Tags {
+		if t.Slug == slug {
+			return t
+		}
+	}
 	return nil
 }
 
