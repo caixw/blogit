@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/issue9/sliceutil"
+	"github.com/issue9/validation/is"
 )
 
 // TimeFormat 所有时间的解析格式
@@ -26,6 +27,7 @@ const (
 
 // Config 配置信息，用于从文件中读取
 type Config struct {
+	URL             string        `yaml:"url"` // 网站根域名，比如 https://example.com/blog
 	Title           string        `yaml:"title"`
 	TitleSeparator  string        `yaml:"titleSeparator"`
 	Language        string        `yaml:"language"`
@@ -87,6 +89,13 @@ func loadConfig(path string) (*Config, error) {
 }
 
 func (conf *Config) sanitize() *FieldError {
+	if len(conf.URL) == 0 || !is.URL(conf.URL) {
+		return &FieldError{Message: "格式不正确", Field: "url"}
+	}
+	if conf.URL[len(conf.URL)-1] != '/' { // 保证以 / 结尾
+		conf.URL += "/"
+	}
+
 	if len(conf.Language) == 0 {
 		conf.Language = "cmn-Hans"
 	}
@@ -252,4 +261,17 @@ func inStrings(val string, vals []string) bool {
 	return sliceutil.Count(vals, func(i int) bool {
 		return vals[i] == val
 	}) > 0
+}
+
+// BuildURL 根据配置网站域名生成地址
+func (conf *Config) BuildURL(path string) string {
+	// 由 conf.sanitize 保证以 conf.URL 以 / 结尾
+	if len(path) == 0 {
+		return conf.URL
+	}
+
+	if path[0] == '/' {
+		return conf.URL + path[1:]
+	}
+	return conf.URL + path
 }

@@ -148,6 +148,10 @@ func (p *Post) sanitize(dir, path string, posts []*Post) *FieldError {
 		return &FieldError{Field: "slug", Message: "不能包含空格"}
 	}
 
+	if len(p.Tags) == 0 {
+		return &FieldError{Field: "tags", Message: "不能为空"}
+	}
+
 	// state
 	if p.State != StateDefault && p.State != StateLast && p.State != StateTop {
 		return &FieldError{Message: "无效的值", Field: "state"}

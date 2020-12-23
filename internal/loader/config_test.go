@@ -25,6 +25,17 @@ func TestLoadConfig(t *testing.T) {
 	a.ErrorType(err, &FieldError{}, err).Nil(conf)
 }
 
+func TestConfig_BuildURL(t *testing.T) {
+	a := assert.New(t)
+	conf, err := loadConfig("./testdata/conf.yaml")
+	a.NotError(err).NotNil(conf)
+
+	a.Equal(conf.BuildURL("/p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(conf.BuildURL("p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(conf.BuildURL(""), "https://example.com/")
+	a.Equal(conf.BuildURL("/"), "https://example.com/")
+}
+
 func TestArchive_sanitize(t *testing.T) {
 	a := assert.New(t)
 

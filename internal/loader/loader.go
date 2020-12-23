@@ -26,6 +26,13 @@ var markdown = goldmark.New(goldmark.WithExtensions(
 	highlighting.Highlighting,
 ))
 
+// Data 所有数据
+type Data struct {
+	Config *Config
+	Tags   []*Tag
+	Posts  []*Post
+}
+
 // FieldError 表示配置项内容的错误信息
 type FieldError struct {
 	File    string
@@ -64,23 +71,27 @@ func (err *FieldError) Error() string {
 }
 
 // Load 加载所有的数据内容
-func Load(dir string) (*Config, []*Tag, []*Post, error) {
+func Load(dir string) (*Data, error) {
 	conf, err := loadConfig(filepath.Join(dir, "conf.yaml"))
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	tags, err := loadTags(filepath.Join(dir, "tags.yaml"))
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	posts, err := loadPosts(dir)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
-	return conf, tags, posts, nil
+	return &Data{
+		Config: conf,
+		Tags:   tags,
+		Posts:  posts,
+	}, nil
 }
 
 func loadYAML(path string, v interface{}) error {

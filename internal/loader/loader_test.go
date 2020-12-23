@@ -8,6 +8,14 @@ import (
 	"github.com/issue9/assert"
 )
 
+func TestLoad(t *testing.T) {
+	a := assert.New(t)
+
+	data, err := Load("./testdata")
+	a.NotError(err).NotNil(data)
+	a.NotNil(data.Config).NotEmpty(data.Tags).NotEmpty(data.Posts)
+}
+
 func TestLink_sanitize(t *testing.T) {
 	a := assert.New(t)
 
