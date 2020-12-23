@@ -3,6 +3,7 @@
 package loader
 
 import (
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -27,9 +28,11 @@ const (
 
 // Config 配置信息，用于从文件中读取
 type Config struct {
+	Title          string `yaml:"title"`
+	TitleSeparator string `yaml:"titleSeparator"`
+	titleSuffix    string
+
 	URL             string        `yaml:"url"` // 网站根域名，比如 https://example.com/blog
-	Title           string        `yaml:"title"`
-	TitleSeparator  string        `yaml:"titleSeparator"`
 	Language        string        `yaml:"language"`
 	Subtitle        string        `yaml:"subtitle,omitempty"`
 	Uptime          time.Time     `yaml:"uptime"`
@@ -74,21 +77,27 @@ type Archive struct {
 	Format string `yaml:"format"` // 标题的格式化字符串，被 time.Format 所格式化。
 }
 
-func loadConfig(path string) (*Config, error) {
+func (data *Data) loadConfig(filename string) error {
 	conf := &Config{}
 
+	path := filepath.Join(data.Dir, filename)
 	if err := loadYAML(path, conf); err != nil {
-		return nil, err
+		return err
 	}
 	if err := conf.sanitize(); err != nil {
 		err.File = path
-		return nil, err
+		return err
 	}
 
-	return conf, nil
+	data.Config = conf
+	return nil
 }
 
 func (conf *Config) sanitize() *FieldError {
+	if conf.TitleSeparator != "" {
+		conf.titleSuffix = conf.TitleSeparator + conf.Title
+	}
+
 	if len(conf.URL) == 0 || !is.URL(conf.URL) {
 		return &FieldError{Message: "格式不正确", Field: "url"}
 	}

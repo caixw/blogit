@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// Package loader 加载工具
+// Package loader 加载数据内容
 package loader
 
 import (
@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"mime"
 	"path"
-	"path/filepath"
 
 	"github.com/issue9/validation/is"
 	"github.com/yuin/goldmark"
@@ -28,6 +27,7 @@ var markdown = goldmark.New(goldmark.WithExtensions(
 
 // Data 所有数据
 type Data struct {
+	Dir    string // 加载资源的根目录
 	Config *Config
 	Tags   []*Tag
 	Posts  []*Post
@@ -72,26 +72,21 @@ func (err *FieldError) Error() string {
 
 // Load 加载所有的数据内容
 func Load(dir string) (*Data, error) {
-	conf, err := loadConfig(filepath.Join(dir, "conf.yaml"))
-	if err != nil {
+	data := &Data{Dir: dir}
+
+	if err := data.loadConfig("conf.yaml"); err != nil {
 		return nil, err
 	}
 
-	tags, err := loadTags(filepath.Join(dir, "tags.yaml"))
-	if err != nil {
+	if err := data.loadTags("tags.yaml"); err != nil {
 		return nil, err
 	}
 
-	posts, err := loadPosts(dir)
-	if err != nil {
+	if err := data.loadPosts(); err != nil {
 		return nil, err
 	}
 
-	return &Data{
-		Config: conf,
-		Tags:   tags,
-		Posts:  posts,
-	}, nil
+	return data, nil
 }
 
 func loadYAML(path string, v interface{}) error {

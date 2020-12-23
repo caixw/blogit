@@ -31,16 +31,13 @@ const (
 const (
 	OutdatedCreated  = "created"
 	OutdatedModified = "modified"
-	OutdatedNone     = ""
-	OutdatedCustom   = "custom"
 )
 
 // Post 表示文章的信息
 type Post struct {
-	path string
+	Title     string `yaml:"title"`
+	HTMLTitle string `yaml:"-"` // 表示网页中 html>title 中的内容，可能带网站名称的后缀
 
-	Title    string    `yaml:"title"`             // 标题
-	Slug     string    `yaml:"-"`                 // 地址名称
 	Created  time.Time `yaml:"created"`           // 创建时间
 	Modified time.Time `yaml:"modified"`          // 修改时间
 	Summary  string    `yaml:"summary,omitempty"` // 摘要，同时也作为 meta.description 的内容
@@ -74,49 +71,53 @@ type Post struct {
 	Template string    `yaml:"template,omitempty"`
 	Language string    `yaml:"language,omitempty"`
 
-	Content string `yaml:"-"` // 内容
+	Content   string `yaml:"-"` // markdown 内容
+	Next      *Post  `yaml:"-"`
+	Prev      *Post  `yaml:"-"`
+	Permalink string `yaml:"-"`
+	Slug      string `yaml:"-"`
 }
 
-func loadPosts(dir string) ([]*Post, error) {
+func (data *Data) loadPosts() error {
 	paths := make([]string, 0, 10)
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(data.Dir, func(path string, info os.FileInfo, err error) error {
 		if err == nil && !info.IsDir() && strings.ToLower(filepath.Ext(info.Name())) == ".md" {
 			paths = append(paths, path)
 		}
 		return err
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if len(paths) == 0 {
-		return nil, nil
+		return nil
 	}
 
-	posts := make([]*Post, 0, len(paths))
+	data.Posts = make([]*Post, 0, len(paths))
 
 	for _, path := range paths {
-		post, err := loadPost(dir, path, posts)
+		post, err := data.loadPost(data.Dir, path)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		posts = append(posts, post)
+		data.Posts = append(data.Posts, post)
 	}
 
-	sortPosts(posts)
+	checkPosts(data.Posts)
 
-	return posts, nil
+	return nil
 }
 
-func loadPost(dir, path string, posts []*Post) (*Post, error) {
-	data, err := ioutil.ReadFile(path)
+func (data *Data) loadPost(dir, path string) (*Post, error) {
+	bs, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx := parser.NewContext()
 	buf := new(bytes.Buffer)
-	if err := markdown.Convert(data, buf, parser.WithContext(ctx)); err != nil {
+	if err := markdown.Convert(bs, buf, parser.WithContext(ctx)); err != nil {
 		return nil, err
 	}
 
@@ -129,24 +130,30 @@ func loadPost(dir, path string, posts []*Post) (*Post, error) {
 		return nil, err
 	}
 	post.Content = buf.String()
-	post.path = path
 
-	if err := post.sanitize(dir, path, posts); err != nil {
+	if err := post.sanitize(dir, path, data.Config); err != nil {
 		err.File = path
 		return nil, err
 	}
 	return post, nil
 }
 
-func (p *Post) sanitize(dir, path string, posts []*Post) *FieldError {
+func (p *Post) sanitize(dir, path string, conf *Config) *FieldError {
 	if p.Title == "" {
 		return &FieldError{Field: "title", Message: "不能为空"}
 	}
+	p.HTMLTitle = p.Title + conf.titleSuffix
 
-	p.Slug = strings.Trim(filepath.ToSlash(strings.TrimPrefix(path, dir)), "./")
-	if strings.IndexFunc(p.Slug, func(r rune) bool { return unicode.IsSpace(r) }) >= 0 {
+	slug := strings.TrimPrefix(path, dir)
+	if len(slug) > 3 && strings.ToLower(slug[len(slug)-3:]) == ".md" {
+		slug = slug[:len(slug)-3]
+	}
+	slug = strings.Trim(filepath.ToSlash(slug), "./")
+	if strings.IndexFunc(slug, func(r rune) bool { return unicode.IsSpace(r) }) >= 0 {
 		return &FieldError{Field: "slug", Message: "不能包含空格"}
 	}
+	p.Slug = slug
+	p.Permalink = conf.BuildURL(slug + ".xml")
 
 	if len(p.Tags) == 0 {
 		return &FieldError{Field: "tags", Message: "不能为空"}
@@ -171,18 +178,11 @@ func (p *Post) sanitize(dir, path string, posts []*Post) *FieldError {
 		}
 	}
 
-	cnt := sliceutil.Count(posts, func(i int) bool {
-		return p.Slug == posts[i].Slug && p.path != posts[i].path
-	})
-	if cnt > 1 {
-		return &FieldError{Message: "存在重复的值", Field: "slug"}
-	}
-
 	return nil
 }
 
 // 对文章进行排序，需保证 created 已经被初始化
-func sortPosts(posts []*Post) {
+func checkPosts(posts []*Post) *FieldError {
 	sort.SliceStable(posts, func(i, j int) bool {
 		switch {
 		case (posts[i].State == StateTop) || (posts[j].State == StateLast):
@@ -193,4 +193,27 @@ func sortPosts(posts []*Post) {
 			return posts[i].Created.After(posts[j].Created)
 		}
 	})
+
+	for _, p := range posts {
+		cnt := sliceutil.Count(posts, func(i int) bool {
+			return p.Slug == posts[i].Slug && p.Slug != posts[i].Slug
+		})
+		if cnt > 1 {
+			return &FieldError{Message: "存在重复的值", Field: "slug"}
+		}
+	}
+
+	// 生成 prev 和 next
+	max := len(posts)
+	for i := 0; i < max; i++ {
+		post := posts[i]
+		if i > 0 {
+			post.Prev = posts[i-1]
+		}
+		if i < max-1 {
+			post.Next = posts[i+1]
+		}
+	}
+
+	return nil
 }

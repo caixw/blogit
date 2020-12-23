@@ -3,6 +3,7 @@
 package loader
 
 import (
+	"path/filepath"
 	"strconv"
 
 	"github.com/issue9/sliceutil"
@@ -10,30 +11,36 @@ import (
 
 // Tag 描述标签信息
 type Tag struct {
-	Slug    string `yaml:"slug"`            // 唯一名称
-	Title   string `yaml:"title"`           // 名称
-	Color   string `yaml:"color,omitempty"` // 标签颜色。若未指定，则继承父容器
-	Content string `yaml:"content"`         // 对该标签的详细描述
+	Title     string `yaml:"title"`
+	HTMLTitle string `yaml:"-"`
+
+	Slug      string `yaml:"slug"`            // 唯一名称
+	Color     string `yaml:"color,omitempty"` // 标签颜色。若未指定，则继承父容器
+	Content   string `yaml:"content"`         // 对该标签的详细描述
+	Permalink string `yaml:"-"`
 }
 
-func loadTags(path string) ([]*Tag, error) {
+func (data *Data) loadTags(filename string) error {
 	tags := make([]*Tag, 0, 100)
+	path := filepath.Join(data.Dir, filename)
+
 	if err := loadYAML(path, &tags); err != nil {
-		return nil, err
+		return err
 	}
 
 	for index, tag := range tags {
-		if err := tag.sanitize(tags); err != nil {
+		if err := tag.sanitize(tags, data.Config); err != nil {
 			err.File = path
 			err.Field = "[" + strconv.Itoa(index) + "]." + err.Field
-			return nil, err
+			return err
 		}
 	}
 
-	return tags, nil
+	data.Tags = tags
+	return nil
 }
 
-func (tag *Tag) sanitize(tags []*Tag) *FieldError {
+func (tag *Tag) sanitize(tags []*Tag, conf *Config) *FieldError {
 	if len(tag.Slug) == 0 {
 		return &FieldError{Message: "不能为空", Field: "slug"}
 	}
@@ -41,6 +48,7 @@ func (tag *Tag) sanitize(tags []*Tag) *FieldError {
 	if len(tag.Title) == 0 {
 		return &FieldError{Message: "不能为空", Field: "title"}
 	}
+	tag.HTMLTitle = tag.Title + conf.titleSuffix
 
 	if len(tag.Content) == 0 {
 		return &FieldError{Message: "不能为空", Field: "content"}
@@ -52,6 +60,8 @@ func (tag *Tag) sanitize(tags []*Tag) *FieldError {
 	if cnt > 1 {
 		return &FieldError{Message: "重复的值", Field: "slug"}
 	}
+
+	tag.Permalink = conf.BuildURL(tag.Slug + ".xml")
 
 	return nil
 }

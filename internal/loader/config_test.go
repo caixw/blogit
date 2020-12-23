@@ -11,29 +11,33 @@ import (
 
 func TestLoadConfig(t *testing.T) {
 	a := assert.New(t)
-	conf, err := loadConfig("./testdata/conf.yaml")
-	a.NotError(err).NotNil(conf)
+	data := &Data{Dir: "./testdata"}
+	err := data.loadConfig("conf.yaml")
+	a.NotError(err).NotNil(data.Config)
 
-	a.Equal(conf.Author.Name, "caixw")
-	a.Equal(conf.License.Rel, "license")
-	a.Equal(conf.Language, "cmn-Hans")
+	a.Equal(data.Config.Author.Name, "caixw")
+	a.Equal(data.Config.License.Rel, "license")
+	a.Equal(data.Config.Language, "cmn-Hans")
 
-	conf, err = loadConfig("./testdata/not-exists.yaml")
-	a.ErrorIs(err, os.ErrNotExist).Nil(conf)
+	data = &Data{Dir: "./testdata"}
+	err = data.loadConfig("./not-exists.yaml")
+	a.ErrorIs(err, os.ErrNotExist).Nil(data.Config)
 
-	conf, err = loadConfig("./testdata/failed_conf.yaml")
-	a.ErrorType(err, &FieldError{}, err).Nil(conf)
+	data = &Data{Dir: "./testdata"}
+	err = data.loadConfig("./failed_conf.yaml")
+	a.ErrorType(err, &FieldError{}, err).Nil(data.Config)
 }
 
 func TestConfig_BuildURL(t *testing.T) {
 	a := assert.New(t)
-	conf, err := loadConfig("./testdata/conf.yaml")
-	a.NotError(err).NotNil(conf)
+	data := &Data{Dir: "./testdata"}
+	err := data.loadConfig("./conf.yaml")
+	a.NotError(err).NotNil(data.Config)
 
-	a.Equal(conf.BuildURL("/p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(conf.BuildURL("p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(conf.BuildURL(""), "https://example.com/")
-	a.Equal(conf.BuildURL("/"), "https://example.com/")
+	a.Equal(data.Config.BuildURL("/p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(data.Config.BuildURL("p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(data.Config.BuildURL(""), "https://example.com/")
+	a.Equal(data.Config.BuildURL("/"), "https://example.com/")
 }
 
 func TestArchive_sanitize(t *testing.T) {
