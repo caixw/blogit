@@ -8,5 +8,4 @@ authors:
 # 文章可用的模板
 # 对应 post1.xsl 和 post2.xsl
 templates:
-  - post1.xsl
-  - post2.xsl
+  - style.xsl
