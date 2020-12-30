@@ -12,7 +12,7 @@ import (
 func TestLoadConfig(t *testing.T) {
 	a := assert.New(t)
 	conf, err := LoadConfig("./testdata/conf.yaml")
-	a.NotError(err).NotNil(conf)
+	a.NotError(err).NotNil(conf).Equal(conf.URL[len(conf.URL)-1], "/")
 
 	a.Equal(conf.Authors[0].Name, "caixw")
 	a.Equal(conf.Language, "cmn-Hans")
@@ -22,17 +22,6 @@ func TestLoadConfig(t *testing.T) {
 
 	conf, err = LoadConfig("./testdata/failed_conf.yaml")
 	a.ErrorType(err, &FieldError{}, err).Nil(conf)
-}
-
-func TestConfig_BuildURL(t *testing.T) {
-	a := assert.New(t)
-	conf, err := LoadConfig("./testdata/conf.yaml")
-	a.NotError(err).NotNil(conf)
-
-	a.Equal(conf.BuildURL("/p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(conf.BuildURL("p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(conf.BuildURL(""), "https://example.com/")
-	a.Equal(conf.BuildURL("/"), "https://example.com/")
 }
 
 func TestArchive_sanitize(t *testing.T) {

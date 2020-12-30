@@ -19,7 +19,7 @@ type Tag struct {
 	Modified time.Time
 }
 
-func buildTags(conf *loader.Config, tags []*loader.Tag) ([]*Tag, error) {
+func buildTags(tags []*loader.Tag) ([]*Tag, error) {
 	ts := make([]*Tag, 0, len(tags))
 	for _, t := range tags {
 		ts = append(ts, &Tag{

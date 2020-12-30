@@ -10,9 +10,6 @@ import (
 	"github.com/issue9/validation/is"
 )
 
-// TimeFormat 所有时间的解析格式
-const TimeFormat = time.RFC3339
-
 // 归档的类型
 const (
 	ArchiveTypeYear  = "year"
@@ -34,7 +31,6 @@ type Config struct {
 	Language        string        `yaml:"language"`
 	Subtitle        string        `yaml:"subtitle,omitempty"`
 	Uptime          time.Time     `yaml:"uptime"`
-	PageSize        int           `yaml:"pageSize"`
 	Icon            *Icon         `yaml:"icon,omitempty"`
 	Menus           []*Menu       `yaml:"menus,omitempty"`
 	Authors         []*Author     `yaml:"authors"`
@@ -59,6 +55,7 @@ type RSS struct {
 
 // Sitemap sitemap 相关的配置
 type Sitemap struct {
+	XSL        string  `yaml:"xsl"`
 	Priority   float64 `yaml:"priority"`            // 默认的优先级
 	Changefreq string  `yaml:"changefreq"`          // 默认的更新频率
 	EnableTag  bool    `yaml:"enableTag,omitempty"` // 是否将标签相关的页面写入 sitemap
@@ -100,10 +97,6 @@ func (conf *Config) sanitize() *FieldError {
 
 	if len(conf.Language) == 0 {
 		conf.Language = "cmn-Hans"
-	}
-
-	if conf.PageSize <= 0 {
-		return &FieldError{Message: "必须为大于零的整数", Field: "pageSize"}
 	}
 
 	if len(conf.LongDateFormat) == 0 {
@@ -265,17 +258,4 @@ func inStrings(val string, vals []string) bool {
 	return sliceutil.Count(vals, func(i int) bool {
 		return vals[i] == val
 	}) > 0
-}
-
-// BuildURL 根据配置网站域名生成地址
-func (conf *Config) BuildURL(path string) string {
-	// 由 conf.sanitize 保证以 conf.URL 以 / 结尾
-	if len(path) == 0 {
-		return conf.URL
-	}
-
-	if path[0] == '/' {
-		return conf.URL + path[1:]
-	}
-	return conf.URL + path
 }
