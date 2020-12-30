@@ -40,15 +40,20 @@ type FieldError struct {
 	Message string
 }
 
-// Link 描述链接的内容
-type Link struct {
+// License 描述链接的内容
+type License struct {
+	URL   string `yaml:"url"`             // 链接地址
+	Text  string `yaml:"text"`            // 链接的文本
+	Title string `yaml:"title,omitempty"` // 链接的 title 属性
+}
+
+// Menu 描述链接的内容
+type Menu struct {
 	// 链接对应的图标。可以是字体图标或是图片链接，模板根据情况自动选择。
 	Icon  string `yaml:"icon,omitempty"`
 	Title string `yaml:"title,omitempty"` // 链接的 title 属性
-	Rel   string `yaml:"rel,omitempty"`   // 链接的 rel 属性
 	URL   string `yaml:"url"`             // 链接地址
 	Text  string `yaml:"text"`            // 链接的文本
-	Type  string `yaml:"type,omitempty"`  // 链接的类型，一般用于 a 和 link 标签的 type 属性
 }
 
 // Icon 表示网站图标，比如 html>head>link.rel="short icon"
@@ -68,29 +73,6 @@ type Author struct {
 
 func (err *FieldError) Error() string {
 	return fmt.Sprintf("%s 位于 %s:%s", err.Message, err.File, err.Field)
-}
-
-// Load 加载所有的数据内容
-func Load(dir string) (*Data, error) {
-	data := &Data{Dir: dir}
-
-	if err := data.loadConfig("conf.yaml"); err != nil {
-		return nil, err
-	}
-
-	if err := data.loadTags("tags.yaml"); err != nil {
-		return nil, err
-	}
-
-	if err := data.loadPosts(); err != nil {
-		return nil, err
-	}
-
-	if err := data.checkTags(); err != nil {
-		return nil, err
-	}
-
-	return data, nil
 }
 
 func loadYAML(path string, v interface{}) error {
@@ -114,12 +96,24 @@ func (icon *Icon) sanitize() *FieldError {
 	return nil
 }
 
-func (link *Link) sanitize() *FieldError {
-	if len(link.Text) == 0 {
+func (l *License) sanitize() *FieldError {
+	if len(l.Text) == 0 {
 		return &FieldError{Field: "text", Message: "不能为空"}
 	}
 
-	if len(link.URL) == 0 {
+	if len(l.URL) == 0 {
+		return &FieldError{Field: "url", Message: "不能为空"}
+	}
+
+	return nil
+}
+
+func (menu *Menu) sanitize() *FieldError {
+	if len(menu.Text) == 0 {
+		return &FieldError{Field: "text", Message: "不能为空"}
+	}
+
+	if len(menu.URL) == 0 {
 		return &FieldError{Field: "url", Message: "不能为空"}
 	}
 

@@ -3,7 +3,6 @@
 package loader
 
 import (
-	"path/filepath"
 	"strconv"
 	"time"
 
@@ -30,7 +29,6 @@ const (
 type Config struct {
 	Title          string `yaml:"title"`
 	TitleSeparator string `yaml:"titleSeparator"`
-	titleSuffix    string
 
 	URL             string        `yaml:"url"` // 网站根域名，比如 https://example.com/blog
 	Language        string        `yaml:"language"`
@@ -38,9 +36,9 @@ type Config struct {
 	Uptime          time.Time     `yaml:"uptime"`
 	PageSize        int           `yaml:"pageSize"`
 	Icon            *Icon         `yaml:"icon,omitempty"`
-	Menus           []*Link       `yaml:"menus,omitempty"`
-	Author          *Author       `yaml:"author"`
-	License         *Link         `yaml:"license"`
+	Menus           []*Menu       `yaml:"menus,omitempty"`
+	Authors         []*Author     `yaml:"authors"`
+	License         *License      `yaml:"license"`
 	LongDateFormat  string        `yaml:"longDateFormat"`
 	ShortDateFormat string        `yaml:"shortDateFormat"`
 	Outdated        time.Duration `yaml:"outdated,omitempty"`
@@ -77,27 +75,22 @@ type Archive struct {
 	Format string `yaml:"format"` // 标题的格式化字符串，被 time.Format 所格式化。
 }
 
-func (data *Data) loadConfig(filename string) error {
+// LoadConfig 加载配置文件
+func LoadConfig(path string) (*Config, error) {
 	conf := &Config{}
 
-	path := filepath.Join(data.Dir, filename)
 	if err := loadYAML(path, conf); err != nil {
-		return err
+		return nil, err
 	}
 	if err := conf.sanitize(); err != nil {
 		err.File = path
-		return err
+		return nil, err
 	}
 
-	data.Config = conf
-	return nil
+	return conf, nil
 }
 
 func (conf *Config) sanitize() *FieldError {
-	if conf.TitleSeparator != "" {
-		conf.titleSuffix = conf.TitleSeparator + conf.Title
-	}
-
 	if len(conf.URL) == 0 || !is.URL(conf.URL) {
 		return &FieldError{Message: "格式不正确", Field: "url"}
 	}
@@ -133,13 +126,15 @@ func (conf *Config) sanitize() *FieldError {
 		}
 	}
 
-	// Author
-	if conf.Author == nil {
-		return &FieldError{Message: "不能为空", Field: "author"}
+	// Authors
+	if len(conf.Authors) == 0 {
+		return &FieldError{Message: "不能为空", Field: "authors"}
 	}
-	if err := conf.Author.sanitize(); err != nil {
-		err.Field = "author." + err.Field
-		return err
+	for index, author := range conf.Authors {
+		if err := author.sanitize(); err != nil {
+			err.Field = "authors[" + strconv.Itoa(index) + "]." + err.Field
+			return err
+		}
 	}
 
 	if len(conf.Title) == 0 {

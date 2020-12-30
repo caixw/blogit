@@ -8,25 +8,30 @@ import (
 	"github.com/issue9/assert"
 )
 
-func TestLoad(t *testing.T) {
+func TestLicense_sanitize(t *testing.T) {
 	a := assert.New(t)
 
-	data, err := Load("./testdata")
-	a.NotError(err).NotNil(data)
-	a.NotNil(data.Config).NotEmpty(data.Tags).NotEmpty(data.Posts)
+	l := &License{}
+	a.Error(l.sanitize())
+
+	l = &License{Text: "t"}
+	a.Error(l.sanitize())
+
+	l = &License{Text: "t", URL: "/favicon.ico"}
+	a.NotError(l.sanitize())
 }
 
-func TestLink_sanitize(t *testing.T) {
+func TestMenu_sanitize(t *testing.T) {
 	a := assert.New(t)
 
-	l := &Link{}
-	a.Error(l.sanitize())
+	m := &Menu{}
+	a.Error(m.sanitize())
 
-	l = &Link{Text: "t"}
-	a.Error(l.sanitize())
+	m = &Menu{Text: "t"}
+	a.Error(m.sanitize())
 
-	l = &Link{Text: "t", URL: "/favicon.ico"}
-	a.NotError(l.sanitize())
+	m = &Menu{Text: "t", URL: "/favicon.ico"}
+	a.NotError(m.sanitize())
 }
 
 func TestAuthor_sanitize(t *testing.T) {

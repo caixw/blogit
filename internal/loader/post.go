@@ -7,13 +7,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
 	"unicode"
 
-	"github.com/issue9/sliceutil"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/parser"
 	"gopkg.in/yaml.v2"
@@ -35,9 +33,7 @@ const (
 
 // Post 表示文章的信息
 type Post struct {
-	Title     string `yaml:"title"`
-	HTMLTitle string `yaml:"-"` // 表示网页中 html>title 中的内容，可能带网站名称的后缀
-
+	Title    string    `yaml:"title"`
 	Created  time.Time `yaml:"created"`           // 创建时间
 	Modified time.Time `yaml:"modified"`          // 修改时间
 	Summary  string    `yaml:"summary,omitempty"` // 摘要，同时也作为 meta.description 的内容
@@ -45,9 +41,7 @@ type Post struct {
 	// 关联的标签列表
 	//
 	// 标签名为各个标签的 slug 值，可以保证其唯一。
-	// 最终会被解析到 TagString 中，TagString 会被废弃。
-	TagString []string `yaml:"tags"`
-	Tags      []*Tag   `yaml:"-"`
+	Tags []string `yaml:"tags"`
 
 	// Outdated 用户记录文章的一个过时情况，可以由以下几种值构成：
 	// - created 表示该篇文章以创建时间来计算其是否已经过时，该值也是默认值；
@@ -68,49 +62,45 @@ type Post struct {
 
 	// 以下内容不存在时，则会使用全局的默认选项
 	Authors  []*Author `yaml:"author,omitempty"`
-	License  *Link     `yaml:"license,omitempty"`
+	License  *License  `yaml:"license,omitempty"`
 	Template string    `yaml:"template,omitempty"`
 	Language string    `yaml:"language,omitempty"`
 
-	Content   string `yaml:"-"` // markdown 内容
-	Next      *Post  `yaml:"-"`
-	Prev      *Post  `yaml:"-"`
-	Permalink string `yaml:"-"`
-	Slug      string `yaml:"-"`
+	Content string `yaml:"-"` // markdown 内容
+	Slug    string `yaml:"-"`
 }
 
-func (data *Data) loadPosts() error {
+// LoadPosts 加载所有的文章
+func LoadPosts(dir string) ([]*Post, error) {
 	paths := make([]string, 0, 10)
-	err := filepath.Walk(data.Dir, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err == nil && !info.IsDir() && strings.ToLower(filepath.Ext(info.Name())) == ".md" {
 			paths = append(paths, path)
 		}
 		return err
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(paths) == 0 {
-		return nil
+		return nil, nil
 	}
 
-	data.Posts = make([]*Post, 0, len(paths))
+	posts := make([]*Post, 0, len(paths))
 
 	for _, path := range paths {
-		post, err := data.loadPost(data.Dir, path)
+		post, err := loadPost(dir, path)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		data.Posts = append(data.Posts, post)
+		posts = append(posts, post)
 	}
 
-	checkPosts(data.Posts)
-
-	return nil
+	return posts, nil
 }
 
-func (data *Data) loadPost(dir, path string) (*Post, error) {
+func loadPost(dir, path string) (*Post, error) {
 	bs, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -132,18 +122,17 @@ func (data *Data) loadPost(dir, path string) (*Post, error) {
 	}
 	post.Content = buf.String()
 
-	if err := post.sanitize(dir, path, data.Config); err != nil {
+	if err := post.sanitize(dir, path); err != nil {
 		err.File = path
 		return nil, err
 	}
 	return post, nil
 }
 
-func (p *Post) sanitize(dir, path string, conf *Config) *FieldError {
+func (p *Post) sanitize(dir, path string) *FieldError {
 	if p.Title == "" {
 		return &FieldError{Field: "title", Message: "不能为空"}
 	}
-	p.HTMLTitle = p.Title + conf.titleSuffix
 
 	slug := strings.TrimPrefix(path, dir)
 	if len(slug) > 3 && strings.ToLower(slug[len(slug)-3:]) == ".md" {
@@ -154,9 +143,8 @@ func (p *Post) sanitize(dir, path string, conf *Config) *FieldError {
 		return &FieldError{Field: "slug", Message: "不能包含空格"}
 	}
 	p.Slug = slug
-	p.Permalink = conf.BuildURL(slug + ".xml")
 
-	if len(p.TagString) == 0 {
+	if len(p.Tags) == 0 {
 		return &FieldError{Field: "tags", Message: "不能为空"}
 	}
 
@@ -176,43 +164,6 @@ func (p *Post) sanitize(dir, path string, conf *Config) *FieldError {
 		if err := p.License.sanitize(); err != nil {
 			err.Field = "license." + err.Field
 			return err
-		}
-	}
-
-	return nil
-}
-
-// 对文章进行排序，需保证 created 已经被初始化
-func checkPosts(posts []*Post) *FieldError {
-	sort.SliceStable(posts, func(i, j int) bool {
-		switch {
-		case (posts[i].State == StateTop) || (posts[j].State == StateLast):
-			return true
-		case (posts[i].State == StateLast) || (posts[j].State == StateTop):
-			return false
-		default:
-			return posts[i].Created.After(posts[j].Created)
-		}
-	})
-
-	for _, p := range posts {
-		cnt := sliceutil.Count(posts, func(i int) bool {
-			return p.Slug == posts[i].Slug && p.Slug != posts[i].Slug
-		})
-		if cnt > 1 {
-			return &FieldError{Message: "存在重复的值", Field: "slug"}
-		}
-	}
-
-	// 生成 prev 和 next
-	max := len(posts)
-	for i := 0; i < max; i++ {
-		post := posts[i]
-		if i > 0 {
-			post.Prev = posts[i-1]
-		}
-		if i < max-1 {
-			post.Next = posts[i+1]
 		}
 	}
 
