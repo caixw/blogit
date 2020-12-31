@@ -81,22 +81,6 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 		suffix = conf.TitleSeparator + conf.Title
 	}
 
-	icon := &Icon{
-		URL:   conf.Icon.URL,
-		Type:  conf.Icon.Type,
-		Sizes: conf.Icon.Sizes,
-	}
-
-	menus := make([]*Menu, 0, len(conf.Menus))
-	for _, m := range conf.Menus {
-		menus = append(menus, &Menu{
-			Icon:  m.Icon,
-			Title: m.Title,
-			URL:   m.URL,
-			Text:  m.Text,
-		})
-	}
-
 	ts, err := buildTags(tags)
 	if err != nil {
 		return nil, err
@@ -123,8 +107,8 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 		Title:       conf.Title,
 		Subtitle:    conf.Subtitle,
 		TitleSuffix: suffix,
-		Icon:        icon,
-		Menus:       menus,
+		Icon:        conf.Icon,
+		Menus:       conf.Menus,
 		Theme:       theme,
 
 		LongDateFormat:  conf.LongDateFormat,
