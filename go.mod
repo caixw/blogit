@@ -3,6 +3,7 @@ module github.com/caixw/blogit
 go 1.14
 
 require (
+	github.com/fsnotify/fsnotify v1.4.9
 	github.com/issue9/assert v1.4.1
 	github.com/issue9/errwrap v0.2.0
 	github.com/issue9/sliceutil v0.6.0

@@ -2,71 +2,61 @@
 
 package builder
 
-import (
-	"time"
+import "github.com/caixw/blogit/internal/data"
 
-	"github.com/caixw/blogit/internal/loader"
-)
-
-// Tag 单个标签的内容
-type Tag struct {
-	Slug     string
-	Title    string
-	Color    string // 标签颜色。若未指定，则继承父容器
-	Content  string // 对该标签的详细描述
-	Posts    []*Post
-	Created  time.Time
-	Modified time.Time
+type tags struct {
+	XMLName struct{} `xml:"tags"`
+	Tags    []*tag   `xml:"tag"`
 }
 
-func buildTags(tags []*loader.Tag) ([]*Tag, error) {
-	ts := make([]*Tag, 0, len(tags))
-	for _, t := range tags {
-		ts = append(ts, &Tag{
-			Slug:    t.Slug,
-			Title:   t.Title,
-			Color:   t.Color,
-			Content: t.Content,
+type tag struct {
+	XMLName struct{} `xml:"tag"`
+
+	Permalink string      `xml:"permalink"`
+	Title     string      `xml:"title"`
+	Color     string      `xml:"color,attr"`
+	Content   string      `xml:"content"`
+	Created   datetime    `xml:"created"`
+	Modified  datetime    `xml:"modified"`
+	Posts     []*postMeta `xml:"post,omitempty"`
+}
+
+func newTag(t *data.Tag, d *data.Data) *tag {
+	ps := make([]*postMeta, 0, len(t.Posts))
+	for _, p := range t.Posts {
+		ps = append(ps, &postMeta{
+			Permalink: d.BuildURL(p.Slug),
+			Title:     p.Title,
+			Created:   toDatetime(p.Created, d),
+			Modified:  toDatetime(p.Modified, d),
 		})
 	}
 
-	return ts, nil
+	return &tag{
+		Permalink: d.BuildURL("tags", t.Slug+".xml"),
+		Title:     t.Title,
+		Color:     t.Color,
+		Content:   t.Content,
+		Created:   toDatetime(t.Created, d),
+		Modified:  toDatetime(t.Modified, d),
+		Posts:     ps,
+	}
 }
 
-func checkTags(tags []*Tag, posts []*Post) (created, modified time.Time, err error) {
-	for _, p := range posts {
-		if created.Before(p.Created) {
-			created = p.Created
-		}
-		if modified.Before(p.Modified) {
-			modified = p.Modified
+func (b *Builder) buildTags(d *data.Data) error {
+	tags := make([]*tag, 0, len(d.Tags))
+
+	for _, t := range d.Tags {
+		tt := newTag(t, d)
+		xsl := d.BuildThemeURL("tag.xsl")
+		if err := b.appendXMLFile("tags/"+t.Slug+".xml", xsl, "", t.Modified, tt); err != nil {
+			return err
 		}
 
-		for _, tag := range p.tags {
-			t := findTagByName(tags, tag)
-			if t == nil {
-				return time.Time{}, time.Time{}, &loader.FieldError{File: p.Slug, Message: "不存在", Field: "tags." + tag}
-			}
-			t.Posts = append(t.Posts, p)
-			p.Tags = append(p.Tags, t)
-
-			if t.Created.Before(p.Created) {
-				t.Created = p.Created
-			}
-
-			if t.Modified.Before(p.Modified) {
-				t.Modified = p.Modified
-			}
-		}
+		tt.Posts = nil
+		tags = append(tags, tt)
 	}
-	return created, modified, nil
-}
 
-func findTagByName(tags []*Tag, slug string) *Tag {
-	for _, t := range tags {
-		if t.Slug == slug {
-			return t
-		}
-	}
-	return nil
+	xsl := d.BuildThemeURL("tags.xsl")
+	return b.appendXMLFile("tags.xml", xsl, "", d.Modified, tags)
 }

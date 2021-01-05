@@ -2,133 +2,129 @@
 
 package builder
 
-import (
-	"fmt"
-	"sort"
-	"time"
+import "github.com/caixw/blogit/internal/data"
 
-	"github.com/issue9/sliceutil"
+type posts struct {
+	XMLName struct{} `xml:"posts"`
 
-	"github.com/caixw/blogit/internal/loader"
-)
-
-// Post 文章详情
-type Post struct {
-	Slug     string
-	Title    string
-	Created  time.Time
-	Modified time.Time
-	Tags     []*Tag
-	tags     []string
-	Language string
-	Outdated *Outdated
-	Authors  []*Author
-	License  *License
-	Content  string
-	Prev     *Post
-	Next     *Post
+	Posts []*postMeta `xml:"post"`
 }
 
-// Outdated 定义文章过时显示的信息
-type Outdated struct {
-	Outdated time.Time
-	Content  string
+type postMeta struct {
+	Permalink string   `xml:"permalink"`
+	Title     string   `xml:"title"`
+	Created   datetime `xml:"created"`
+	Modified  datetime `xml:"modified"`
+	Tags      []*tag   `xml:"tag,omitempty"`
 }
 
-func buildPosts(conf *loader.Config, posts []*loader.Post) ([]*Post, error) {
-	if err := checkRawPosts(posts); err != nil {
-		return nil, err
-	}
+type post struct {
+	XMLName struct{} `xml:"post"`
 
-	ps := make([]*Post, 0, len(posts))
-	for _, p := range posts {
-		post, err := buildPost(conf, p)
+	Permalink string    `xml:"permalink"`
+	Title     string    `xml:"title"`
+	Created   datetime  `xml:"created"`
+	Modified  datetime  `xml:"modified"`
+	Tags      []*tag    `xml:"tag"`
+	Language  string    `xml:"language,attr"`
+	Outdated  *outdated `xml:"outdated"`
+	Authors   []*author `xml:"author"`
+	License   *link     `xml:"license"`
+	Content   string    `xml:"content"`
+	Prev      *link     `xml:"prev"`
+	Next      *link     `xml:"next"`
+}
+
+type author struct {
+	Name   string `yaml:"name"`
+	URL    string `yaml:"url,omitempty"`
+	Email  string `yaml:"email,omitempty"`
+	Avatar string `yaml:"avatar,omitempty"`
+}
+
+type link struct {
+	URL   string `xml:"url"`
+	Title string `xml:"title"`
+	Text  string `xml:"text"`
+}
+
+type outdated struct {
+	Outdated datetime `xml:"outdated"`
+	Content  string   `xml:"content"`
+}
+
+func (b *Builder) buildPosts(d *data.Data) error {
+	index := &posts{Posts: make([]*postMeta, 0, len(d.Posts))}
+
+	for _, p := range d.Posts {
+		tags := make([]*tag, 0, len(p.Tags))
+		for _, t := range p.Tags {
+			tags = append(tags, &tag{
+				Permalink: d.BuildURL("tags", t.Slug+".xml"),
+				Title:     t.Title,
+				Color:     t.Color,
+				Content:   t.Content,
+				Created:   toDatetime(t.Created, d),
+				Modified:  toDatetime(t.Modified, d),
+			})
+		}
+
+		authors := make([]*author, 0, len(p.Authors))
+		for _, a := range p.Authors {
+			authors = append(authors, &author{
+				Name:   a.Name,
+				URL:    a.URL,
+				Email:  a.Email,
+				Avatar: a.Avatar,
+			})
+		}
+
+		pp := &post{
+			Permalink: d.BuildURL(p.Slug + ".xml"),
+			Title:     p.Title,
+			Created:   toDatetime(p.Created, d),
+			Modified:  toDatetime(p.Modified, d),
+			Tags:      tags,
+			Language:  p.Language,
+			Outdated: &outdated{
+				Outdated: toDatetime(p.Outdated.Outdated, d),
+				Content:  p.Outdated.Content,
+			},
+			Authors: authors,
+			License: &link{
+				URL:   p.License.URL,
+				Title: p.License.Title,
+				Text:  p.License.Text,
+			},
+			Content: p.Content,
+		}
+		if p.Prev != nil {
+			pp.Prev = &link{
+				URL:   d.BuildURL(p.Prev.Slug + ".xml"),
+				Title: "上一篇文章",
+				Text:  p.Prev.Title,
+			}
+		}
+		if p.Next != nil {
+			pp.Next = &link{
+				URL:   d.BuildURL(p.Next.Slug + ".xml"),
+				Title: "上一篇文章",
+				Text:  p.Next.Title,
+			}
+		}
+		err := b.appendXMLFile(p.Slug+".xml", d.BuildThemeURL(p.Template), "", p.Modified, pp)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		ps = append(ps, post)
-	}
 
-	prevNext(ps)
-
-	return ps, nil
-}
-
-func buildPost(conf *loader.Config, p *loader.Post) (*Post, error) {
-	if p.Authors == nil {
-		p.Authors = conf.Authors
-	}
-
-	var od *Outdated
-	switch p.Outdated {
-	case loader.OutdatedCreated:
-		od = &Outdated{
-			Outdated: p.Created.Add(conf.Outdated),
-			Content:  fmt.Sprintf("当前文章创建于 %s，可能已经过时！", p.Created.Format(conf.ShortDateFormat)),
-		}
-	case loader.OutdatedModified:
-		od = &Outdated{
-			Outdated: p.Modified.Add(conf.Outdated),
-			Content:  fmt.Sprintf("当前文章最后次修改于 %s，可能已经过时！", p.Modified.Format(conf.ShortDateFormat)),
-		}
-	default:
-		od = &Outdated{
-			Outdated: p.Created,
-			Content:  p.Content,
-		}
-	}
-
-	pp := &Post{
-		Title:    p.Title,
-		Created:  p.Created,
-		Modified: p.Modified,
-		tags:     p.Tags,
-		Language: p.Language,
-		Outdated: od,
-		Authors:  p.Authors,
-		License:  p.License,
-		Content:  p.Content,
-		Slug:     p.Slug,
-	}
-
-	return pp, nil
-}
-
-func prevNext(posts []*Post) {
-	// 生成 prev 和 next
-	max := len(posts)
-	for i := 0; i < max; i++ {
-		post := posts[i]
-		if i > 0 {
-			post.Prev = posts[i-1]
-		}
-		if i < max-1 {
-			post.Next = posts[i+1]
-		}
-	}
-}
-
-// 检测原始的文章内容，并对其进行排序。
-func checkRawPosts(posts []*loader.Post) *loader.FieldError {
-	sort.SliceStable(posts, func(i, j int) bool {
-		switch {
-		case (posts[i].State == loader.StateTop) || (posts[j].State == loader.StateLast):
-			return true
-		case (posts[i].State == loader.StateLast) || (posts[j].State == loader.StateTop):
-			return false
-		default:
-			return posts[i].Created.After(posts[j].Created)
-		}
-	})
-
-	for _, p := range posts {
-		cnt := sliceutil.Count(posts, func(i int) bool {
-			return p.Slug == posts[i].Slug && p.Slug != posts[i].Slug
+		index.Posts = append(index.Posts, &postMeta{
+			Permalink: d.BuildURL(p.Slug + ".xml"),
+			Title:     p.Title,
+			Created:   toDatetime(p.Created, d),
+			Modified:  toDatetime(p.Modified, d),
+			Tags:      tags,
 		})
-		if cnt > 1 {
-			return &loader.FieldError{Message: "存在重复的值", Field: "slug"}
-		}
 	}
 
-	return nil
+	return b.appendXMLFile("index.xml", d.BuildThemeURL("index.xsl"), "", d.Modified, index)
 }

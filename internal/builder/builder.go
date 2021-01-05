@@ -1,149 +1,143 @@
 // SPDX-License-Identifier: MIT
 
-// Package builder 用于将由 laoder 加载的数据进行二次加工
 package builder
 
 import (
-	"path"
+	"bytes"
+	"encoding/xml"
+	"io/ioutil"
+	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/caixw/blogit/internal/loader"
+	"github.com/issue9/errwrap"
+
+	"github.com/caixw/blogit/internal/data"
 )
 
-type (
-	// Data 处理后的数据
-	Data struct {
-		URL         string
-		Title       string
-		Subtitle    string
-		TitleSuffix string // 每篇文章标题的后缀
-		Icon        *Icon
-		Menus       []*Menu
-		Theme       *Theme
+const xmlContentType = "application/xml"
 
-		LongDateFormat  string
-		ShortDateFormat string
-		Uptime          time.Time
-		Created         time.Time
-		Modified        time.Time
-		Builded         time.Time // 最后次编译时间
-
-		Tags     []*Tag
-		Posts    []*Post
-		Archives []*Archive
-	}
-
-	// Icon 图标信息
-	Icon = loader.Icon
-
-	// License 表示链接信息
-	License = loader.License
-
-	// Menu 采单项
-	Menu = loader.Menu
-
-	// Author 表示作者信息
-	Author = loader.Author
-
-	// Theme 主题
-	Theme = loader.Theme
-)
-
-// Build 打包目录下的内容
-func Build(dir string) (*Data, error) {
-	conf, err := loader.LoadConfig(filepath.Join(dir, "conf.yaml"))
-	if err != nil {
-		return nil, err
-	}
-
-	tags, err := loader.LoadTags(filepath.Join(dir, "tags.yaml"))
-	if err != nil {
-		return nil, err
-	}
-
-	posts, err := loader.LoadPosts(dir)
-	if err != nil {
-		return nil, err
-	}
-
-	theme, err := loader.LoadTheme(dir, conf.Theme)
-	if err != nil {
-		return nil, err
-	}
-
-	return build(conf, tags, posts, theme)
+// Builder 保存构建好的数据
+type Builder struct {
+	files   []*file
+	Builded time.Time
 }
 
-func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme *loader.Theme) (*Data, error) {
-	var suffix string
-	if conf.TitleSeparator != "" {
-		suffix = conf.TitleSeparator + conf.Title
-	}
-
-	ts, err := buildTags(tags)
-	if err != nil {
-		return nil, err
-	}
-
-	ps, err := buildPosts(conf, posts)
-	if err != nil {
-		return nil, err
-	}
-
-	created, modified, err := checkTags(ts, ps)
-	if err != nil {
-		return nil, err
-	}
-
-	archives, err := buildArchives(conf, ps)
-	if err != nil {
-		return nil, err
-	}
-
-	data := &Data{
-		URL: conf.URL,
-
-		Title:       conf.Title,
-		Subtitle:    conf.Subtitle,
-		TitleSuffix: suffix,
-		Icon:        conf.Icon,
-		Menus:       conf.Menus,
-		Theme:       theme,
-
-		LongDateFormat:  conf.LongDateFormat,
-		ShortDateFormat: conf.ShortDateFormat,
-		Uptime:          conf.Uptime,
-		Builded:         time.Now(),
-		Created:         created,
-		Modified:        modified,
-
-		Tags:     ts,
-		Posts:    ps,
-		Archives: archives,
-	}
-
-	return data, nil
+type file struct {
+	path    string
+	lastmod time.Time
+	content []byte
+	ct      string
 }
 
-// BuildURL 根据配置网站域名生成地址
-func (data *Data) BuildURL(p ...string) string {
-	pp := path.Join(p...)
-
-	if len(pp) == 0 {
-		return data.URL
-	}
-
-	if pp[0] == '/' {
-		return data.URL + pp[1:]
-	}
-	return data.URL + pp
+type datetime struct {
+	Long  string `xml:"long,attr"`
+	Short string `xml:"short,attr"`
 }
 
-// BuildThemeURL 根据配置网站域名生成主题下的文件地址
-func (data *Data) BuildThemeURL(p ...string) string {
-	pp := make([]string, 0, len(p)+2)
-	pp = append(pp, "themes", data.Theme.ID)
+func toDatetime(t time.Time, d *data.Data) datetime {
+	return datetime{
+		Long:  t.Format(d.LongDateFormat),
+		Short: t.Format(d.ShortDateFormat),
+	}
+}
 
-	return data.BuildThemeURL(append(pp, p...)...)
+// Build 渲染并输出内容
+func Build(d *data.Data) (*Builder, error) {
+	b := &Builder{
+		files:   make([]*file, 0, 20),
+		Builded: d.Builded,
+	}
+
+	if err := b.buildInfo("info.xml", d); err != nil {
+		return nil, err
+	}
+
+	if err := b.buildTags(d); err != nil {
+		return nil, err
+	}
+
+	if err := b.buildPosts(d); err != nil {
+		return nil, err
+	}
+
+	if err := b.buildSitemap("sitemap.xml", d); err != nil {
+		return nil, err
+	}
+
+	if err := b.buildArchives("archives.xml", d); err != nil {
+		return nil, err
+	}
+
+	if err := b.buildAtom("atom.xml", d); err != nil {
+		return nil, err
+	}
+
+	if err := b.buildRSS("rss.xml", d); err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
+
+func (f *file) dump(dir string) error {
+	return ioutil.WriteFile(filepath.Join(dir, f.path), f.content, os.ModePerm)
+}
+
+// Dump 输出内容
+func (b *Builder) Dump(dir string) error {
+	for _, f := range b.files {
+		if err := f.dump(dir); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// ServeHTTP 以内容进行 HTTP 服务
+func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+	for _, f := range b.files {
+		if f.path == path {
+			if f.ct != "" {
+				w.Header().Set("Content-Type", f.ct)
+			}
+			http.ServeContent(w, r, f.path, f.lastmod, bytes.NewReader(f.content))
+			return
+		}
+	}
+	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+}
+
+// xsl 表示关联的 xsl，如果不需要则可能为空；
+// ct 表示内容的 content-type 值，为空表示采用 application/xml；
+func (b *Builder) appendXMLFile(path, xsl, ct string, lastmod time.Time, v interface{}) error {
+	data, err := xml.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	buf := &errwrap.Buffer{}
+	buf.WString(xml.Header)
+	if xsl != "" {
+		buf.Printf(`<?xml-stylesheet type="text/xsl" href="%s"?>`, xsl).WByte('\n')
+	}
+	buf.WBytes(data)
+
+	if buf.Err != nil {
+		return buf.Err
+	}
+
+	if ct == "" {
+		ct = xmlContentType
+	}
+
+	b.files = append(b.files, &file{
+		path:    path,
+		lastmod: lastmod,
+		content: buf.Bytes(),
+		ct:      ct,
+	})
+	return nil
 }

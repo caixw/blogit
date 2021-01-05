@@ -12,6 +12,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/issue9/sliceutil"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/parser"
 	"gopkg.in/yaml.v2"
@@ -97,6 +98,15 @@ func LoadPosts(dir string) ([]*Post, error) {
 		posts = append(posts, post)
 	}
 
+	for _, p := range posts {
+		cnt := sliceutil.Count(posts, func(i int) bool {
+			return p.Slug == posts[i].Slug && p.Slug != posts[i].Slug
+		})
+		if cnt > 1 {
+			return nil, &FieldError{Message: "存在重复的值", Field: "slug"}
+		}
+	}
+
 	return posts, nil
 }
 
@@ -165,6 +175,10 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 			err.Field = "license." + err.Field
 			return err
 		}
+	}
+
+	if p.Template == "" {
+		p.Template = "post.xsl"
 	}
 
 	return nil

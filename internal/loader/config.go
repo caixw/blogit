@@ -48,8 +48,7 @@ type Config struct {
 
 // RSS RSS 和 Atom 相关的配置项
 type RSS struct {
-	Title string `yaml:"title"`
-	Type  string `yaml:"type,omitempty"`
+	Title string `yaml:"title,omitempty"`
 	Size  int    `yaml:"size"` // 显示数量
 }
 

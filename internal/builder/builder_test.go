@@ -3,17 +3,30 @@
 package builder
 
 import (
+	"net/http"
 	"testing"
+	"time"
 
 	"github.com/issue9/assert"
+
+	"github.com/caixw/blogit/internal/data"
 )
 
-func TestData_BuildURL(t *testing.T) {
+var _ http.Handler = &Builder{}
+
+func newBuilder(a *assert.Assertion, dir string) *Builder {
+	d, err := data.Load(dir)
+	a.NotError(err).NotNil(d)
+
+	b, err := Build(d)
+	a.NotError(err).NotNil(b)
+
+	return b
+}
+
+func TestBuild(t *testing.T) {
 	a := assert.New(t)
 
-	data := &Data{URL: "https://example.com/"} // 传入的 URL 必定是以 / 结尾的
-	a.Equal(data.BuildURL("/p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(data.BuildURL("p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(data.BuildURL(""), "https://example.com/")
-	a.Equal(data.BuildURL("/"), "https://example.com/")
+	b := newBuilder(a, "../testdata")
+	a.Equal(b.Builded.Year(), time.Now().Year())
 }
