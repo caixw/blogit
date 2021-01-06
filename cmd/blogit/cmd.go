@@ -25,6 +25,7 @@ func main() {
 
 	initBuild(opt)
 	initServe(opt)
+	initVersion(opt)
 	opt.Help("help", "显示当前内容")
 
 	if err := opt.Exec(os.Args[1:]); err != nil {
