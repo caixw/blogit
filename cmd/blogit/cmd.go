@@ -14,12 +14,12 @@ func main() {
 	opt := &cmdopt.CmdOpt{
 		Output:        os.Stdout,
 		ErrorHandling: flag.ExitOnError,
-		Header:        "静态博客工具",
-		Footer:        "源码以 MIT 许可发布于 https://github.com/caixw/blogit",
+		Header:        "静态博客工具\n",
+		Footer:        "源码以 MIT 许可发布于 https://github.com/caixw/blogit\n",
 		CommandsTitle: "子命令",
 		OptionsTitle:  "参数",
 		NotFound: func(name string) string {
-			return fmt.Sprintf("未找到子命令 %s", name)
+			return fmt.Sprintf("未找到子命令 %s\n", name)
 		},
 	}
 
