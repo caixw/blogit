@@ -17,6 +17,10 @@ type info struct {
 	Authors     []*author `xml:"author"`
 	License     *link     `xml:"license"`
 
+	Atom    *link `xml:"atom,omitempty"`
+	RSS     *link `xml:"rss,omitempty"`
+	Sitemap *link `xml:"sitemap,omitempty"`
+
 	Uptime   datetime `xml:"uptime"`
 	Created  datetime `xml:"created"`
 	Modified datetime `xml:"modified"`
@@ -78,5 +82,29 @@ func (b *Builder) buildInfo(path string, d *data.Data) error {
 		Builded:  toDatetime(d.Builded, d),
 	}
 
-	return b.appendXMLFile(path, "", xmlContentType, d.Modified, i)
+	if d.Atom != nil {
+		i.Atom = &link{
+			URL:   d.BuildURL("atom.xml"),
+			Title: d.Atom.Title,
+			Text:  d.Atom.Title,
+		}
+	}
+
+	if d.RSS != nil {
+		i.RSS = &link{
+			URL:   d.BuildURL("rss.xml"),
+			Title: d.RSS.Title,
+			Text:  d.RSS.Title,
+		}
+	}
+
+	if d.Sitemap != nil {
+		i.Sitemap = &link{
+			URL:   d.BuildURL("sitemap.xml"),
+			Title: "sitemap",
+			Text:  "sitemap",
+		}
+	}
+
+	return b.appendXMLFile(path, "", d.Modified, i)
 }

@@ -110,7 +110,7 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // xsl 表示关联的 xsl，如果不需要则可能为空；
 // ct 表示内容的 content-type 值，为空表示采用 application/xml；
-func (b *Builder) appendXMLFile(path, xsl, ct string, lastmod time.Time, v interface{}) error {
+func (b *Builder) appendXMLFile(path, xsl string, lastmod time.Time, v interface{}) error {
 	data, err := xml.Marshal(v)
 	if err != nil {
 		return err
@@ -127,15 +127,11 @@ func (b *Builder) appendXMLFile(path, xsl, ct string, lastmod time.Time, v inter
 		return buf.Err
 	}
 
-	if ct == "" {
-		ct = xmlContentType
-	}
-
 	b.files = append(b.files, &file{
 		path:    path,
 		lastmod: lastmod,
 		content: buf.Bytes(),
-		ct:      ct,
+		ct:      xmlContentType,
 	})
 	return nil
 }

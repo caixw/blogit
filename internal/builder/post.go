@@ -44,13 +44,13 @@ type author struct {
 
 type link struct {
 	URL   string `xml:"url"`
-	Title string `xml:"title"`
+	Title string `xml:"title,attr,omitempty"`
 	Text  string `xml:"text"`
 }
 
 type outdated struct {
 	Outdated datetime `xml:"outdated"`
-	Content  string   `xml:"content"`
+	Content  string   `xml:",chardata"`
 }
 
 func (b *Builder) buildPosts(d *data.Data) error {
@@ -112,7 +112,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 				Text:  p.Next.Title,
 			}
 		}
-		err := b.appendXMLFile(p.Slug+".xml", d.BuildThemeURL(p.Template), "", p.Modified, pp)
+		err := b.appendXMLFile(p.Slug+".xml", d.BuildThemeURL(p.Template), p.Modified, pp)
 		if err != nil {
 			return err
 		}
@@ -126,5 +126,5 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		})
 	}
 
-	return b.appendXMLFile("index.xml", d.BuildThemeURL("index.xsl"), "", d.Modified, index)
+	return b.appendXMLFile("index.xml", d.BuildThemeURL("index.xsl"), d.Modified, index)
 }

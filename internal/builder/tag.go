@@ -49,7 +49,7 @@ func (b *Builder) buildTags(d *data.Data) error {
 	for _, t := range d.Tags {
 		tt := newTag(t, d)
 		xsl := d.BuildThemeURL("tag.xsl")
-		if err := b.appendXMLFile("tags/"+t.Slug+".xml", xsl, "", t.Modified, tt); err != nil {
+		if err := b.appendXMLFile("tags/"+t.Slug+".xml", xsl, t.Modified, tt); err != nil {
 			return err
 		}
 
@@ -58,5 +58,5 @@ func (b *Builder) buildTags(d *data.Data) error {
 	}
 
 	xsl := d.BuildThemeURL("tags.xsl")
-	return b.appendXMLFile("tags.xml", xsl, "", d.Modified, tags)
+	return b.appendXMLFile("tags.xml", xsl, d.Modified, tags)
 }
