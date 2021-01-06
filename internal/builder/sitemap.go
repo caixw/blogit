@@ -43,7 +43,7 @@ func (b *Builder) buildSitemap(path string, d *data.Data) error {
 		s.append(d.BuildURL(p.Slug+".xml"), p.Modified, conf.PostChangefreq, conf.PostPriority)
 	}
 
-	return nil
+	return b.appendXMLFile(path, conf.XSL, d.Modified, s)
 }
 
 func (us *urlset) append(loc string, lastmod time.Time, changefreq string, priority float64) {
