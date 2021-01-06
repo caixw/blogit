@@ -14,17 +14,17 @@ import (
 const Version = "0.1.0"
 
 // Build 编译并输出内容
-func Build(src, target string) error {
-	b, err := newBuilder(src)
+func Build(dir string) error {
+	b, err := newBuilder(dir)
 	if err != nil {
 		return err
 	}
-	return b.Dump(target)
+	return b.Dump(dir)
 }
 
 // Serve 运行服务
 func Serve(src, addr, path string) error {
-	b, err := newBuilder(src)
+	b, err := Handler(src)
 	if err != nil {
 		return err
 	}
@@ -35,13 +35,18 @@ func Serve(src, addr, path string) error {
 
 // ServeTLS 运行服务
 func ServeTLS(src, addr, path, cert, key string) error {
-	b, err := newBuilder(src)
+	b, err := Handler(src)
 	if err != nil {
 		return err
 	}
 
 	http.Handle(path, b)
 	return http.ListenAndServeTLS(addr, cert, key, nil)
+}
+
+// Handler 将编译后的内容作为 http.Handler 接口返回
+func Handler(dir string) (http.Handler, error) {
+	return newBuilder(dir)
 }
 
 func newBuilder(dir string) (*builder.Builder, error) {
