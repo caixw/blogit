@@ -58,7 +58,7 @@ func (b *Builder) buildRSS(path string, d *data.Data) error {
 		p := d.Posts[i]
 		r.Channel.Items = append(r.Channel.Items, &item{
 			Title:       p.Title,
-			Link:        d.BuildURL(p.Slug + ".xml"),
+			Link:        d.BuildURL(p.Path),
 			Description: html.EscapeString(p.Summary),
 			PubDate:     p.Created.Format(rssDateFormat),
 		})

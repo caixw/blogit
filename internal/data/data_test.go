@@ -49,3 +49,13 @@ func TestData_buildThemeURL(t *testing.T) {
 	a.Equal(data.BuildThemeURL(""), "https://example.com/themes/def")
 	a.Equal(data.BuildThemeURL("/"), "https://example.com/themes/def")
 }
+
+func TestBuildPath(t *testing.T) {
+	a := assert.New(t)
+
+	a.Panic(func() { buildPath("") })
+
+	a.Equal(buildPath("slug"), "slug.xml")
+	a.Equal(buildPath("/slug"), "slug.xml")
+	a.Equal(buildPath("/slug.xml"), "slug.xml.xml")
+}

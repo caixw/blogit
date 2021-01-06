@@ -66,7 +66,7 @@ func (b *Builder) buildAtom(path string, d *data.Data) error {
 
 	for i := 0; i < size; i++ {
 		p := d.Posts[i]
-		permalink := d.BuildURL(p.Slug + ".xml")
+		permalink := d.BuildURL(p.Path)
 		a.Entries = append(a.Entries, &entry{
 			Title:   atomContent{Content: p.Title},
 			ID:      permalink,

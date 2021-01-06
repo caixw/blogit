@@ -60,7 +60,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		tags := make([]*tag, 0, len(p.Tags))
 		for _, t := range p.Tags {
 			tags = append(tags, &tag{
-				Permalink: d.BuildURL("tags", t.Slug+".xml"),
+				Permalink: d.BuildURL(t.Path),
 				Title:     t.Title,
 				Color:     t.Color,
 				Content:   t.Content,
@@ -88,7 +88,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		}
 
 		pp := &post{
-			Permalink: d.BuildURL(p.Slug + ".xml"),
+			Permalink: d.BuildURL(p.Path),
 			Title:     p.Title,
 			Created:   toDatetime(p.Created, d),
 			Modified:  toDatetime(p.Modified, d),
@@ -105,14 +105,14 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		}
 		if p.Prev != nil {
 			pp.Prev = &link{
-				URL:   d.BuildURL(p.Prev.Slug + ".xml"),
+				URL:   d.BuildURL(p.Prev.Path),
 				Title: "上一篇文章",
 				Text:  p.Prev.Title,
 			}
 		}
 		if p.Next != nil {
 			pp.Next = &link{
-				URL:   d.BuildURL(p.Next.Slug + ".xml"),
+				URL:   d.BuildURL(p.Next.Path),
 				Title: "后一篇文章",
 				Text:  p.Next.Title,
 			}
@@ -123,7 +123,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		}
 
 		index.Posts = append(index.Posts, &postMeta{
-			Permalink: d.BuildURL(p.Slug + ".xml"),
+			Permalink: d.BuildURL(p.Path),
 			Title:     p.Title,
 			Created:   toDatetime(p.Created, d),
 			Modified:  toDatetime(p.Modified, d),

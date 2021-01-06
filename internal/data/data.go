@@ -4,6 +4,7 @@
 package data
 
 import (
+	"os"
 	"path"
 	"path/filepath"
 	"time"
@@ -138,4 +139,15 @@ func (data *Data) BuildThemeURL(p ...string) string {
 	pp := make([]string, 0, len(p)+2)
 	pp = append(pp, "themes", data.Theme.ID)
 	return data.BuildURL(append(pp, p...)...)
+}
+
+func buildPath(slug string) string {
+	if slug == "" {
+		panic("slug 不能为空")
+	}
+
+	if slug[0] == '/' || slug[0] == os.PathSeparator {
+		slug = slug[1:]
+	}
+	return slug + ".xml"
 }

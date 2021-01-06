@@ -15,6 +15,7 @@ import (
 // Post 文章详情
 type Post struct {
 	Slug     string
+	Path     string
 	Title    string
 	Created  time.Time
 	Modified time.Time
@@ -94,6 +95,8 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 	}
 
 	pp := &Post{
+		Slug:     p.Slug,
+		Path:     buildPath(p.Slug),
 		Title:    p.Title,
 		Created:  p.Created,
 		Modified: p.Modified,
@@ -104,7 +107,6 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		License:  p.License,
 		Summary:  p.Summary,
 		Content:  p.Content,
-		Slug:     p.Slug,
 		Template: p.Template,
 	}
 

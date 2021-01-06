@@ -34,13 +34,13 @@ func (b *Builder) buildSitemap(path string, d *data.Data) error {
 	if conf.EnableTag {
 		s.append(d.BuildURL("tags.xml"), d.Modified, conf.Changefreq, conf.Priority)
 		for _, tag := range d.Tags {
-			s.append(d.BuildURL(tag.Slug+".xml"), tag.Modified, conf.Changefreq, conf.Priority)
+			s.append(d.BuildURL(tag.Path), tag.Modified, conf.Changefreq, conf.Priority)
 		}
 	}
 
 	s.append(d.URL, d.Modified, conf.Changefreq, conf.Priority)
 	for _, p := range d.Posts {
-		s.append(d.BuildURL(p.Slug+".xml"), p.Modified, conf.PostChangefreq, conf.PostPriority)
+		s.append(d.BuildURL(p.Path), p.Modified, conf.PostChangefreq, conf.PostPriority)
 	}
 
 	return b.appendXMLFile(path, conf.XSL, d.Modified, s)

@@ -33,7 +33,7 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 	}
 
 	return &tag{
-		Permalink: d.BuildURL("tags", t.Slug+".xml"),
+		Permalink: d.BuildURL(t.Path),
 		Title:     t.Title,
 		Color:     t.Color,
 		Content:   t.Content,
@@ -49,7 +49,7 @@ func (b *Builder) buildTags(d *data.Data) error {
 	for _, t := range d.Tags {
 		tt := newTag(t, d)
 		xsl := d.BuildThemeURL("tag.xsl")
-		if err := b.appendXMLFile("tags/"+t.Slug+".xml", xsl, t.Modified, tt); err != nil {
+		if err := b.appendXMLFile(t.Path, xsl, t.Modified, tt); err != nil {
 			return err
 		}
 
