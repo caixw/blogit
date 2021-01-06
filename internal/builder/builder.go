@@ -98,9 +98,7 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	for _, f := range b.files {
 		if f.path == path {
-			if f.ct != "" {
-				w.Header().Set("Content-Type", f.ct)
-			}
+			w.Header().Set("Content-Type", f.ct)
 			http.ServeContent(w, r, f.path, f.lastmod, bytes.NewReader(f.content))
 			return
 		}

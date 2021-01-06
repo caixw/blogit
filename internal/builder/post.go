@@ -27,7 +27,7 @@ type post struct {
 	Modified  datetime  `xml:"modified"`
 	Tags      []*tag    `xml:"tag"`
 	Language  string    `xml:"language,attr"`
-	Outdated  *outdated `xml:"outdated"`
+	Outdated  *outdated `xml:"outdated,omitempty"`
 	Authors   []*author `xml:"author"`
 	License   *link     `xml:"license"`
 	Content   string    `xml:"content"`
@@ -79,6 +79,14 @@ func (b *Builder) buildPosts(d *data.Data) error {
 			})
 		}
 
+		var od *outdated
+		if p.Outdated != nil {
+			od = &outdated{
+				Outdated: toDatetime(p.Outdated.Outdated, d),
+				Content:  p.Outdated.Content,
+			}
+		}
+
 		pp := &post{
 			Permalink: d.BuildURL(p.Slug + ".xml"),
 			Title:     p.Title,
@@ -86,11 +94,8 @@ func (b *Builder) buildPosts(d *data.Data) error {
 			Modified:  toDatetime(p.Modified, d),
 			Tags:      tags,
 			Language:  p.Language,
-			Outdated: &outdated{
-				Outdated: toDatetime(p.Outdated.Outdated, d),
-				Content:  p.Outdated.Content,
-			},
-			Authors: authors,
+			Outdated:  od,
+			Authors:   authors,
 			License: &link{
 				URL:   p.License.URL,
 				Title: p.License.Title,
@@ -108,7 +113,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		if p.Next != nil {
 			pp.Next = &link{
 				URL:   d.BuildURL(p.Next.Slug + ".xml"),
-				Title: "上一篇文章",
+				Title: "后一篇文章",
 				Text:  p.Next.Title,
 			}
 		}

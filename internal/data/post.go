@@ -44,7 +44,6 @@ func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) 
 	for _, p := range posts {
 		post, err := buildPost(conf, theme, p)
 		if err != nil {
-			err.File = p.Slug
 			return nil, err
 		}
 		ps = append(ps, post)
@@ -55,7 +54,7 @@ func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) 
 	return ps, nil
 }
 
-func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post, *loader.FieldError) {
+func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post, error) {
 	if p.Authors == nil {
 		p.Authors = conf.Authors
 	}
@@ -66,25 +65,32 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 
 	var od *Outdated
 	switch p.Outdated {
+	case "":
 	case loader.OutdatedCreated:
+		if conf.Outdated == nil {
+			return nil, &loader.FieldError{File: p.Slug, Field: "outdated", Message: "仅允许自定义内容"}
+		}
 		od = &Outdated{
-			Outdated: p.Created.Add(conf.Outdated),
-			Content:  fmt.Sprintf("当前文章创建于 %s，可能已经过时！", p.Created.Format(conf.ShortDateFormat)),
+			Outdated: p.Created.Add(conf.Outdated.Outdated),
+			Content:  fmt.Sprintf(conf.Outdated.Created, p.Created.Format(conf.ShortDateFormat)),
 		}
 	case loader.OutdatedModified:
+		if conf.Outdated == nil {
+			return nil, &loader.FieldError{File: p.Slug, Field: "outdated", Message: "仅允许自定义内容"}
+		}
 		od = &Outdated{
-			Outdated: p.Modified.Add(conf.Outdated),
-			Content:  fmt.Sprintf("当前文章最后次修改于 %s，可能已经过时！", p.Modified.Format(conf.ShortDateFormat)),
+			Outdated: p.Modified.Add(conf.Outdated.Outdated),
+			Content:  fmt.Sprintf(conf.Outdated.Modified, p.Modified.Format(conf.ShortDateFormat)),
 		}
 	default:
 		od = &Outdated{
-			Outdated: p.Created,
+			Outdated: p.Created, // 创建即过期
 			Content:  p.Outdated,
 		}
 	}
 
 	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 1 {
-		return nil, &loader.FieldError{Message: "不存在", Field: "template"}
+		return nil, &loader.FieldError{Message: "不存在", Field: "template", File: p.Slug}
 	}
 
 	pp := &Post{
@@ -106,7 +112,6 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 }
 
 func prevNext(posts []*Post) {
-	// 生成 prev 和 next
 	max := len(posts)
 	for i := 0; i < max; i++ {
 		post := posts[i]
