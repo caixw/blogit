@@ -43,42 +43,40 @@ func toDatetime(t time.Time, d *data.Data) datetime {
 	}
 }
 
-// Build 渲染并输出内容
-func Build(d *data.Data) (*Builder, error) {
-	b := &Builder{
-		files:   make([]*file, 0, 20),
-		Builded: d.Builded,
-	}
+// Load 加载数据到当前实例
+func (b *Builder) Load(d *data.Data) error {
+	b.files = make([]*file, 0, 20)
+	b.Builded = d.Builded
 
 	if err := b.buildInfo("info.xml", d); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := b.buildTags(d); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := b.buildPosts(d); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := b.buildSitemap("sitemap.xml", d); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := b.buildArchives("archives.xml", d); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := b.buildAtom("atom.xml", d); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := b.buildRSS("rss.xml", d); err != nil {
-		return nil, err
+		return err
 	}
 
-	return b, nil
+	return nil
 }
 
 func (f *file) dump(dir string) error {

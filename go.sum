@@ -31,6 +31,8 @@ github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T
 github.com/issue9/assert v1.4.0/go.mod h1:Yktk83hAVl1SPSYtd9kjhBizuiBIqUQyj+D5SE2yjVY=
 github.com/issue9/assert v1.4.1 h1:gUtOpMTeaE4JTe9kACma5foOHBvVt1p5XTFrULDwdXI=
 github.com/issue9/assert v1.4.1/go.mod h1:Yktk83hAVl1SPSYtd9kjhBizuiBIqUQyj+D5SE2yjVY=
+github.com/issue9/cmdopt v0.7.0 h1:HjYR2aQ1Hncnc86ybTy6YKQYGUnrpPcfwVKOPXK9wAc=
+github.com/issue9/cmdopt v0.7.0/go.mod h1:I5NRZX40jVzM/zJPx8fkHqwv2+b5knyD8roJjEk0VDY=
 github.com/issue9/errwrap v0.2.0 h1:EPisAVHfGj8ZnR3aNlLFpih/ahDWdMXTOOA+3QaELpk=
 github.com/issue9/errwrap v0.2.0/go.mod h1:yudSKP/VtwvbW8hD9riNxJd8sAAzgJUgjllibgHqdJg=
 github.com/issue9/sliceutil v0.6.0 h1:qff0GiuTf5ThPfm+Vgp3+XDzAiHA3o98Dlx/TU7Gj8w=

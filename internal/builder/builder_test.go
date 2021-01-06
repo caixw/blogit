@@ -18,7 +18,8 @@ func newBuilder(a *assert.Assertion, dir string) *Builder {
 	d, err := data.Load(dir)
 	a.NotError(err).NotNil(d)
 
-	b, err := Build(d)
+	b := &Builder{}
+	err = b.Load(d)
 	a.NotError(err).NotNil(b)
 
 	return b
