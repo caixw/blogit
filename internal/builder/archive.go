@@ -17,6 +17,10 @@ type archive struct {
 }
 
 func (b *Builder) buildArchives(path string, d *data.Data) error {
+	if d.Archive == nil {
+		return nil
+	}
+
 	archives := make([]*archive, 0, 10)
 	for _, post := range d.Posts {
 		t := post.Created

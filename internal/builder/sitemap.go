@@ -25,6 +25,10 @@ type url struct {
 }
 
 func (b *Builder) buildSitemap(path string, d *data.Data) error {
+	if d.Sitemap == nil {
+		return nil
+	}
+
 	s := &urlset{
 		XMLNS:  sitempaNamespace,
 		URLSet: make([]*url, 0, len(d.Tags)+len(d.Posts)),

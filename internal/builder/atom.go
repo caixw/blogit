@@ -46,6 +46,10 @@ type atomContent struct {
 }
 
 func (b *Builder) buildAtom(path string, d *data.Data) error {
+	if d.Atom == nil {
+		return nil
+	}
+
 	size := d.RSS.Size
 	if len(d.Posts) < size {
 		size = len(d.Posts)

@@ -37,6 +37,10 @@ type item struct {
 }
 
 func (b *Builder) buildRSS(path string, d *data.Data) error {
+	if d.RSS == nil {
+		return nil
+	}
+
 	size := d.RSS.Size
 	if len(d.Posts) < size {
 		size = len(d.Posts)

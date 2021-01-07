@@ -38,7 +38,7 @@ type Config struct {
 	Outdated *Outdated `yaml:"outdated,omitempty"` // 如果为空，则仅允许 post.Outdated 出现自定义内容
 	Theme    string    `yaml:"theme"`
 
-	Archive *Archive `yaml:"archive"`
+	Archive *Archive `yaml:"archive,omitempty"`
 	RSS     *RSS     `yaml:"rss,omitempty"`
 	Atom    *RSS     `yaml:"atom,omitempty"`
 	Sitemap *Sitemap `yaml:"sitemap,omitempty"`
