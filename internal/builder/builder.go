@@ -62,7 +62,7 @@ func (b *Builder) Load(d *data.Data) error {
 	b.files = make([]*file, 0, 20)
 	b.Builded = d.Builded
 
-	if err := b.buildInfo("info.xml", d); err != nil {
+	if err := b.buildInfo(vars.InfoXML, d); err != nil {
 		return err
 	}
 
@@ -74,19 +74,19 @@ func (b *Builder) Load(d *data.Data) error {
 		return err
 	}
 
-	if err := b.buildSitemap("sitemap.xml", d); err != nil {
+	if err := b.buildSitemap(vars.SitemapXML, d); err != nil {
 		return err
 	}
 
-	if err := b.buildArchives("archives.xml", d); err != nil {
+	if err := b.buildArchives(vars.ArchiveXML, d); err != nil {
 		return err
 	}
 
-	if err := b.buildAtom("atom.xml", d); err != nil {
+	if err := b.buildAtom(vars.AtomXML, d); err != nil {
 		return err
 	}
 
-	if err := b.buildRSS("rss.xml", d); err != nil {
+	if err := b.buildRSS(vars.RssXML, d); err != nil {
 		return err
 	}
 

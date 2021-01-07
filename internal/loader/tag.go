@@ -51,7 +51,7 @@ func (tag *Tag) sanitize(tags []*Tag) *FieldError {
 		return tags[i].Slug == tag.Slug
 	})
 	if cnt > 1 {
-		return &FieldError{Message: "重复的值", Field: "slug"}
+		return &FieldError{Message: "重复的值", Field: "slug", Value: tag.Slug}
 	}
 
 	return nil

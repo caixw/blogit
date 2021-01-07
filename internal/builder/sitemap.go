@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 const sitempaNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -36,7 +37,7 @@ func (b *Builder) buildSitemap(path string, d *data.Data) error {
 
 	conf := d.Sitemap
 	if conf.EnableTag {
-		s.append(d.BuildURL("tags.xml"), d.Modified, conf.Changefreq, conf.Priority)
+		s.append(d.BuildURL(vars.TagsXML), d.Modified, conf.Changefreq, conf.Priority)
 		for _, tag := range d.Tags {
 			s.append(d.BuildURL(tag.Path), tag.Modified, conf.Changefreq, conf.Priority)
 		}

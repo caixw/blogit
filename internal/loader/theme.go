@@ -45,15 +45,15 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 	}
 
 	if t.Index == "" || !utils.FileExists(filepath.Join(dir, t.Index)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "index"}
+		return &FieldError{Message: "不存在该模板文件", Field: "index", Value: t.Index}
 	}
 
 	if t.Tags == "" || !utils.FileExists(filepath.Join(dir, t.Tags)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "tags"}
+		return &FieldError{Message: "不存在该模板文件", Field: "tags", Value: t.Tags}
 	}
 
 	if t.Tag == "" || !utils.FileExists(filepath.Join(dir, t.Tag)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "tag"}
+		return &FieldError{Message: "不存在该模板文件", Field: "tag", Value: t.Tag}
 	}
 
 	if len(t.Templates) == 0 {
@@ -81,25 +81,25 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 
 	if t.Sitemap != "" {
 		if !utils.FileExists(filepath.Join(dir, t.Sitemap)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "sitemap"}
+			return &FieldError{Message: "不存在该模板文件", Field: "sitemap", Value: t.Sitemap}
 		}
 	}
 
 	if t.RSS != "" {
 		if !utils.FileExists(filepath.Join(dir, t.RSS)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "rss"}
+			return &FieldError{Message: "不存在该模板文件", Field: "rss", Value: t.RSS}
 		}
 	}
 
 	if t.Atom != "" {
 		if !utils.FileExists(filepath.Join(dir, t.Atom)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "atom"}
+			return &FieldError{Message: "不存在该模板文件", Field: "atom", Value: t.Atom}
 		}
 	}
 
 	if t.Archive != "" {
 		if !utils.FileExists(filepath.Join(dir, t.Archive)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "archive"}
+			return &FieldError{Message: "不存在该模板文件", Field: "archive", Value: t.Archive}
 		}
 	}
 

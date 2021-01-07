@@ -94,7 +94,7 @@ func LoadConfig(path string) (*Config, error) {
 
 func (conf *Config) sanitize() *FieldError {
 	if len(conf.URL) == 0 || !is.URL(conf.URL) {
-		return &FieldError{Message: "格式不正确", Field: "url"}
+		return &FieldError{Message: "格式不正确", Field: "url", Value: conf.URL}
 	}
 	if conf.URL[len(conf.URL)-1] != '/' { // 保证以 / 结尾
 		conf.URL += "/"
@@ -198,7 +198,7 @@ func (conf *Config) sanitize() *FieldError {
 
 func (o *Outdated) sanitize() *FieldError {
 	if o.Outdated <= 0 {
-		return &FieldError{Message: "必须大于 0", Field: "outdated"}
+		return &FieldError{Message: "必须大于 0", Field: "outdated", Value: o.Outdated}
 	}
 
 	return nil
@@ -206,7 +206,7 @@ func (o *Outdated) sanitize() *FieldError {
 
 func (rss *RSS) sanitize(conf *Config) *FieldError {
 	if rss.Size <= 0 {
-		return &FieldError{Message: "必须大于 0", Field: "size"}
+		return &FieldError{Message: "必须大于 0", Field: "size", Value: rss.Size}
 	}
 
 	if len(rss.Title) == 0 {
@@ -220,13 +220,13 @@ func (rss *RSS) sanitize(conf *Config) *FieldError {
 func (s *Sitemap) sanitize() *FieldError {
 	switch {
 	case s.Priority > 1 || s.Priority < 0:
-		return &FieldError{Message: "介于[0,1]之间的浮点数", Field: "priority"}
+		return &FieldError{Message: "介于[0,1]之间的浮点数", Field: "priority", Value: s.Priority}
 	case s.PostPriority > 1 || s.PostPriority < 0:
-		return &FieldError{Message: "介于[0,1]之间的浮点数", Field: "postPriority"}
+		return &FieldError{Message: "介于[0,1]之间的浮点数", Field: "postPriority", Value: s.PostPriority}
 	case !inStrings(s.Changefreq, changereqs):
-		return &FieldError{Message: "取值不正确", Field: "changefreq"}
+		return &FieldError{Message: "取值不正确", Field: "changefreq", Value: s.Changefreq}
 	case !inStrings(s.PostChangefreq, changereqs):
-		return &FieldError{Message: "取值不正确", Field: "postChangefreq"}
+		return &FieldError{Message: "取值不正确", Field: "postChangefreq", Value: s.PostChangefreq}
 	}
 
 	return nil
@@ -237,7 +237,7 @@ func (a *Archive) sanitize() *FieldError {
 		a.Type = ArchiveTypeYear
 	} else {
 		if a.Type != ArchiveTypeMonth && a.Type != ArchiveTypeYear {
-			return &FieldError{Message: "取值不正确", Field: "type"}
+			return &FieldError{Message: "取值不正确", Field: "type", Value: a.Type}
 		}
 	}
 
@@ -245,7 +245,7 @@ func (a *Archive) sanitize() *FieldError {
 		a.Order = ArchiveOrderDesc
 	} else {
 		if a.Order != ArchiveOrderAsc && a.Order != ArchiveOrderDesc {
-			return &FieldError{Message: "取值不正确", Field: "order"}
+			return &FieldError{Message: "取值不正确", Field: "order", Value: a.Order}
 		}
 	}
 

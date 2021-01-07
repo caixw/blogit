@@ -30,6 +30,7 @@ type FieldError struct {
 	File    string
 	Field   string
 	Message string
+	Value   interface{}
 }
 
 // License 描述链接的内容
@@ -62,7 +63,7 @@ type Author struct {
 }
 
 func (err *FieldError) Error() string {
-	return fmt.Sprintf("%s 位于 %s:%s", err.Message, err.File, err.Field)
+	return fmt.Sprintf("%s 位于 %s:%s，实际值为:%#v", err.Message, err.File, err.Field, err.Value)
 }
 
 func loadYAML(path string, v interface{}) error {
@@ -115,15 +116,15 @@ func (author *Author) sanitize() *FieldError {
 	}
 
 	if len(author.URL) > 0 && !is.URL(author.URL) {
-		return &FieldError{Field: "url", Message: "不是一个正确的 URL"}
+		return &FieldError{Field: "url", Message: "不是一个正确的 URL", Value: author.URL}
 	}
 
 	if len(author.Avatar) > 0 && !is.URL(author.Avatar) {
-		return &FieldError{Field: "avatar", Message: "不是一个正确的 URL"}
+		return &FieldError{Field: "avatar", Message: "不是一个正确的 URL", Value: author.Avatar}
 	}
 
 	if len(author.Email) > 0 && !is.Email(author.Email) {
-		return &FieldError{Field: "email", Message: "不是一个正确的 Email"}
+		return &FieldError{Field: "email", Message: "不是一个正确的 Email", Value: author.Email}
 	}
 
 	return nil

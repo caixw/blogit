@@ -94,7 +94,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 	}
 
 	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 1 {
-		return nil, &loader.FieldError{Message: "不存在", Field: "template", File: p.Slug}
+		return nil, &loader.FieldError{Message: "不存在", Field: "template", File: p.Slug + ".md", Value: p.Template}
 	}
 
 	pp := &Post{
