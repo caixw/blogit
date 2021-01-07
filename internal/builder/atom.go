@@ -35,9 +35,9 @@ type entry struct {
 
 type atomLink struct {
 	Href  string `xml:"href,attr"`
-	Type  string `xml:"type,omitempty"`
-	Rel   string `xml:"rel,omitempty"`
-	Title string `xml:"title,omitempty"`
+	Type  string `xml:"type,attr,omitempty"`
+	Rel   string `xml:"rel,attr,omitempty"`
+	Title string `xml:"title,attr,omitempty"`
 }
 
 type atomContent struct {
