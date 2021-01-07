@@ -23,20 +23,18 @@ func TestLoadTheme(t *testing.T) {
 
 func TestTheme_sanitize(t *testing.T) {
 	a := assert.New(t)
-	theme := &Theme{}
+	theme := &Theme{Index: "index.xsl", Tags: "tags.xsl", Tag: "tag.xsl", Templates: []string{"post.xsl"}}
 	a.NotError(theme.sanitize("../testdata/themes/default", "default"))
 	a.Equal(theme.ID, "default").
 		Empty(theme.Description).
-		Equal(theme.Templates, []string{"post.xsl"})
+		Equal(theme.Templates, []string{"post.xsl"}).
+		Equal(theme.Index, "index.xsl")
 
-	theme = &Theme{Templates: []string{"style.xsl"}}
-	a.NotError(theme.sanitize("../testdata/themes/default", "default"))
-
-	theme = &Theme{Templates: []string{"style.xsl", "not-exists"}}
+	theme = &Theme{Index: "index.xsl", Tags: "tags.xsl", Tag: "tag.xsl", Templates: []string{"style.xsl", "not-exists"}}
 	err := theme.sanitize("../testdata/themes/default", "default")
 	a.Error(err).Equal(err.Field, "templates.not-exists")
 
-	theme = &Theme{Screenshots: []string{"not-exists"}}
+	theme = &Theme{Index: "index.xsl", Tags: "tags.xsl", Tag: "tag.xsl", Templates: []string{"style.xsl"}, Screenshots: []string{"not-exists"}}
 	err = theme.sanitize("../testdata/themes/default", "default")
 	a.Error(err).Equal(err.Field, "screenshots[0]")
 }
