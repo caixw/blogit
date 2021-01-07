@@ -82,5 +82,5 @@ func (b *Builder) buildAtom(path string, d *data.Data) error {
 		})
 	}
 
-	return b.appendXMLFile(path, "", d.Modified, a)
+	return b.appendXMLFile(path, d.BuildThemeURL(d.Theme.Atom), d.Modified, a)
 }

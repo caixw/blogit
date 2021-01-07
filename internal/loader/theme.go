@@ -19,6 +19,13 @@ type Theme struct {
 	Authors     []*Author `yaml:"authors,omitempty"`
 	Templates   []string  `yaml:"templates,omitempty"`
 	Screenshots []string  `yaml:"screenshots,omitempty"`
+
+	// 部分可选内容的模板，如果为空，则其输出相应的 xml 文件时不会为其添加 xsl 文件。
+	// 模板名称为相对于当前主题目录的文件路径。
+	Sitemap string `yaml:"sitemap,omitempty"`
+	RSS     string `yaml:"rss,omitempty"`
+	Atom    string `yaml:"atom,omitempty"`
+	Archive string `yaml:"archive,omitempty"`
 }
 
 func (t *Theme) sanitize(dir, id string) *FieldError {
@@ -53,6 +60,30 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 	indexes = sliceutil.Dup(t.Templates, func(i, j int) bool { return t.Screenshots[i] == t.Screenshots[j] })
 	if len(indexes) > 0 {
 		return &FieldError{Message: "重复的值示例图", Field: "screenshots[" + strconv.Itoa(indexes[0]) + "]"}
+	}
+
+	if t.Sitemap != "" {
+		if !utils.FileExists(filepath.Join(dir, t.Sitemap)) {
+			return &FieldError{Message: "不存在该模板文件", Field: "sitemap"}
+		}
+	}
+
+	if t.RSS != "" {
+		if !utils.FileExists(filepath.Join(dir, t.RSS)) {
+			return &FieldError{Message: "不存在该模板文件", Field: "rss"}
+		}
+	}
+
+	if t.Atom != "" {
+		if !utils.FileExists(filepath.Join(dir, t.Atom)) {
+			return &FieldError{Message: "不存在该模板文件", Field: "atom"}
+		}
+	}
+
+	if t.Archive != "" {
+		if !utils.FileExists(filepath.Join(dir, t.Archive)) {
+			return &FieldError{Message: "不存在该模板文件", Field: "archive"}
+		}
 	}
 
 	return nil

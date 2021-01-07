@@ -61,7 +61,6 @@ type RSS struct {
 
 // Sitemap sitemap 相关的配置
 type Sitemap struct {
-	XSL        string  `yaml:"xsl"`
 	Priority   float64 `yaml:"priority"`            // 默认的优先级
 	Changefreq string  `yaml:"changefreq"`          // 默认的更新频率
 	EnableTag  bool    `yaml:"enableTag,omitempty"` // 是否将标签相关的页面写入 sitemap

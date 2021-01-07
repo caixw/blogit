@@ -47,7 +47,7 @@ func (b *Builder) buildSitemap(path string, d *data.Data) error {
 		s.append(d.BuildURL(p.Path), p.Modified, conf.PostChangefreq, conf.PostPriority)
 	}
 
-	return b.appendXMLFile(path, conf.XSL, d.Modified, s)
+	return b.appendXMLFile(path, d.BuildThemeURL(d.Theme.Sitemap), d.Modified, s)
 }
 
 func (us *urlset) append(loc string, lastmod time.Time, changefreq string, priority float64) {
