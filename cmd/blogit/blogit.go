@@ -25,6 +25,7 @@ func main() {
 
 	initBuild(opt)
 	initServe(opt)
+	initInit(opt)
 	initVersion(opt)
 	opt.Help("help", "显示当前内容")
 
