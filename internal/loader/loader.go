@@ -25,14 +25,6 @@ var markdown = goldmark.New(goldmark.WithExtensions(
 	highlighting.Highlighting,
 ))
 
-// Data 所有数据
-type Data struct {
-	Dir    string // 加载资源的根目录
-	Config *Config
-	Tags   []*Tag
-	Posts  []*Post
-}
-
 // FieldError 表示配置项内容的错误信息
 type FieldError struct {
 	File    string

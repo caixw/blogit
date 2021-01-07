@@ -13,7 +13,6 @@ import (
 // Theme 主题
 type Theme struct {
 	ID          string    `yaml:"-"`
-	Dir         string    `yaml:"-"` // 当前主题所在的目录
 	Description string    `yaml:"description,omitempty"`
 	Authors     []*Author `yaml:"authors,omitempty"`
 	Templates   []string  `yaml:"templates,omitempty"`
@@ -22,7 +21,6 @@ type Theme struct {
 
 func (t *Theme) sanitize(dir, id string) *FieldError {
 	t.ID = id
-	t.Dir = dir
 
 	for index, author := range t.Authors {
 		if err := author.sanitize(); err != nil {
@@ -46,7 +44,7 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 	}
 
 	for index, s := range t.Screenshots {
-		if !utils.FileExists(filepath.Join(t.Dir, s)) {
+		if !utils.FileExists(filepath.Join(dir, s)) {
 			return &FieldError{Message: "不存在的示例图", Field: "screenshots[" + strconv.Itoa(index) + "]"}
 		}
 	}

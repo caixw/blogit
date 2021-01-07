@@ -4,7 +4,6 @@ package loader
 
 import (
 	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/issue9/assert"
@@ -16,8 +15,7 @@ func TestLoadTheme(t *testing.T) {
 	theme, err := LoadTheme("../testdata", "default")
 	a.NotError(err).NotNil(theme)
 	a.Equal(len(theme.Authors), 2).
-		Equal(theme.ID, "default").
-		Equal(filepath.ToSlash(theme.Dir), "../testdata/themes/default")
+		Equal(theme.ID, "default")
 
 	theme, err = LoadTheme("../testdata", "not-exists")
 	a.ErrorIs(err, os.ErrNotExist).Nil(theme)
@@ -28,7 +26,6 @@ func TestTheme_sanitize(t *testing.T) {
 	theme := &Theme{}
 	a.NotError(theme.sanitize("../testdata", "def"))
 	a.Equal(theme.ID, "def").
-		Equal(theme.Dir, "../testdata").
 		Empty(theme.Description).
 		Equal(theme.Templates, []string{"post.xsl"})
 
