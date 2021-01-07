@@ -34,17 +34,17 @@ func (b *Builder) buildArchives(path string, d *data.Data) error {
 		tags := make([]*tag, 0, len(post.Tags))
 		for _, t := range post.Tags {
 			tags = append(tags, &tag{
-				Permalink: d.BuildURL("tags", t.Slug+".xml"),
+				Permalink: d.BuildURL(t.Path),
 				Title:     t.Title,
 				Color:     t.Color,
-				Content:   t.Content,
+				Content:   innerhtml{Content: t.Content},
 				Created:   toDatetime(t.Created, d),
 				Modified:  toDatetime(t.Modified, d),
 			})
 		}
 
 		pm := &postMeta{
-			Permalink: d.BuildURL(post.Slug + ".xml"),
+			Permalink: d.BuildURL(post.Path),
 			Title:     post.Title,
 			Created:   toDatetime(post.Created, d),
 			Modified:  toDatetime(post.Modified, d),

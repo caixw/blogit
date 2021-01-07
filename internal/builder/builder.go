@@ -36,6 +36,10 @@ type datetime struct {
 	Short string `xml:"short,attr"`
 }
 
+type innerhtml struct {
+	Content string `xml:",innerxml"`
+}
+
 func toDatetime(t time.Time, d *data.Data) datetime {
 	return datetime{
 		Long:  t.Format(d.LongDateFormat),

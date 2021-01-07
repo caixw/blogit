@@ -11,11 +11,12 @@ type posts struct {
 }
 
 type postMeta struct {
-	Permalink string   `xml:"permalink"`
-	Title     string   `xml:"title"`
-	Created   datetime `xml:"created"`
-	Modified  datetime `xml:"modified"`
-	Tags      []*tag   `xml:"tag,omitempty"`
+	Permalink string    `xml:"permalink"`
+	Title     string    `xml:"title"`
+	Created   datetime  `xml:"created"`
+	Modified  datetime  `xml:"modified"`
+	Tags      []*tag    `xml:"tag,omitempty"`
+	Summary   innerhtml `xml:"summary"`
 }
 
 type post struct {
@@ -30,7 +31,8 @@ type post struct {
 	Outdated  *outdated `xml:"outdated,omitempty"`
 	Authors   []*author `xml:"author"`
 	License   *link     `xml:"license"`
-	Content   string    `xml:"content"`
+	Summary   innerhtml `xml:"summary"`
+	Content   innerhtml `xml:"content"`
 	Prev      *link     `xml:"prev"`
 	Next      *link     `xml:"next"`
 }
@@ -63,7 +65,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 				Permalink: d.BuildURL(t.Path),
 				Title:     t.Title,
 				Color:     t.Color,
-				Content:   t.Content,
+				Content:   innerhtml{Content: t.Content},
 				Created:   toDatetime(t.Created, d),
 				Modified:  toDatetime(t.Modified, d),
 			})
@@ -101,7 +103,8 @@ func (b *Builder) buildPosts(d *data.Data) error {
 				Title: p.License.Title,
 				Text:  p.License.Text,
 			},
-			Content: p.Content,
+			Content: innerhtml{Content: p.Content},
+			Summary: innerhtml{Content: p.Summary},
 		}
 		if p.Prev != nil {
 			pp.Prev = &link{
@@ -128,6 +131,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 			Created:   toDatetime(p.Created, d),
 			Modified:  toDatetime(p.Modified, d),
 			Tags:      tags,
+			Summary:   innerhtml{Content: p.Summary},
 		})
 	}
 

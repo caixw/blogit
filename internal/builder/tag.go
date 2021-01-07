@@ -15,10 +15,10 @@ type tag struct {
 	Permalink string      `xml:"permalink"`
 	Title     string      `xml:"title"`
 	Color     string      `xml:"color,attr"`
-	Content   string      `xml:"content"`
 	Created   datetime    `xml:"created"`
 	Modified  datetime    `xml:"modified"`
 	Posts     []*postMeta `xml:"post,omitempty"`
+	Content   innerhtml   `xml:"summary"`
 }
 
 func newTag(t *data.Tag, d *data.Data) *tag {
@@ -29,6 +29,7 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 			Title:     p.Title,
 			Created:   toDatetime(p.Created, d),
 			Modified:  toDatetime(p.Modified, d),
+			Summary:   innerhtml{Content: p.Summary},
 		})
 	}
 
@@ -36,10 +37,10 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 		Permalink: d.BuildURL(t.Path),
 		Title:     t.Title,
 		Color:     t.Color,
-		Content:   t.Content,
 		Created:   toDatetime(t.Created, d),
 		Modified:  toDatetime(t.Modified, d),
 		Posts:     ps,
+		Content:   innerhtml{Content: t.Content},
 	}
 }
 
