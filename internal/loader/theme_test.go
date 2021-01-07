@@ -24,8 +24,8 @@ func TestLoadTheme(t *testing.T) {
 func TestTheme_sanitize(t *testing.T) {
 	a := assert.New(t)
 	theme := &Theme{}
-	a.NotError(theme.sanitize("../testdata", "def"))
-	a.Equal(theme.ID, "def").
+	a.NotError(theme.sanitize("../testdata/themes/default", "default"))
+	a.Equal(theme.ID, "default").
 		Empty(theme.Description).
 		Equal(theme.Templates, []string{"post.xsl"})
 

@@ -13,8 +13,11 @@ const (
 	PostsDir  = "posts"
 	TagsDir   = "tags"
 
-	// DefaultTemplate 默认的模板名称
-	//
-	// 在文章未指定模板时，都将采用此模板作为其转换方式。
-	DefaultTemplate = "post.xsl"
+	InfoXML    = "info.xml"
+	TagsXML    = "tags.xml"
+	IndexXML   = "index.xml"
+	RssXML     = "rss.xml"
+	AtomXML    = "atom.xml"
+	ArchiveXML = "archive.xml"
+	SitemapXML = "sitemap.xml"
 )

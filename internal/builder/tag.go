@@ -2,7 +2,10 @@
 
 package builder
 
-import "github.com/caixw/blogit/internal/data"
+import (
+	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/internal/vars"
+)
 
 type tags struct {
 	XMLName struct{} `xml:"tags"`
@@ -46,8 +49,7 @@ func (b *Builder) buildTags(d *data.Data) error {
 
 	for _, t := range d.Tags {
 		tt := newTag(t, d)
-		xsl := d.BuildThemeURL("tag.xsl")
-		if err := b.appendXMLFile(t.Path, xsl, t.Modified, tt); err != nil {
+		if err := b.appendXMLFile(d, t.Path, d.Theme.Tag, t.Modified, tt); err != nil {
 			return err
 		}
 
@@ -55,6 +57,5 @@ func (b *Builder) buildTags(d *data.Data) error {
 		tags = append(tags, tt)
 	}
 
-	xsl := d.BuildThemeURL("tags.xsl")
-	return b.appendXMLFile("tags.xml", xsl, d.Modified, tags)
+	return b.appendXMLFile(d, vars.TagsXML, d.Theme.Tags, d.Modified, tags)
 }

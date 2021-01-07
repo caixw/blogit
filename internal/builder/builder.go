@@ -124,9 +124,10 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
 
-// xsl 表示关联的 xsl，如果不需要则可能为空；
+// path 表示输出的文件路径，相对于源目录；
+// xsl 表示关联的 xsl，相对于当前主题目录的路径，如果不需要则可能为空；
 // ct 表示内容的 content-type 值，为空表示采用 application/xml；
-func (b *Builder) appendXMLFile(path, xsl string, lastmod time.Time, v interface{}) error {
+func (b *Builder) appendXMLFile(d *data.Data, path, xsl string, lastmod time.Time, v interface{}) error {
 	data, err := xml.MarshalIndent(v, "", "\t")
 	if err != nil {
 		return err
@@ -135,6 +136,7 @@ func (b *Builder) appendXMLFile(path, xsl string, lastmod time.Time, v interface
 	buf := &errwrap.Buffer{}
 	buf.WString(xml.Header)
 	if xsl != "" {
+		xsl = d.BuildThemeURL(xsl)
 		buf.Printf(`<?xml-stylesheet type="text/xsl" href="%s"?>`, xsl).WByte('\n')
 	}
 	buf.WBytes(data)

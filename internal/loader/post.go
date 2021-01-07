@@ -182,9 +182,5 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 		}
 	}
 
-	if p.Template == "" {
-		p.Template = "post.xsl"
-	}
-
 	return nil
 }

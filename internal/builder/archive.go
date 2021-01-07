@@ -75,5 +75,5 @@ func (b *Builder) buildArchives(path string, d *data.Data) error {
 		return archives[i].date.Before(archives[j].date)
 	})
 
-	return b.appendXMLFile(path, d.BuildThemeURL(d.Theme.Archive), d.Modified, archives)
+	return b.appendXMLFile(d, path, d.Theme.Archive, d.Modified, archives)
 }

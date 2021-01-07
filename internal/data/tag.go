@@ -61,6 +61,10 @@ func checkTags(tags []*Tag, posts []*Post) (created, modified time.Time, err err
 			}
 		}
 	}
+
+	if modified.IsZero() {
+		modified = created
+	}
 	return created, modified, nil
 }
 

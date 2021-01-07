@@ -2,9 +2,7 @@
 
 package builder
 
-import (
-	"github.com/caixw/blogit/internal/data"
-)
+import "github.com/caixw/blogit/internal/data"
 
 type info struct {
 	XMLName struct{} `xml:"info"`
@@ -19,9 +17,10 @@ type info struct {
 	Authors     []*author `xml:"author"`
 	License     *link     `xml:"license"`
 
-	Atom    *link `xml:"atom,omitempty"`
-	RSS     *link `xml:"rss,omitempty"`
-	Sitemap *link `xml:"sitemap,omitempty"`
+	Atom    bool `xml:"atom,omitempty"`
+	RSS     bool `xml:"rss,omitempty"`
+	Sitemap bool `xml:"sitemap,omitempty"`
+	Archive bool `xml:"archive,omitempty"`
 
 	Uptime   string `xml:"uptime,attr"`
 	Created  string `xml:"created,attr"`
@@ -81,26 +80,10 @@ func (b *Builder) buildInfo(path string, d *data.Data) error {
 		Builded:  ft(d.Builded),
 	}
 
-	if d.Atom != nil {
-		i.Atom = &link{
-			URL:  d.BuildURL("atom.xml"),
-			Text: d.Atom.Title,
-		}
-	}
+	i.Atom = d.Atom != nil
+	i.RSS = d.RSS != nil
+	i.Sitemap = d.Sitemap != nil
+	i.Archive = d.Archive != nil
 
-	if d.RSS != nil {
-		i.RSS = &link{
-			URL:  d.BuildURL("rss.xml"),
-			Text: d.RSS.Title,
-		}
-	}
-
-	if d.Sitemap != nil {
-		i.Sitemap = &link{
-			URL:  d.BuildURL("sitemap.xml"),
-			Text: "sitemap",
-		}
-	}
-
-	return b.appendXMLFile(path, "", d.Modified, i)
+	return b.appendXMLFile(d, path, "", d.Modified, i)
 }

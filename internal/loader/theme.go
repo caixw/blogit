@@ -17,8 +17,13 @@ type Theme struct {
 	ID          string    `yaml:"-"`
 	Description string    `yaml:"description,omitempty"`
 	Authors     []*Author `yaml:"authors,omitempty"`
-	Templates   []string  `yaml:"templates,omitempty"`
 	Screenshots []string  `yaml:"screenshots,omitempty"`
+
+	// 必须提供的几个模板文件
+	Index     string   `yaml:"index"`
+	Tags      string   `yaml:"tags"`
+	Tag       string   `yaml:"tag"`
+	Templates []string `yaml:"templates"`
 
 	// 部分可选内容的模板，如果为空，则其输出相应的 xml 文件时不会为其添加 xsl 文件。
 	// 模板名称为相对于当前主题目录的文件路径。
@@ -28,6 +33,7 @@ type Theme struct {
 	Archive string `yaml:"archive,omitempty"`
 }
 
+// dir 为主题目录；id 为主题目录的名称
 func (t *Theme) sanitize(dir, id string) *FieldError {
 	t.ID = id
 
@@ -38,18 +44,29 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 		}
 	}
 
-	for _, tpl := range t.Templates {
-		if !utils.FileExists(filepath.Join(dir, tpl)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "templates." + tpl}
-		}
+	if t.Index == "" || !utils.FileExists(filepath.Join(dir, t.Index)) {
+		return &FieldError{Message: "不存在该模板文件", Field: "index"}
+	}
+
+	if t.Tags == "" || !utils.FileExists(filepath.Join(dir, t.Tags)) {
+		return &FieldError{Message: "不存在该模板文件", Field: "tags"}
+	}
+
+	if t.Tag == "" || !utils.FileExists(filepath.Join(dir, t.Tag)) {
+		return &FieldError{Message: "不存在该模板文件", Field: "tag"}
+	}
+
+	if len(t.Templates) == 0 {
+		return &FieldError{Message: "不能为空", Field: "templates"}
 	}
 	indexes := sliceutil.Dup(t.Templates, func(i, j int) bool { return t.Templates[i] == t.Templates[j] })
 	if len(indexes) > 0 {
 		return &FieldError{Message: "重复的值模板列表", Field: "templates." + t.Templates[indexes[0]]}
 	}
-
-	if len(t.Templates) == 0 {
-		t.Templates = []string{vars.DefaultTemplate}
+	for _, tpl := range t.Templates {
+		if !utils.FileExists(filepath.Join(dir, tpl)) {
+			return &FieldError{Message: "不存在该模板文件", Field: "templates." + tpl}
+		}
 	}
 
 	for index, s := range t.Screenshots {

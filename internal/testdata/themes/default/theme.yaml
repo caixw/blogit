@@ -5,7 +5,10 @@ authors:
   - name: example
     url: https://example.com
 
-# 文章可用的模板
-# 对应 post1.xsl 和 post2.xsl
+index: index.xsl
+tags: tags.xsl
+tag: tag.xsl
 templates:
   - style.xsl
+
+sitemap: style.xsl

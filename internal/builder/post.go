@@ -2,7 +2,10 @@
 
 package builder
 
-import "github.com/caixw/blogit/internal/data"
+import (
+	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/internal/vars"
+)
 
 type posts struct {
 	XMLName struct{}    `xml:"posts"`
@@ -115,7 +118,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 				Text: p.Next.Title,
 			}
 		}
-		err := b.appendXMLFile(p.Slug+".xml", d.BuildThemeURL(p.Template), p.Modified, pp)
+		err := b.appendXMLFile(d, p.Path, p.Template, p.Modified, pp)
 		if err != nil {
 			return err
 		}
@@ -130,5 +133,5 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		})
 	}
 
-	return b.appendXMLFile("index.xml", d.BuildThemeURL("index.xsl"), d.Modified, index)
+	return b.appendXMLFile(d, vars.IndexXML, d.Theme.Index, d.Modified, index)
 }

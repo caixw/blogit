@@ -68,5 +68,5 @@ func (b *Builder) buildRSS(path string, d *data.Data) error {
 		})
 	}
 
-	return b.appendXMLFile(path, d.BuildThemeURL(d.Theme.RSS), d.Modified, r)
+	return b.appendXMLFile(d, path, d.Theme.RSS, d.Modified, r)
 }
