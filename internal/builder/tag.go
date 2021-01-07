@@ -16,7 +16,7 @@ type tag struct {
 	Created   string      `xml:"created,attr,omitempty"`
 	Modified  string      `xml:"modified,attr,omitempty"`
 	Posts     []*postMeta `xml:"post,omitempty"`
-	Content   innerhtml   `xml:"summary,omitempty"`
+	Content   *innerhtml  `xml:"summary,omitempty"`
 }
 
 func newTag(t *data.Tag, d *data.Data) *tag {
@@ -27,7 +27,7 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 			Title:     p.Title,
 			Created:   ft(p.Created),
 			Modified:  ft(p.Modified),
-			Summary:   innerhtml{Content: p.Summary},
+			Summary:   newHTML(p.Summary),
 		})
 	}
 
@@ -37,7 +37,7 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 		Created:   ft(t.Created),
 		Modified:  ft(t.Modified),
 		Posts:     ps,
-		Content:   innerhtml{Content: t.Content},
+		Content:   newHTML(t.Content),
 	}
 }
 

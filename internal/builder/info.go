@@ -31,25 +31,23 @@ type info struct {
 
 type menu struct {
 	// 链接对应的图标。可以是字体图标或是图片链接，模板根据情况自动选择。
-	Icon  string `xml:"icon"`
-	Title string `xml:"title"` // 链接的 title 属性
-	URL   string `xml:"url"`   // 链接地址
-	Text  string `xml:"text"`  // 链接的文本
+	Icon string `xml:"icon,attr"`
+	URL  string `xml:"url,attr"`  // 链接地址
+	Text string `xml:",chardata"` // 链接的文本
 }
 
 type icon struct {
-	URL  string `yaml:"url"`
-	Type string `yaml:"type"` // mime type
+	URL  string `xml:"url,attr"`
+	Type string `xml:"type,attr"` // mime type
 }
 
 func (b *Builder) buildInfo(path string, d *data.Data) error {
 	menus := make([]*menu, 0, len(d.Menus))
 	for _, m := range d.Menus {
 		menus = append(menus, &menu{
-			Icon:  m.Icon,
-			Title: m.Title,
-			URL:   m.URL,
-			Text:  m.Text,
+			Icon: m.Icon,
+			URL:  m.URL,
+			Text: m.Text,
 		})
 	}
 
@@ -73,9 +71,8 @@ func (b *Builder) buildInfo(path string, d *data.Data) error {
 		Language:    d.Language,
 		Authors:     authors,
 		License: &link{
-			URL:   d.License.URL,
-			Title: d.License.Title,
-			Text:  d.License.Text,
+			URL:  d.License.URL,
+			Text: d.License.Text,
 		},
 
 		Uptime:   ft(d.Uptime),
@@ -86,25 +83,22 @@ func (b *Builder) buildInfo(path string, d *data.Data) error {
 
 	if d.Atom != nil {
 		i.Atom = &link{
-			URL:   d.BuildURL("atom.xml"),
-			Title: d.Atom.Title,
-			Text:  d.Atom.Title,
+			URL:  d.BuildURL("atom.xml"),
+			Text: d.Atom.Title,
 		}
 	}
 
 	if d.RSS != nil {
 		i.RSS = &link{
-			URL:   d.BuildURL("rss.xml"),
-			Title: d.RSS.Title,
-			Text:  d.RSS.Title,
+			URL:  d.BuildURL("rss.xml"),
+			Text: d.RSS.Title,
 		}
 	}
 
 	if d.Sitemap != nil {
 		i.Sitemap = &link{
-			URL:   d.BuildURL("sitemap.xml"),
-			Title: "sitemap",
-			Text:  "sitemap",
+			URL:  d.BuildURL("sitemap.xml"),
+			Text: "sitemap",
 		}
 	}
 

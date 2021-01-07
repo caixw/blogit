@@ -42,18 +42,16 @@ type FieldError struct {
 
 // License 描述链接的内容
 type License struct {
-	URL   string `yaml:"url"`             // 链接地址
-	Text  string `yaml:"text"`            // 链接的文本
-	Title string `yaml:"title,omitempty"` // 链接的 title 属性
+	URL  string `yaml:"url"`  // 链接地址
+	Text string `yaml:"text"` // 链接的文本
 }
 
 // Menu 描述链接的内容
 type Menu struct {
 	// 链接对应的图标。可以是字体图标或是图片链接，模板根据情况自动选择。
-	Icon  string `yaml:"icon,omitempty"`
-	Title string `yaml:"title,omitempty"` // 链接的 title 属性
-	URL   string `yaml:"url"`             // 链接地址
-	Text  string `yaml:"text"`            // 链接的文本
+	Icon string `yaml:"icon,omitempty"`
+	URL  string `yaml:"url"`  // 链接地址
+	Text string `yaml:"text"` // 链接的文本
 }
 
 // Icon 表示网站图标，比如 html>head>link.rel="short icon"

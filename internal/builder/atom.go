@@ -41,7 +41,7 @@ type atomLink struct {
 }
 
 type atomContent struct {
-	Type    string `xml:"type,omitempty"`
+	Type    string `xml:"type,attr,omitempty"`
 	Content string `xml:",chardata"`
 }
 

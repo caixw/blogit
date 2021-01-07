@@ -15,12 +15,12 @@ type postMeta struct {
 	Created   string     `xml:"created,attr,omitempty"`
 	Modified  string     `xml:"modified,attr,omitempty"`
 	Tags      []*tagMeta `xml:"tag,omitempty"`
-	Summary   innerhtml  `xml:"summary,omitempty"`
+	Summary   *innerhtml `xml:"summary,omitempty"`
 }
 
 type tagMeta struct {
 	Permalink string `xml:"permalink,attr"`
-	Title     string `xml:"title"`
+	Title     string `xml:",chardata"`
 }
 
 type post struct {
@@ -34,23 +34,22 @@ type post struct {
 	Outdated  *outdated  `xml:"outdated,omitempty"`
 	Authors   []*author  `xml:"author"`
 	License   *link      `xml:"license"`
-	Summary   innerhtml  `xml:"summary,omitempty"`
-	Content   innerhtml  `xml:"content"`
+	Summary   *innerhtml `xml:"summary,omitempty"`
+	Content   *innerhtml `xml:"content"`
 	Prev      *link      `xml:"prev"`
 	Next      *link      `xml:"next"`
 }
 
 type author struct {
-	Name   string `yaml:"name"`
-	URL    string `yaml:"url,omitempty"`
-	Email  string `yaml:"email,omitempty"`
-	Avatar string `yaml:"avatar,omitempty"`
+	Name   string `xml:",chardata"`
+	URL    string `xml:"url,attr,omitempty"`
+	Email  string `xml:"email,attr,omitempty"`
+	Avatar string `xml:"avatar,attr,omitempty"`
 }
 
 type link struct {
-	URL   string `xml:"url,attr"`
-	Title string `xml:"title,attr,omitempty"`
-	Text  string `xml:"text"`
+	URL  string `xml:"url,attr"`
+	Text string `xml:",chardata"`
 }
 
 type outdated struct {
@@ -98,25 +97,22 @@ func (b *Builder) buildPosts(d *data.Data) error {
 			Outdated:  od,
 			Authors:   authors,
 			License: &link{
-				URL:   p.License.URL,
-				Title: p.License.Title,
-				Text:  p.License.Text,
+				URL:  p.License.URL,
+				Text: p.License.Text,
 			},
-			Content: innerhtml{Content: p.Content},
-			Summary: innerhtml{Content: p.Summary},
+			Content: newHTML(p.Content),
+			Summary: newHTML(p.Summary),
 		}
 		if p.Prev != nil {
 			pp.Prev = &link{
-				URL:   d.BuildURL(p.Prev.Path),
-				Title: "上一篇文章",
-				Text:  p.Prev.Title,
+				URL:  d.BuildURL(p.Prev.Path),
+				Text: p.Prev.Title,
 			}
 		}
 		if p.Next != nil {
 			pp.Next = &link{
-				URL:   d.BuildURL(p.Next.Path),
-				Title: "后一篇文章",
-				Text:  p.Next.Title,
+				URL:  d.BuildURL(p.Next.Path),
+				Text: p.Next.Title,
 			}
 		}
 		err := b.appendXMLFile(p.Slug+".xml", d.BuildThemeURL(p.Template), p.Modified, pp)
@@ -130,7 +126,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 			Created:   ft(p.Created),
 			Modified:  ft(p.Modified),
 			Tags:      tags,
-			Summary:   innerhtml{Content: p.Summary},
+			Summary:   newHTML(p.Summary),
 		})
 	}
 

@@ -21,7 +21,7 @@ const (
 
 	// 输出的时间格式
 	//
-	// NOET: 时间可能会被当作 XML 的属性值，如果格式中带引号，需要注意正确处理。
+	// NOTE: 时间可能会被当作 XML 的属性值，如果格式中带引号，需要注意正确处理。
 	timeFormat = time.RFC3339
 )
 
@@ -47,6 +47,13 @@ func ft(t time.Time) string {
 		return ""
 	}
 	return t.Format(timeFormat)
+}
+
+func newHTML(html string) *innerhtml {
+	if html == "" {
+		return nil
+	}
+	return &innerhtml{Content: html}
 }
 
 // Load 加载数据到当前实例
