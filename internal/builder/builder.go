@@ -89,6 +89,10 @@ func (f *file) dump(dir string) error {
 
 // Dump 输出内容
 func (b *Builder) Dump(dir string) error {
+	if err := os.MkdirAll(filepath.Join(dir, "tags"), os.ModePerm); err != nil {
+		return err
+	}
+
 	for _, f := range b.files {
 		if err := f.dump(dir); err != nil {
 			return err
