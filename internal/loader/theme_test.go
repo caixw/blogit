@@ -17,7 +17,7 @@ func TestLoadTheme(t *testing.T) {
 	a.NotError(err).NotNil(theme)
 	a.Equal(len(theme.Authors), 2).
 		Equal(theme.ID, "default").
-		Equal(theme.Dir, filepath.ToSlash("../testdata/themes/default"))
+		Equal(filepath.ToSlash(theme.Dir), "../testdata/themes/default")
 
 	theme, err = LoadTheme("../testdata", "not-exists")
 	a.ErrorIs(err, os.ErrNotExist).Nil(theme)
