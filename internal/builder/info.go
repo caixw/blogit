@@ -7,7 +7,7 @@ import "github.com/caixw/blogit/internal/data"
 type info struct {
 	XMLName struct{} `xml:"info"`
 
-	URL         string    `xml:"url"`
+	URL         string    `xml:"url,attr"`
 	Title       string    `xml:"title"`
 	Subtitle    string    `xml:"subtitle"`
 	TitleSuffix string    `xml:"titleSuffix"` // 每篇文章标题的后缀
@@ -21,10 +21,10 @@ type info struct {
 	RSS     *link `xml:"rss,omitempty"`
 	Sitemap *link `xml:"sitemap,omitempty"`
 
-	Uptime   datetime `xml:"uptime"`
-	Created  datetime `xml:"created"`
-	Modified datetime `xml:"modified"`
-	Builded  datetime `xml:"builded"` // 最后次编译时间
+	Uptime   *datetime `xml:"uptime"`
+	Created  *datetime `xml:"created"`
+	Modified *datetime `xml:"modified"`
+	Builded  *datetime `xml:"builded"` // 最后次编译时间
 }
 
 type menu struct {
@@ -76,10 +76,10 @@ func (b *Builder) buildInfo(path string, d *data.Data) error {
 			Text:  d.License.Text,
 		},
 
-		Uptime:   toDatetime(d.Uptime, d),
-		Created:  toDatetime(d.Created, d),
-		Modified: toDatetime(d.Modified, d),
-		Builded:  toDatetime(d.Builded, d),
+		Uptime:   newDatetime(d.Uptime, d),
+		Created:  newDatetime(d.Created, d),
+		Modified: newDatetime(d.Modified, d),
+		Builded:  newDatetime(d.Builded, d),
 	}
 
 	if d.Atom != nil {

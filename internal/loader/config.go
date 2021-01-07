@@ -29,7 +29,7 @@ type Config struct {
 	TitleSeparator string `yaml:"titleSeparator"`
 
 	URL             string    `yaml:"url"` // 网站根域名，比如 https://example.com/blog
-	Language        string    `yaml:"language"`
+	Language        string    `yaml:"language,omitempty"`
 	Subtitle        string    `yaml:"subtitle,omitempty"`
 	Uptime          time.Time `yaml:"uptime"`
 	Icon            *Icon     `yaml:"icon,omitempty"`
@@ -203,7 +203,7 @@ func (conf *Config) sanitize() *FieldError {
 }
 
 func (o *Outdated) sanitize() *FieldError {
-	if o.Outdated < 0 {
+	if o.Outdated <= 0 {
 		return &FieldError{Message: "必须大于 0", Field: "outdated"}
 	}
 

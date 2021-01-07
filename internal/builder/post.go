@@ -5,36 +5,39 @@ package builder
 import "github.com/caixw/blogit/internal/data"
 
 type posts struct {
-	XMLName struct{} `xml:"posts"`
-
-	Posts []*postMeta `xml:"post"`
+	XMLName struct{}    `xml:"posts"`
+	Posts   []*postMeta `xml:"post"`
 }
 
 type postMeta struct {
-	Permalink string    `xml:"permalink"`
-	Title     string    `xml:"title"`
-	Created   datetime  `xml:"created"`
-	Modified  datetime  `xml:"modified"`
-	Tags      []*tag    `xml:"tag,omitempty"`
-	Summary   innerhtml `xml:"summary"`
+	Permalink string     `xml:"permalink,attr"`
+	Title     string     `xml:"title"`
+	Created   *datetime  `xml:"created,omitempty"`
+	Modified  *datetime  `xml:"modified,omitempty"`
+	Tags      []*tagMeta `xml:"tag,omitempty"`
+	Summary   innerhtml  `xml:"summary,omitempty"`
+}
+
+type tagMeta struct {
+	Permalink string `xml:"permalink,attr"`
+	Title     string `xml:"title"`
 }
 
 type post struct {
-	XMLName struct{} `xml:"post"`
-
-	Permalink string    `xml:"permalink"`
-	Title     string    `xml:"title"`
-	Created   datetime  `xml:"created"`
-	Modified  datetime  `xml:"modified"`
-	Tags      []*tag    `xml:"tag"`
-	Language  string    `xml:"language,attr"`
-	Outdated  *outdated `xml:"outdated,omitempty"`
-	Authors   []*author `xml:"author"`
-	License   *link     `xml:"license"`
-	Summary   innerhtml `xml:"summary"`
-	Content   innerhtml `xml:"content"`
-	Prev      *link     `xml:"prev"`
-	Next      *link     `xml:"next"`
+	XMLName   struct{}   `xml:"post"`
+	Permalink string     `xml:"permalink,attr"`
+	Title     string     `xml:"title"`
+	Created   *datetime  `xml:"created,omitempty"`
+	Modified  *datetime  `xml:"modified,omitempty"`
+	Tags      []*tagMeta `xml:"tag"`
+	Language  string     `xml:"language,attr"`
+	Outdated  *outdated  `xml:"outdated,omitempty"`
+	Authors   []*author  `xml:"author"`
+	License   *link      `xml:"license"`
+	Summary   innerhtml  `xml:"summary,omitempty"`
+	Content   innerhtml  `xml:"content"`
+	Prev      *link      `xml:"prev"`
+	Next      *link      `xml:"next"`
 }
 
 type author struct {
@@ -45,29 +48,25 @@ type author struct {
 }
 
 type link struct {
-	URL   string `xml:"url"`
+	URL   string `xml:"url,attr"`
 	Title string `xml:"title,attr,omitempty"`
 	Text  string `xml:"text"`
 }
 
 type outdated struct {
-	Outdated datetime `xml:"outdated"`
-	Content  string   `xml:",chardata"`
+	Outdated *datetime `xml:"outdated,omitempty"` // 过期的时间
+	Content  string    `xml:",chardata"`
 }
 
 func (b *Builder) buildPosts(d *data.Data) error {
 	index := &posts{Posts: make([]*postMeta, 0, len(d.Posts))}
 
 	for _, p := range d.Posts {
-		tags := make([]*tag, 0, len(p.Tags))
+		tags := make([]*tagMeta, 0, len(p.Tags))
 		for _, t := range p.Tags {
-			tags = append(tags, &tag{
+			tags = append(tags, &tagMeta{
 				Permalink: d.BuildURL(t.Path),
 				Title:     t.Title,
-				Color:     t.Color,
-				Content:   innerhtml{Content: t.Content},
-				Created:   toDatetime(t.Created, d),
-				Modified:  toDatetime(t.Modified, d),
 			})
 		}
 
@@ -84,16 +83,16 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		var od *outdated
 		if p.Outdated != nil {
 			od = &outdated{
-				Outdated: toDatetime(p.Outdated.Outdated, d),
 				Content:  p.Outdated.Content,
+				Outdated: newDatetime(p.Outdated.Outdated, d),
 			}
 		}
 
 		pp := &post{
 			Permalink: d.BuildURL(p.Path),
 			Title:     p.Title,
-			Created:   toDatetime(p.Created, d),
-			Modified:  toDatetime(p.Modified, d),
+			Created:   newDatetime(p.Created, d),
+			Modified:  newDatetime(p.Modified, d),
 			Tags:      tags,
 			Language:  p.Language,
 			Outdated:  od,
@@ -128,8 +127,8 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		index.Posts = append(index.Posts, &postMeta{
 			Permalink: d.BuildURL(p.Path),
 			Title:     p.Title,
-			Created:   toDatetime(p.Created, d),
-			Modified:  toDatetime(p.Modified, d),
+			Created:   newDatetime(p.Created, d),
+			Modified:  newDatetime(p.Modified, d),
 			Tags:      tags,
 			Summary:   innerhtml{Content: p.Summary},
 		})

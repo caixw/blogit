@@ -40,8 +40,12 @@ type innerhtml struct {
 	Content string `xml:",innerxml"`
 }
 
-func toDatetime(t time.Time, d *data.Data) datetime {
-	return datetime{
+func newDatetime(t time.Time, d *data.Data) *datetime {
+	if t.IsZero() {
+		return nil
+	}
+
+	return &datetime{
 		Long:  t.Format(d.LongDateFormat),
 		Short: t.Format(d.ShortDateFormat),
 	}

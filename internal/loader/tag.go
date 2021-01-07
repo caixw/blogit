@@ -11,9 +11,8 @@ import (
 // Tag 描述标签信息
 type Tag struct {
 	Title   string `yaml:"title"`
-	Color   string `yaml:"color,omitempty"` // 标签颜色。若未指定，则继承父容器
-	Content string `yaml:"content"`         // 对该标签的详细描述
-	Slug    string `yaml:"slug"`            // 唯一名称
+	Content string `yaml:"content"` // 对该标签的详细描述
+	Slug    string `yaml:"slug"`    // 唯一名称
 }
 
 // LoadTags 加载标签列表

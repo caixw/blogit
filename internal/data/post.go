@@ -64,6 +64,10 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		p.License = conf.License
 	}
 
+	if p.Language == "" {
+		p.Language = conf.Language
+	}
+
 	var od *Outdated
 	switch p.Outdated {
 	case "":
@@ -85,7 +89,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		}
 	default:
 		od = &Outdated{
-			Outdated: p.Created, // 创建即过期
+			Outdated: time.Time{},
 			Content:  p.Outdated,
 		}
 	}

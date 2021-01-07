@@ -13,7 +13,6 @@ type Tag struct {
 	Slug     string
 	Path     string
 	Title    string
-	Color    string // 标签颜色。若未指定，则继承父容器
 	Content  string // 对该标签的详细描述
 	Posts    []*Post
 	Created  time.Time
@@ -27,7 +26,6 @@ func buildTags(tags []*loader.Tag) ([]*Tag, error) {
 			Slug:    t.Slug,
 			Path:    buildPath("tags/" + t.Slug),
 			Title:   t.Title,
-			Color:   t.Color,
 			Content: t.Content,
 		})
 	}

@@ -11,9 +11,9 @@ import (
 )
 
 type archive struct {
-	date  time.Time   // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
-	Title string      // 当前存档页的标题
-	Posts []*postMeta // 当前存档的文章列表
+	date  time.Time   `xml:"-"`     // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
+	Title string      `xml:"title"` // 当前存档页的标题
+	Posts []*postMeta `xml:"post"`  // 当前存档的文章列表
 }
 
 func (b *Builder) buildArchives(path string, d *data.Data) error {
@@ -31,23 +31,19 @@ func (b *Builder) buildArchives(path string, d *data.Data) error {
 			panic("无效的 archive.type 值")
 		}
 
-		tags := make([]*tag, 0, len(post.Tags))
+		tags := make([]*tagMeta, 0, len(post.Tags))
 		for _, t := range post.Tags {
-			tags = append(tags, &tag{
+			tags = append(tags, &tagMeta{
 				Permalink: d.BuildURL(t.Path),
 				Title:     t.Title,
-				Color:     t.Color,
-				Content:   innerhtml{Content: t.Content},
-				Created:   toDatetime(t.Created, d),
-				Modified:  toDatetime(t.Modified, d),
 			})
 		}
 
 		pm := &postMeta{
 			Permalink: d.BuildURL(post.Path),
 			Title:     post.Title,
-			Created:   toDatetime(post.Created, d),
-			Modified:  toDatetime(post.Modified, d),
+			Created:   newDatetime(post.Created, d),
+			Modified:  newDatetime(post.Modified, d),
 			Tags:      tags,
 		}
 

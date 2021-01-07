@@ -10,15 +10,13 @@ type tags struct {
 }
 
 type tag struct {
-	XMLName struct{} `xml:"tag"`
-
-	Permalink string      `xml:"permalink"`
+	XMLName   struct{}    `xml:"tag"`
+	Permalink string      `xml:"permalink,attr"`
 	Title     string      `xml:"title"`
-	Color     string      `xml:"color,attr"`
-	Created   datetime    `xml:"created"`
-	Modified  datetime    `xml:"modified"`
+	Created   *datetime   `xml:"created,omitempty"`
+	Modified  *datetime   `xml:"modified,omitempty"`
 	Posts     []*postMeta `xml:"post,omitempty"`
-	Content   innerhtml   `xml:"summary"`
+	Content   innerhtml   `xml:"summary,omitempty"`
 }
 
 func newTag(t *data.Tag, d *data.Data) *tag {
@@ -27,8 +25,8 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 		ps = append(ps, &postMeta{
 			Permalink: d.BuildURL(p.Slug),
 			Title:     p.Title,
-			Created:   toDatetime(p.Created, d),
-			Modified:  toDatetime(p.Modified, d),
+			Created:   newDatetime(p.Created, d),
+			Modified:  newDatetime(p.Modified, d),
 			Summary:   innerhtml{Content: p.Summary},
 		})
 	}
@@ -36,9 +34,8 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 	return &tag{
 		Permalink: d.BuildURL(t.Path),
 		Title:     t.Title,
-		Color:     t.Color,
-		Created:   toDatetime(t.Created, d),
-		Modified:  toDatetime(t.Modified, d),
+		Created:   newDatetime(t.Created, d),
+		Modified:  newDatetime(t.Modified, d),
 		Posts:     ps,
 		Content:   innerhtml{Content: t.Content},
 	}
