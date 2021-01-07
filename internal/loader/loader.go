@@ -70,7 +70,6 @@ func loadYAML(path string, v interface{}) error {
 	if err != nil {
 		return err
 	}
-
 	return yaml.Unmarshal(data, v)
 }
 

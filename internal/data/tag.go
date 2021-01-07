@@ -3,9 +3,11 @@
 package data
 
 import (
+	"path"
 	"time"
 
 	"github.com/caixw/blogit/internal/loader"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 // Tag 单个标签的内容
@@ -24,7 +26,7 @@ func buildTags(tags []*loader.Tag) ([]*Tag, error) {
 	for _, t := range tags {
 		ts = append(ts, &Tag{
 			Slug:    t.Slug,
-			Path:    buildPath("tags/" + t.Slug),
+			Path:    buildPath(path.Join(vars.TagsDir, t.Slug)),
 			Title:   t.Title,
 			Content: t.Content,
 		})

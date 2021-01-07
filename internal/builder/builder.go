@@ -14,6 +14,7 @@ import (
 	"github.com/issue9/errwrap"
 
 	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 const (
@@ -98,7 +99,7 @@ func (f *file) dump(dir string) error {
 
 // Dump 输出内容
 func (b *Builder) Dump(dir string) error {
-	if err := os.MkdirAll(filepath.Join(dir, "tags"), os.ModePerm); err != nil {
+	if err := os.MkdirAll(filepath.Join(dir, vars.TagsDir), os.ModePerm); err != nil {
 		return err
 	}
 

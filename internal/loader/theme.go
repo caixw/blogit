@@ -6,8 +6,10 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/caixw/blogit/internal/utils"
 	"github.com/issue9/sliceutil"
+
+	"github.com/caixw/blogit/internal/utils"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 // Theme 主题
@@ -40,7 +42,7 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 	}
 
 	if len(t.Templates) == 0 {
-		t.Templates = []string{"post.xsl"}
+		t.Templates = []string{vars.DefaultTemplate}
 	}
 
 	for index, s := range t.Screenshots {
@@ -58,8 +60,8 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 
 // LoadTheme 加载指定主题
 func LoadTheme(dir, name string) (*Theme, error) {
-	dir = filepath.Join(dir, "themes", name)
-	path := filepath.Join(dir, "theme.yaml")
+	dir = filepath.Join(dir, vars.ThemesDir, name)
+	path := filepath.Join(dir, vars.ThemeYAML)
 
 	theme := &Theme{}
 	if err := loadYAML(path, &theme); err != nil {

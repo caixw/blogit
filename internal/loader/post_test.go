@@ -13,9 +13,6 @@ func TestLoadPosts(t *testing.T) {
 
 	posts, err := LoadPosts("../testdata")
 	a.NotError(err).Equal(3, len(posts))
-
-	posts, err = LoadPosts("../testdata/posts/2020/12")
-	a.NotError(err).Equal(1, len(posts))
 }
 
 func TestLoadPost(t *testing.T) {

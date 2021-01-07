@@ -4,6 +4,7 @@ package loader
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -12,6 +13,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/caixw/blogit/internal/vars"
 	"github.com/issue9/sliceutil"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/parser"
@@ -151,6 +153,9 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 	slug = strings.Trim(filepath.ToSlash(slug), "./")
 	if strings.IndexFunc(slug, func(r rune) bool { return unicode.IsSpace(r) }) >= 0 {
 		return &FieldError{Field: "slug", Message: "不能包含空格"}
+	}
+	if !strings.HasPrefix(slug, vars.PostsDir+"/") {
+		return &FieldError{Field: "slug", Message: fmt.Sprintf("必须位置于 %s 目录之下", vars.PostsDir)}
 	}
 	p.Slug = slug
 

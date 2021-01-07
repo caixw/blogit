@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/caixw/blogit/internal/loader"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 type (
@@ -43,12 +44,12 @@ type (
 
 // Load 加载并处理数据
 func Load(dir string) (*Data, error) {
-	conf, err := loader.LoadConfig(filepath.Join(dir, "conf.yaml"))
+	conf, err := loader.LoadConfig(filepath.Join(dir, vars.ConfYAML))
 	if err != nil {
 		return nil, err
 	}
 
-	tags, err := loader.LoadTags(filepath.Join(dir, "tags.yaml"))
+	tags, err := loader.LoadTags(filepath.Join(dir, vars.TagsYAML))
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func (data *Data) BuildURL(p ...string) string {
 // BuildThemeURL 根据配置网站域名生成主题下的文件地址
 func (data *Data) BuildThemeURL(p ...string) string {
 	pp := make([]string, 0, len(p)+2)
-	pp = append(pp, "themes", data.Theme.ID)
+	pp = append(pp, vars.ThemesDir, data.Theme.ID)
 	return data.BuildURL(append(pp, p...)...)
 }
 
