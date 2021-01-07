@@ -3,7 +3,6 @@
 package data
 
 import (
-	"fmt"
 	"sort"
 	"time"
 
@@ -77,7 +76,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		}
 		od = &Outdated{
 			Outdated: p.Created.Add(conf.Outdated.Outdated),
-			Content:  fmt.Sprintf(conf.Outdated.Created, p.Created.Format(conf.ShortDateFormat)),
+			Content:  p.Created.Format(conf.Outdated.Created),
 		}
 	case loader.OutdatedModified:
 		if conf.Outdated == nil {
@@ -85,7 +84,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		}
 		od = &Outdated{
 			Outdated: p.Modified.Add(conf.Outdated.Outdated),
-			Content:  fmt.Sprintf(conf.Outdated.Modified, p.Modified.Format(conf.ShortDateFormat)),
+			Content:  p.Modified.Format(conf.Outdated.Modified),
 		}
 	default:
 		od = &Outdated{

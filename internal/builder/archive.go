@@ -42,8 +42,8 @@ func (b *Builder) buildArchives(path string, d *data.Data) error {
 		pm := &postMeta{
 			Permalink: d.BuildURL(post.Path),
 			Title:     post.Title,
-			Created:   newDatetime(post.Created, d),
-			Modified:  newDatetime(post.Modified, d),
+			Created:   ft(post.Created),
+			Modified:  ft(post.Modified),
 			Tags:      tags,
 		}
 

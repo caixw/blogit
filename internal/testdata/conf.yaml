@@ -4,13 +4,11 @@ titleSeparator: " | "
 subtitle: subtitle
 uptime: 2016-03-06T00:00:01+08:00
 language: cmn-Hans
-longDateFormat: 2006-01-02 15:04
-shortDateFormat: 2006-01-02
 theme: default
 outdated: 
-  outdated: 8760h # 24*365 小时，遵守 time.ParseDuration 语法
-  created: 这篇文章创建于 %s，其中的信息可能已经有所发展或是发生改变。
-  modified: 这篇文章修改于 %s，其中的信息可能已经有所发展或是发生改变。
+  outdated: 1h # 24*365 小时，遵守 time.ParseDuration 语法
+  created: 这篇文章创建于 2006-01-02，其中的信息可能已经有所发展或是发生改变。
+  modified: 这篇文章修改于 2006-01-02，其中的信息可能已经有所发展或是发生改变。
 
 # 程序图标
 icon:

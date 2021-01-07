@@ -12,8 +12,8 @@ type posts struct {
 type postMeta struct {
 	Permalink string     `xml:"permalink,attr"`
 	Title     string     `xml:"title"`
-	Created   *datetime  `xml:"created,omitempty"`
-	Modified  *datetime  `xml:"modified,omitempty"`
+	Created   string     `xml:"created,attr,omitempty"`
+	Modified  string     `xml:"modified,attr,omitempty"`
 	Tags      []*tagMeta `xml:"tag,omitempty"`
 	Summary   innerhtml  `xml:"summary,omitempty"`
 }
@@ -27,8 +27,8 @@ type post struct {
 	XMLName   struct{}   `xml:"post"`
 	Permalink string     `xml:"permalink,attr"`
 	Title     string     `xml:"title"`
-	Created   *datetime  `xml:"created,omitempty"`
-	Modified  *datetime  `xml:"modified,omitempty"`
+	Created   string     `xml:"created,attr,omitempty"`
+	Modified  string     `xml:"modified,attr,omitempty"`
 	Tags      []*tagMeta `xml:"tag"`
 	Language  string     `xml:"language,attr"`
 	Outdated  *outdated  `xml:"outdated,omitempty"`
@@ -54,8 +54,8 @@ type link struct {
 }
 
 type outdated struct {
-	Outdated *datetime `xml:"outdated,omitempty"` // 过期的时间
-	Content  string    `xml:",chardata"`
+	Outdated string `xml:"outdated,attr,omitempty"` // 过期的时间
+	Content  string `xml:",chardata"`
 }
 
 func (b *Builder) buildPosts(d *data.Data) error {
@@ -84,15 +84,15 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		if p.Outdated != nil {
 			od = &outdated{
 				Content:  p.Outdated.Content,
-				Outdated: newDatetime(p.Outdated.Outdated, d),
+				Outdated: ft(p.Outdated.Outdated),
 			}
 		}
 
 		pp := &post{
 			Permalink: d.BuildURL(p.Path),
 			Title:     p.Title,
-			Created:   newDatetime(p.Created, d),
-			Modified:  newDatetime(p.Modified, d),
+			Created:   ft(p.Created),
+			Modified:  ft(p.Modified),
 			Tags:      tags,
 			Language:  p.Language,
 			Outdated:  od,
@@ -127,8 +127,8 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		index.Posts = append(index.Posts, &postMeta{
 			Permalink: d.BuildURL(p.Path),
 			Title:     p.Title,
-			Created:   newDatetime(p.Created, d),
-			Modified:  newDatetime(p.Modified, d),
+			Created:   ft(p.Created),
+			Modified:  ft(p.Modified),
 			Tags:      tags,
 			Summary:   innerhtml{Content: p.Summary},
 		})

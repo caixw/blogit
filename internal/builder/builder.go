@@ -16,7 +16,14 @@ import (
 	"github.com/caixw/blogit/internal/data"
 )
 
-const xmlContentType = "application/xml"
+const (
+	xmlContentType = "application/xml"
+
+	// 输出的时间格式
+	//
+	// NOET: 时间可能会被当作 XML 的属性值，如果格式中带引号，需要注意正确处理。
+	timeFormat = time.RFC3339
+)
 
 // Builder 保存构建好的数据
 type Builder struct {
@@ -31,24 +38,15 @@ type file struct {
 	ct      string
 }
 
-type datetime struct {
-	Long  string `xml:"long,attr"`
-	Short string `xml:"short,attr"`
-}
-
 type innerhtml struct {
 	Content string `xml:",innerxml"`
 }
 
-func newDatetime(t time.Time, d *data.Data) *datetime {
+func ft(t time.Time) string {
 	if t.IsZero() {
-		return nil
+		return ""
 	}
-
-	return &datetime{
-		Long:  t.Format(d.LongDateFormat),
-		Short: t.Format(d.ShortDateFormat),
-	}
+	return t.Format(timeFormat)
 }
 
 // Load 加载数据到当前实例

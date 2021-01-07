@@ -4,7 +4,6 @@ package loader
 
 import (
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/issue9/sliceutil"
@@ -28,18 +27,16 @@ type Config struct {
 	Title          string `yaml:"title"`
 	TitleSeparator string `yaml:"titleSeparator"`
 
-	URL             string    `yaml:"url"` // 网站根域名，比如 https://example.com/blog
-	Language        string    `yaml:"language,omitempty"`
-	Subtitle        string    `yaml:"subtitle,omitempty"`
-	Uptime          time.Time `yaml:"uptime"`
-	Icon            *Icon     `yaml:"icon,omitempty"`
-	Menus           []*Menu   `yaml:"menus,omitempty"`
-	Authors         []*Author `yaml:"authors"`
-	License         *License  `yaml:"license"`
-	LongDateFormat  string    `yaml:"longDateFormat"`
-	ShortDateFormat string    `yaml:"shortDateFormat"`
-	Outdated        *Outdated `yaml:"outdated,omitempty"` // 如果为空，则仅允许 post.Outdated 出现自定义内容
-	Theme           string    `yaml:"theme"`
+	URL      string    `yaml:"url"` // 网站根域名，比如 https://example.com/blog
+	Language string    `yaml:"language,omitempty"`
+	Subtitle string    `yaml:"subtitle,omitempty"`
+	Uptime   time.Time `yaml:"uptime"`
+	Icon     *Icon     `yaml:"icon,omitempty"`
+	Menus    []*Menu   `yaml:"menus,omitempty"`
+	Authors  []*Author `yaml:"authors"`
+	License  *License  `yaml:"license"`
+	Outdated *Outdated `yaml:"outdated,omitempty"` // 如果为空，则仅允许 post.Outdated 出现自定义内容
+	Theme    string    `yaml:"theme"`
 
 	Archive *Archive `yaml:"archive"`
 	RSS     *RSS     `yaml:"rss,omitempty"`
@@ -106,19 +103,15 @@ func (conf *Config) sanitize() *FieldError {
 		conf.Language = "cmn-Hans"
 	}
 
-	if len(conf.LongDateFormat) == 0 {
-		return &FieldError{Message: "不能为空", Field: "longDateFormat"}
-	}
-
-	if len(conf.ShortDateFormat) == 0 {
-		return &FieldError{Message: "不能为空", Field: "shortDateFormat"}
-	}
-
 	if conf.Outdated != nil {
 		if err := conf.Outdated.sanitize(); err != nil {
 			err.Field = "outdated." + err.Field
 			return err
 		}
+	}
+
+	if conf.Uptime.IsZero() {
+		return &FieldError{Message: "不能为空", Field: "uptime"}
 	}
 
 	// icon
@@ -205,14 +198,6 @@ func (conf *Config) sanitize() *FieldError {
 func (o *Outdated) sanitize() *FieldError {
 	if o.Outdated <= 0 {
 		return &FieldError{Message: "必须大于 0", Field: "outdated"}
-	}
-
-	if strings.Index(o.Created, "%s") < 0 {
-		return &FieldError{Message: "必须大于包含 %s 占位符", Field: "created"}
-	}
-
-	if strings.Index(o.Modified, "%s") < 0 {
-		return &FieldError{Message: "必须大于包含 %s 占位符", Field: "modified"}
 	}
 
 	return nil

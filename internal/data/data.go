@@ -31,12 +31,10 @@ type (
 		Atom    *loader.RSS
 		Sitemap *loader.Sitemap
 
-		LongDateFormat  string
-		ShortDateFormat string
-		Uptime          time.Time
-		Created         time.Time
-		Modified        time.Time
-		Builded         time.Time // 最后次编译时间
+		Uptime   time.Time
+		Created  time.Time
+		Modified time.Time
+		Builded  time.Time // 最后次编译时间
 
 		Tags  []*Tag
 		Posts []*Post
@@ -106,12 +104,10 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 		Atom:    conf.Atom,
 		Sitemap: conf.Sitemap,
 
-		LongDateFormat:  conf.LongDateFormat,
-		ShortDateFormat: conf.ShortDateFormat,
-		Uptime:          conf.Uptime,
-		Builded:         time.Now(),
-		Created:         created,
-		Modified:        modified,
+		Uptime:   conf.Uptime,
+		Builded:  time.Now(),
+		Created:  created,
+		Modified: modified,
 
 		Tags:  ts,
 		Posts: ps,

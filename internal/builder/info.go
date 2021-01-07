@@ -2,7 +2,9 @@
 
 package builder
 
-import "github.com/caixw/blogit/internal/data"
+import (
+	"github.com/caixw/blogit/internal/data"
+)
 
 type info struct {
 	XMLName struct{} `xml:"info"`
@@ -21,10 +23,10 @@ type info struct {
 	RSS     *link `xml:"rss,omitempty"`
 	Sitemap *link `xml:"sitemap,omitempty"`
 
-	Uptime   *datetime `xml:"uptime"`
-	Created  *datetime `xml:"created"`
-	Modified *datetime `xml:"modified"`
-	Builded  *datetime `xml:"builded"` // 最后次编译时间
+	Uptime   string `xml:"uptime,attr"`
+	Created  string `xml:"created,attr"`
+	Modified string `xml:"modified,attr"`
+	Builded  string `xml:"builded,attr"` // 最后次编译时间
 }
 
 type menu struct {
@@ -76,10 +78,10 @@ func (b *Builder) buildInfo(path string, d *data.Data) error {
 			Text:  d.License.Text,
 		},
 
-		Uptime:   newDatetime(d.Uptime, d),
-		Created:  newDatetime(d.Created, d),
-		Modified: newDatetime(d.Modified, d),
-		Builded:  newDatetime(d.Builded, d),
+		Uptime:   ft(d.Uptime),
+		Created:  ft(d.Created),
+		Modified: ft(d.Modified),
+		Builded:  ft(d.Builded),
 	}
 
 	if d.Atom != nil {
