@@ -11,7 +11,7 @@ import (
 )
 
 type archive struct {
-	date  time.Time   `xml:"-"`     // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
+	date  time.Time   // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
 	Title string      `xml:"title"` // 当前存档页的标题
 	Posts []*postMeta `xml:"post"`  // 当前存档的文章列表
 }

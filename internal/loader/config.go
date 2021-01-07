@@ -24,12 +24,14 @@ const (
 
 // Config 配置信息，用于从文件中读取
 type Config struct {
-	Title          string `yaml:"title"`
-	TitleSeparator string `yaml:"titleSeparator"`
+	Title    string `yaml:"title"`
+	Subtitle string `yaml:"subtitle,omitempty"`
+
+	// 标题后缀分隔符，文章页面浏览器标题上会加上此后缀，如果为空，则表示不需要后缀。
+	TitleSeparator string `yaml:"titleSeparator,omitempty"`
 
 	URL      string    `yaml:"url"` // 网站根域名，比如 https://example.com/blog
 	Language string    `yaml:"language,omitempty"`
-	Subtitle string    `yaml:"subtitle,omitempty"`
 	Uptime   time.Time `yaml:"uptime"`
 	Icon     *Icon     `yaml:"icon,omitempty"`
 	Menus    []*Menu   `yaml:"menus,omitempty"`
