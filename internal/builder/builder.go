@@ -113,7 +113,7 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // xsl 表示关联的 xsl，如果不需要则可能为空；
 // ct 表示内容的 content-type 值，为空表示采用 application/xml；
 func (b *Builder) appendXMLFile(path, xsl string, lastmod time.Time, v interface{}) error {
-	data, err := xml.Marshal(v)
+	data, err := xml.MarshalIndent(v, "", "\t")
 	if err != nil {
 		return err
 	}
