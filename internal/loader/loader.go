@@ -63,6 +63,9 @@ type Author struct {
 }
 
 func (err *FieldError) Error() string {
+	if err.Value == nil {
+		return fmt.Sprintf("%s 位于 %s:%s", err.Message, err.File, err.Field)
+	}
 	return fmt.Sprintf("%s 位于 %s:%s，实际值为:%#v", err.Message, err.File, err.Field, err.Value)
 }
 

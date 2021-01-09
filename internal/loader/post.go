@@ -152,10 +152,10 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 	}
 	slug = strings.Trim(filepath.ToSlash(slug), "./")
 	if strings.IndexFunc(slug, func(r rune) bool { return unicode.IsSpace(r) }) >= 0 {
-		return &FieldError{Field: "slug", Message: "不能包含空格"}
+		return &FieldError{Field: "slug", Message: "不能包含空格", Value: slug}
 	}
 	if !strings.HasPrefix(slug, vars.PostsDir+"/") {
-		return &FieldError{Field: "slug", Message: fmt.Sprintf("必须位置于 %s 目录之下", vars.PostsDir)}
+		return &FieldError{Field: "slug", Message: fmt.Sprintf("必须位置于 %s 目录之下", vars.PostsDir), Value: slug}
 	}
 	p.Slug = slug
 
@@ -165,7 +165,7 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 
 	// state
 	if p.State != StateDefault && p.State != StateLast && p.State != StateTop {
-		return &FieldError{Message: "无效的值", Field: "state"}
+		return &FieldError{Message: "无效的值", Field: "state", Value: p.State}
 	}
 
 	for i, a := range p.Authors {

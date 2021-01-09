@@ -26,6 +26,7 @@ type Post struct {
 	License  *loader.License
 	Summary  string
 	Content  string
+	Image    string
 	Prev     *Post
 	Next     *Post
 	Template string
@@ -110,6 +111,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		License:  p.License,
 		Summary:  p.Summary,
 		Content:  p.Content,
+		Image:    p.Image,
 		Template: p.Template,
 	}
 

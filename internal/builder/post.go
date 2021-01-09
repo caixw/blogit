@@ -39,6 +39,7 @@ type post struct {
 	License   *link      `xml:"license"`
 	Summary   *innerhtml `xml:"summary,omitempty"`
 	Content   *innerhtml `xml:"content"`
+	Image     string     `xml:"image,attr,omitempty"`
 	Prev      *link      `xml:"prev"`
 	Next      *link      `xml:"next"`
 }
