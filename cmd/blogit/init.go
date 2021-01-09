@@ -28,7 +28,11 @@ func initF(w io.Writer) error {
 	if initFS.NArg() != 1 {
 		return fmt.Errorf("必须指定目录")
 	}
-	dir := initFS.Arg(0)
+
+	dir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
 
 	conf := &loader.Config{
 		Title:  "example",
@@ -48,6 +52,10 @@ func initF(w io.Writer) error {
 		},
 	}
 	if err := writeYAML(filepath.Join(dir, vars.TagsYAML), tags); err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(filepath.Join(dir, vars.ThemesDir), os.ModePerm); err != nil {
 		return err
 	}
 
