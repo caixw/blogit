@@ -37,7 +37,7 @@ func initPost(opt *cmdopt.CmdOpt) {
 
 func post(w io.Writer) error {
 	if postFS.NArg() != 1 {
-		erro.printf("必须指定路径")
+		erro.println("必须指定路径")
 		return nil
 	}
 
@@ -55,16 +55,16 @@ func post(w io.Writer) error {
 	path = filepath.Clean(filepath.Join(dir, path))
 
 	if !strings.HasPrefix(path, dir) {
-		erro.printf("必须位于 %s 目录下", dir)
+		erro.printf("必须位于 %s 目录下\n", dir)
 		return nil
 	}
 
 	c := fmt.Sprintf(content, time.Now().Format(time.RFC3339))
 	if err := ioutil.WriteFile(path, []byte(c), os.ModePerm); err != nil {
-		erro.printf(err.Error())
+		erro.println(err.Error())
 		return nil
 	}
-	succ.printf("创建文件: %s", path)
+	succ.printf("创建文件: %s\n", path)
 
 	return nil
 }

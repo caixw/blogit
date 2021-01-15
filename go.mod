@@ -8,7 +8,7 @@ require (
 	github.com/issue9/cmdopt v0.7.0
 	github.com/issue9/errwrap v0.2.0
 	github.com/issue9/sliceutil v0.6.0
-	github.com/issue9/term/v2 v2.1.3
+	github.com/issue9/term/v2 v2.1.4
 	github.com/issue9/validation v0.2.0
 	github.com/yuin/goldmark v1.3.1
 	github.com/yuin/goldmark-highlighting v0.0.0-20200307114337-60d527fdb691

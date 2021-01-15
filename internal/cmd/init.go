@@ -26,13 +26,13 @@ func initInit(opt *cmdopt.CmdOpt) {
 
 func initF(w io.Writer) error {
 	if initFS.NArg() != 1 {
-		erro.printf("必须指定目录")
+		erro.println("必须指定目录")
 		return nil
 	}
 
 	dir, err := os.Getwd()
 	if err != nil {
-		erro.printf(err.Error())
+		erro.println(err.Error())
 		return nil
 	}
 
@@ -45,7 +45,7 @@ func initF(w io.Writer) error {
 	}
 	path := filepath.Join(dir, vars.ConfYAML)
 	if err := writeYAML(path, conf); err != nil {
-		erro.printf(err.Error())
+		erro.println(err.Error())
 		return nil
 	}
 	succ.printf("创建了文件: %s", path)
@@ -60,19 +60,19 @@ func initF(w io.Writer) error {
 	}
 	path = filepath.Join(dir, vars.TagsYAML)
 	if err := writeYAML(path, tags); err != nil {
-		erro.printf(err.Error())
+		erro.println(err.Error())
 		return nil
 	}
 	succ.printf("创建了文件: %s", path)
 
 	// themes
 	if err := os.MkdirAll(filepath.Join(dir, vars.ThemesDir), os.ModePerm); err != nil {
-		erro.printf(err.Error())
+		erro.println(err.Error())
 		return nil
 	}
 
 	if err := os.MkdirAll(filepath.Join(dir, vars.PostsDir), os.ModePerm); err != nil {
-		erro.printf(err.Error())
+		erro.println(err.Error())
 	}
 
 	return nil

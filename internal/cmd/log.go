@@ -11,33 +11,21 @@ import (
 
 var (
 	erro = &consoleLogger{
-		prefix: "[ERRO]",
-		Colorize: colors.Colorize{
-			Type:       colors.Normal,
-			Background: colors.Default,
-			Foreground: colors.Red,
-		},
-		out: erroWriter,
+		prefix:   "[ERRO] ",
+		Colorize: colors.New(colors.Normal, colors.Red, colors.Default),
+		out:      erroWriter,
 	}
 
 	info = &consoleLogger{
-		prefix: "[INFO]",
-		Colorize: colors.Colorize{
-			Type:       colors.Normal,
-			Background: colors.Default,
-			Foreground: colors.Default,
-		},
-		out: infoWriter,
+		prefix:   "[INFO] ",
+		Colorize: colors.New(colors.Normal, colors.Default, colors.Default),
+		out:      infoWriter,
 	}
 
 	succ = &consoleLogger{
-		prefix: "[SUCC]",
-		Colorize: colors.Colorize{
-			Type:       colors.Normal,
-			Background: colors.Default,
-			Foreground: colors.Green,
-		},
-		out: succWriter,
+		prefix:   "[SUCC] ",
+		Colorize: colors.New(colors.Normal, colors.Green, colors.Default),
+		out:      succWriter,
 	}
 )
 
@@ -50,6 +38,11 @@ type consoleLogger struct {
 func (msg *consoleLogger) printf(format string, v ...interface{}) {
 	msg.Fprint(msg.out, msg.prefix)
 	colors.Fprintf(msg.out, colors.Normal, colors.Default, colors.Default, format, v...)
+}
+
+func (msg *consoleLogger) println(v ...interface{}) {
+	msg.Fprint(msg.out, msg.prefix)
+	colors.Fprintln(msg.out, colors.Normal, colors.Default, colors.Default, v...)
 }
 
 func (msg *consoleLogger) Write(bs []byte) (int, error) {
