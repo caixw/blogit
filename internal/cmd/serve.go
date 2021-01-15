@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 
-package main
+package cmd
 
 import (
 	"io"
-	"log"
+
+	"github.com/issue9/cmdopt"
 
 	"github.com/caixw/blogit"
-	"github.com/issue9/cmdopt"
 )
 
 var (
@@ -17,6 +17,7 @@ var (
 	serveWatch bool
 )
 
+// initServe 注册 serve 子命令
 func initServe(opt *cmdopt.CmdOpt) {
 	fs := opt.New("serve", "以 HTTP 服务运行", serve)
 	fs.StringVar(&serveSrc, "src", "./", "指定源码目录")
@@ -27,7 +28,7 @@ func initServe(opt *cmdopt.CmdOpt) {
 
 func serve(w io.Writer) error {
 	if serveWatch {
-		return blogit.Watch(serveSrc, serveAddr, servePath, log.New(w, "", log.Ldate))
+		return blogit.Watch(serveSrc, serveAddr, servePath, info.asLogger())
 	}
 	return blogit.Serve(serveSrc, serveAddr, servePath)
 }

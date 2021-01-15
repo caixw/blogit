@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-package main
+package cmd
 
 import (
 	"flag"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -20,30 +19,38 @@ import (
 
 var initFS *flag.FlagSet
 
+// initInit 注册 init 子命令
 func initInit(opt *cmdopt.CmdOpt) {
 	initFS = opt.New("init", "初始化新的博客内容", initF)
 }
 
 func initF(w io.Writer) error {
 	if initFS.NArg() != 1 {
-		return fmt.Errorf("必须指定目录")
+		erro.printf("必须指定目录")
+		return nil
 	}
 
 	dir, err := os.Getwd()
 	if err != nil {
-		return err
+		erro.printf(err.Error())
+		return nil
 	}
 
+	// conf.yaml
 	conf := &loader.Config{
 		Title:  "example",
 		URL:    "https://example.com",
 		Uptime: time.Now(),
 		Theme:  "default",
 	}
-	if err := writeYAML(filepath.Join(dir, vars.ConfYAML), conf); err != nil {
-		return err
+	path := filepath.Join(dir, vars.ConfYAML)
+	if err := writeYAML(path, conf); err != nil {
+		erro.printf(err.Error())
+		return nil
 	}
+	succ.printf("创建了文件: %s", path)
 
+	// tags.yaml
 	tags := []*loader.Tag{
 		{
 			Slug:    "default",
@@ -51,15 +58,24 @@ func initF(w io.Writer) error {
 			Content: "这是默认的标签",
 		},
 	}
-	if err := writeYAML(filepath.Join(dir, vars.TagsYAML), tags); err != nil {
-		return err
+	path = filepath.Join(dir, vars.TagsYAML)
+	if err := writeYAML(path, tags); err != nil {
+		erro.printf(err.Error())
+		return nil
 	}
+	succ.printf("创建了文件: %s", path)
 
+	// themes
 	if err := os.MkdirAll(filepath.Join(dir, vars.ThemesDir), os.ModePerm); err != nil {
-		return err
+		erro.printf(err.Error())
+		return nil
 	}
 
-	return os.MkdirAll(filepath.Join(dir, vars.PostsDir), os.ModePerm)
+	if err := os.MkdirAll(filepath.Join(dir, vars.PostsDir), os.ModePerm); err != nil {
+		erro.printf(err.Error())
+	}
+
+	return nil
 }
 
 func writeYAML(path string, v interface{}) error {

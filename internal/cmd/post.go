@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-package main
+package cmd
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -13,8 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/caixw/blogit/internal/vars"
 	"github.com/issue9/cmdopt"
+
+	"github.com/caixw/blogit/internal/vars"
 )
 
 const content = `---
@@ -30,31 +30,41 @@ state: draft
 
 var postFS *flag.FlagSet
 
+// initPost 注册 post 子命令
 func initPost(opt *cmdopt.CmdOpt) {
 	postFS = opt.New("post", "创建新文章", post)
 }
 
 func post(w io.Writer) error {
-	if initFS.NArg() != 1 {
-		return errors.New("必须指定路径")
+	if postFS.NArg() != 1 {
+		erro.printf("必须指定路径")
+		return nil
 	}
 
 	dir, err := os.Getwd()
 	if err != nil {
-		return err
+		erro.printf(err.Error())
+		return nil
 	}
 	dir = filepath.Join(dir, vars.PostsDir)
 
-	path := initFS.Arg(0)
+	path := postFS.Arg(0)
 	if strings.ToLower(filepath.Ext(path)) != ".md" {
 		path += ".md"
 	}
 	path = filepath.Clean(filepath.Join(dir, path))
 
 	if !strings.HasPrefix(path, dir) {
-		return fmt.Errorf("必须位于 %s 目录下", dir)
+		erro.printf("必须位于 %s 目录下", dir)
+		return nil
 	}
 
 	c := fmt.Sprintf(content, time.Now().Format(time.RFC3339))
-	return ioutil.WriteFile(path, []byte(c), os.ModePerm)
+	if err := ioutil.WriteFile(path, []byte(c), os.ModePerm); err != nil {
+		erro.printf(err.Error())
+		return nil
+	}
+	succ.printf("创建文件: %s", path)
+
+	return nil
 }
