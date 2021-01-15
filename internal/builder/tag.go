@@ -44,7 +44,7 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 	}
 }
 
-func (b *Builder) buildTags(d *data.Data) error {
+func (b *builder) buildTags(d *data.Data) error {
 	tags := make([]*tag, 0, len(d.Tags))
 
 	for _, t := range d.Tags {

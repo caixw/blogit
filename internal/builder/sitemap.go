@@ -25,7 +25,7 @@ type url struct {
 	Priority   string `xml:"priority"`
 }
 
-func (b *Builder) buildSitemap(path string, d *data.Data) error {
+func (b *builder) buildSitemap(path string, d *data.Data) error {
 	if d.Sitemap == nil {
 		return nil
 	}

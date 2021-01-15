@@ -3,16 +3,12 @@
 package builder
 
 import (
-	"net/http"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/issue9/assert"
-
-	"github.com/caixw/blogit/internal/data"
 )
-
-var _ http.Handler = &Builder{}
 
 func TestFT(t *testing.T) {
 	a := assert.New(t)
@@ -28,20 +24,12 @@ func TestNewHTML(t *testing.T) {
 	a.NotNil(newHTML(" "))
 }
 
-func newBuilder(a *assert.Assertion, dir string) *Builder {
-	d, err := data.Load(dir)
-	a.NotError(err).NotNil(d)
-
-	b := &Builder{}
-	err = b.Load(d)
-	a.NotError(err).NotNil(b)
-
-	return b
-}
-
 func TestBuild(t *testing.T) {
 	a := assert.New(t)
 
-	b := newBuilder(a, "../testdata")
-	a.Equal(b.Builded.Year(), time.Now().Year())
+	a.NotError(os.RemoveAll("../testdata/index.xml"))
+
+	err := Build("../testdata")
+	a.NotError(err)
+	a.FileExists("../testdata/index.xml")
 }

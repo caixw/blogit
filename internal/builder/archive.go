@@ -16,7 +16,7 @@ type archive struct {
 	Posts []*postMeta `xml:"post"`  // 当前存档的文章列表
 }
 
-func (b *Builder) buildArchives(path string, d *data.Data) error {
+func (b *builder) buildArchive(path string, d *data.Data) error {
 	if d.Archive == nil {
 		return nil
 	}

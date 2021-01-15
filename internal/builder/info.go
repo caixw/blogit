@@ -40,7 +40,7 @@ type icon struct {
 	Type string `xml:"type,attr"` // mime type
 }
 
-func (b *Builder) buildInfo(path string, d *data.Data) error {
+func (b *builder) buildInfo(path string, d *data.Data) error {
 	menus := make([]*menu, 0, len(d.Menus))
 	for _, m := range d.Menus {
 		menus = append(menus, &menu{

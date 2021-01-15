@@ -61,7 +61,7 @@ type outdated struct {
 	Content  string `xml:",chardata"`
 }
 
-func (b *Builder) buildPosts(d *data.Data) error {
+func (b *builder) buildPosts(d *data.Data) error {
 	index := &posts{Posts: make([]*postMeta, 0, len(d.Posts))}
 
 	for _, p := range d.Posts {

@@ -3,10 +3,8 @@
 package builder
 
 import (
-	"bytes"
 	"encoding/xml"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -26,10 +24,9 @@ const (
 	timeFormat = time.RFC3339
 )
 
-// Builder 保存构建好的数据
-type Builder struct {
-	files   []*file
-	Builded time.Time
+type builder struct {
+	dir   string
+	files []*file
 }
 
 type file struct {
@@ -57,81 +54,80 @@ func newHTML(html string) *innerhtml {
 	return &innerhtml{Content: html}
 }
 
-// Load 加载数据到当前实例
-func (b *Builder) Load(d *data.Data) error {
-	b.files = make([]*file, 0, 20)
-	b.Builded = d.Builded
+// Build 编译成 xml 文件
+func Build(dir string) error {
+	b, err := newBuilder(dir)
+	if err != nil {
+		return err
+	}
+
+	return b.dump()
+}
+
+// newBuilder 声明新的 Builder 变量
+func newBuilder(dir string) (*builder, error) {
+	d, err := data.Load(dir)
+	if err != nil {
+		return nil, err
+	}
+
+	b := &builder{
+		dir:   dir,
+		files: make([]*file, 0, 20),
+	}
 
 	if err := b.buildInfo(vars.InfoXML, d); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := b.buildTags(d); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := b.buildPosts(d); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := b.buildSitemap(vars.SitemapXML, d); err != nil {
-		return err
+		return nil, err
 	}
 
-	if err := b.buildArchives(vars.ArchiveXML, d); err != nil {
-		return err
+	if err := b.buildArchive(vars.ArchiveXML, d); err != nil {
+		return nil, err
 	}
 
 	if err := b.buildAtom(vars.AtomXML, d); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := b.buildRSS(vars.RssXML, d); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return b, nil
 }
 
 func (f *file) dump(dir string) error {
 	return ioutil.WriteFile(filepath.Join(dir, f.path), f.content, os.ModePerm)
 }
 
-// Dump 输出内容
-func (b *Builder) Dump(dir string) error {
-	if err := os.MkdirAll(filepath.Join(dir, vars.TagsDir), os.ModePerm); err != nil {
+func (b *builder) dump() error {
+	if err := os.MkdirAll(filepath.Join(b.dir, vars.TagsDir), os.ModePerm); err != nil {
 		return err
 	}
 
 	for _, f := range b.files {
-		if err := f.dump(dir); err != nil {
+		if err := f.dump(b.dir); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// ServeHTTP 以内容进行 HTTP 服务
-func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	if path != "" {
-		path = path[1:]
-	}
-
-	for _, f := range b.files {
-		if f.path == path {
-			w.Header().Set("Content-Type", f.ct)
-			http.ServeContent(w, r, f.path, f.lastmod, bytes.NewReader(f.content))
-			return
-		}
-	}
-	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-}
-
 // path 表示输出的文件路径，相对于源目录；
 // xsl 表示关联的 xsl，相对于当前主题目录的路径，如果不需要则可能为空；
 // ct 表示内容的 content-type 值，为空表示采用 application/xml；
-func (b *Builder) appendXMLFile(d *data.Data, path, xsl string, lastmod time.Time, v interface{}) error {
+func (b *builder) appendXMLFile(d *data.Data, path, xsl string, lastmod time.Time, v interface{}) error {
 	data, err := xml.MarshalIndent(v, "", "\t")
 	if err != nil {
 		return err
