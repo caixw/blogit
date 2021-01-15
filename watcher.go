@@ -34,7 +34,13 @@ func Watch(src, addr, path string, l *log.Logger) error {
 			http.Handle(path, h)
 			return http.ListenAndServe(addr, nil)
 		},
+		b: &builder.Builder{},
 	}
+
+	if err := w.load(); err != nil {
+		return err
+	}
+
 	return w.Watch()
 }
 
@@ -68,13 +74,7 @@ func (w *Watcher) Watch() error {
 			w.Log.Println("watcher.Events:触发事件:", event)
 
 			go func() {
-				d, err := data.Load(w.Dir)
-				if err != nil {
-					w.Log.Println(err)
-					return
-				}
-
-				if err = w.b.Load(d); err != nil {
+				if err := w.load(); err != nil {
 					w.Log.Println(err)
 					return
 				}
@@ -86,14 +86,33 @@ func (w *Watcher) Watch() error {
 	}
 }
 
+func (w *Watcher) load() error {
+	d, err := data.Load(w.Dir)
+	if err != nil {
+		return err
+	}
+
+	return w.b.Load(d)
+}
+
 func (w *Watcher) getWatcher() (*fsnotify.Watcher, error) {
 	paths := make([]string, 0, 10)
 	err := filepath.Walk(w.Dir, func(path string, info os.FileInfo, err error) error {
-		ext := strings.ToLower(filepath.Ext(info.Name()))
-		if err == nil && (info.IsDir() || ext == ".md" || ext == ".yaml" || ext == ".yml") {
+		if err != nil {
+			return err
+		}
+
+		name := info.Name()
+
+		if name != "." && name[0] == '.' { // 忽略隐藏文件
+			return filepath.SkipDir
+		}
+
+		ext := strings.ToLower(filepath.Ext(name))
+		if info.IsDir() || ext == ".md" || ext == ".yaml" || ext == ".yml" {
 			paths = append(paths, path)
 		}
-		return err
+		return nil
 	})
 	if err != nil {
 		return nil, err

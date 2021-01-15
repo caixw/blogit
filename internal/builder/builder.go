@@ -114,6 +114,10 @@ func (b *Builder) Dump(dir string) error {
 // ServeHTTP 以内容进行 HTTP 服务
 func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
+	if path != "" {
+		path = path[1:]
+	}
+
 	for _, f := range b.files {
 		if f.path == path {
 			w.Header().Set("Content-Type", f.ct)
