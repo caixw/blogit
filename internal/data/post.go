@@ -9,6 +9,7 @@ import (
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/internal/loader"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 // Post 文章详情
@@ -68,6 +69,14 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		p.Language = conf.Language
 	}
 
+	if p.Modified.IsZero() {
+		p.Modified = p.Created
+	}
+
+	if p.Template == "" {
+		p.Template = vars.DefaultTemplate
+	}
+
 	var od *Outdated
 	switch p.Outdated {
 	case "":
@@ -94,8 +103,8 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		}
 	}
 
-	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 1 {
-		return nil, &loader.FieldError{Message: "不存在", Field: "template", File: p.Slug + ".md", Value: p.Template}
+	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 0 {
+		return nil, &loader.FieldError{Message: "模板不存在于 theme.yaml", Field: "template", File: p.Slug + ".md", Value: p.Template}
 	}
 
 	pp := &Post{

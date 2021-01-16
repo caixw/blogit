@@ -28,7 +28,8 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 	ps := make([]*postMeta, 0, len(t.Posts))
 	for _, p := range t.Posts {
 		ps = append(ps, &postMeta{
-			Permalink: d.BuildURL(p.Slug),
+			Permalink: d.BuildURL(p.Path),
+			Language:  p.Language,
 			Title:     p.Title,
 			Created:   ft(p.Created),
 			Modified:  ft(p.Modified),

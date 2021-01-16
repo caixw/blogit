@@ -16,6 +16,7 @@ type posts struct {
 type postMeta struct {
 	Permalink string     `xml:"permalink,attr"`
 	Title     string     `xml:"title"`
+	Language  string     `xml:"language,attr"`
 	Created   string     `xml:"created,attr,omitempty"`
 	Modified  string     `xml:"modified,attr,omitempty"`
 	Tags      []*tagMeta `xml:"tag,omitempty"`
@@ -132,6 +133,7 @@ func (b *builder) buildPosts(d *data.Data) error {
 
 		index.Posts = append(index.Posts, &postMeta{
 			Permalink: d.BuildURL(p.Path),
+			Language:  p.Language,
 			Title:     p.Title,
 			Created:   ft(p.Created),
 			Modified:  ft(p.Modified),

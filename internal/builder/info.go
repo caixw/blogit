@@ -12,10 +12,11 @@ type info struct {
 	Subtitle    string    `xml:"subtitle"`
 	TitleSuffix string    `xml:"titleSuffix"` // 每篇文章标题的后缀
 	Icon        *icon     `xml:"icon"`
-	Menus       []*menu   `xml:"menus"`
+	Menus       []*menu   `xml:"menu"`
 	Language    string    `xml:"language,attr"`
 	Authors     []*author `xml:"author"`
 	License     *link     `xml:"license"`
+	Theme       *theme    `xml:"theme"`
 
 	Atom    bool `xml:"atom,omitempty"`
 	RSS     bool `xml:"rss,omitempty"`
@@ -26,6 +27,13 @@ type info struct {
 	Created  string `xml:"created,attr"`
 	Modified string `xml:"modified,attr"`
 	Builded  string `xml:"builded,attr"` // 最后次编译时间
+}
+
+type theme struct {
+	ID          string    `xml:"id,attr"`
+	Base        string    `xml:"base,attr"`
+	Description string    `xml:"description,omitempty"`
+	Authors     []*author `xml:"authors,omitempty"`
 }
 
 type menu struct {
@@ -60,6 +68,16 @@ func (b *builder) buildInfo(path string, d *data.Data) error {
 		})
 	}
 
+	themeAuthors := make([]*author, 0, len(d.Theme.Authors))
+	for _, a := range d.Theme.Authors {
+		themeAuthors = append(themeAuthors, &author{
+			Name:   a.Name,
+			URL:    a.URL,
+			Email:  a.Email,
+			Avatar: a.Avatar,
+		})
+	}
+
 	i := info{
 		URL:         d.URL,
 		Title:       d.Title,
@@ -72,6 +90,12 @@ func (b *builder) buildInfo(path string, d *data.Data) error {
 		License: &link{
 			URL:  d.License.URL,
 			Text: d.License.Text,
+		},
+		Theme: &theme{
+			ID:          d.Theme.ID,
+			Base:        d.BuildThemeURL(),
+			Description: d.Theme.Description,
+			Authors:     themeAuthors,
 		},
 
 		Uptime:   ft(d.Uptime),

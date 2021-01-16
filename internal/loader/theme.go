@@ -56,8 +56,12 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 		return &FieldError{Message: "不存在该模板文件", Field: "tag", Value: t.Tag}
 	}
 
+	if !utils.FileExists(filepath.Join(dir, vars.DefaultTemplate)) {
+		return &FieldError{Message: "不存在默认的模板文件", Field: "templates"}
+	}
+
 	if len(t.Templates) == 0 {
-		return &FieldError{Message: "不能为空", Field: "templates"}
+		t.Templates = []string{vars.DefaultTemplate}
 	}
 	indexes := sliceutil.Dup(t.Templates, func(i, j int) bool { return t.Templates[i] == t.Templates[j] })
 	if len(indexes) > 0 {

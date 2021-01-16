@@ -20,4 +20,6 @@ const (
 	AtomXML    = "atom.xml"
 	ArchiveXML = "archive.xml"
 	SitemapXML = "sitemap.xml"
+
+	DefaultTemplate = "post.xsl"
 )
