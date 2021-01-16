@@ -28,7 +28,7 @@ func initServe(opt *cmdopt.CmdOpt) {
 
 func serve(w io.Writer) error {
 	if serveWatch {
-		return blogit.Watch(serveSrc, serveAddr, servePath, info.asLogger())
+		return blogit.Watch(serveSrc, serveAddr, servePath, info.asLogger(), erro.asLogger(), succ.asLogger())
 	}
-	return blogit.Serve(serveSrc, serveAddr, servePath)
+	return blogit.Serve(serveSrc, serveAddr, servePath, info.asLogger())
 }

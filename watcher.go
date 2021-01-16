@@ -15,18 +15,22 @@ import (
 // Watcher 热编译功能
 type Watcher struct {
 	Dir     string
-	Log     *log.Logger
+	Info    *log.Logger
+	Erro    *log.Logger
+	Succ    *log.Logger
 	F       func() error
 	builded time.Time
 }
 
 // Watch 热编译
-func Watch(src, addr, path string, l *log.Logger) error {
+func Watch(src, addr, path string, info, erro, succ *log.Logger) error {
 	w := &Watcher{
-		Dir: src,
-		Log: l,
+		Dir:  src,
+		Info: info,
+		Erro: erro,
+		Succ: succ,
 		F: func() error {
-			return Serve(src, addr, path)
+			return Serve(src, addr, path, info)
 		},
 		builded: time.Now(),
 	}
@@ -38,11 +42,29 @@ func Watch(src, addr, path string, l *log.Logger) error {
 	return w.Watch()
 }
 
+func (w *Watcher) info(v ...interface{}) {
+	if w.Info != nil {
+		w.Info.Println(v...)
+	}
+}
+
+func (w *Watcher) erro(v ...interface{}) {
+	if w.Erro != nil {
+		w.Erro.Println(v...)
+	}
+}
+
+func (w *Watcher) succ(v ...interface{}) {
+	if w.Succ != nil {
+		w.Succ.Println(v...)
+	}
+}
+
 // Watch 监视变化并进行编译
 func (w *Watcher) Watch() error {
 	go func() {
 		if err := w.F(); err != nil {
-			w.Log.Println(err)
+			w.erro(err)
 			return
 		}
 	}()
@@ -55,27 +77,28 @@ func (w *Watcher) Watch() error {
 	for {
 		select {
 		case event := <-watcher.Events:
-			if event.Op&fsnotify.Chmod == fsnotify.Chmod {
-				w.Log.Println("watcher.Events:忽略 CHMOD 事件:", event)
+			if event.Op&fsnotify.Chmod == fsnotify.Chmod || // 忽略 CHMOD 事件
+				strings.ToLower(filepath.Ext(event.Name)) == ".xml" { // 忽略对 xml 文件的写操作
 				continue
 			}
 
 			if time.Now().Sub(w.builded) <= 1*time.Second {
-				w.Log.Println("watcher.Events:更新太频繁，该监控事件被忽略:", event)
+				w.info("watcher.Events:更新太频繁，该监控事件被忽略:", event)
 				continue
 			}
 
-			w.Log.Println("watcher.Events:触发事件:", event)
+			w.info("触发事件：", event, "，开始重新编译！")
 
 			go func() {
 				if err = Build(w.Dir); err != nil {
-					w.Log.Println(err)
+					w.erro(err)
 					return
 				}
 				w.builded = time.Now()
+				w.succ("重新编译成功")
 			}()
 		case err := <-watcher.Errors:
-			w.Log.Println(err)
+			w.info(err)
 			return err
 		}
 	}
