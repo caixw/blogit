@@ -34,6 +34,7 @@ func Exec() error {
 
 	initBuild(opt)
 	initServe(opt)
+	initPreview(opt)
 	initInit(opt)
 	initPost(opt)
 	initVersion(opt)

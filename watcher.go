@@ -3,7 +3,9 @@
 package blogit
 
 import (
+	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -14,56 +16,73 @@ import (
 
 // Watcher 热编译功能
 type Watcher struct {
-	Dir     string
-	Info    *log.Logger
-	Erro    *log.Logger
-	Succ    *log.Logger
-	F       func() error
+	// 项目的源码目录
+	Dir string
+
+	// 不同类型日志的输出通道
+	Info *log.Logger
+	Erro *log.Logger
+	Succ *log.Logger
+
+	// 运行 HTTP 服务的函数体
+	Serve func() error
+
+	// 执行编译的函数体
+	Build func() error
+
 	builded time.Time
 }
 
 // Watch 热编译
-func Watch(src, addr, path string, info, erro, succ *log.Logger) error {
+func Watch(src, base string, info, erro, succ *log.Logger) error {
+	u, err := url.Parse(base)
+	if err != nil {
+		return err
+	}
+
+	addr := u.Port()
+	if addr == "" {
+		if scheme := strings.ToLower(u.Scheme); scheme == "https" {
+			addr = ":443"
+		} else if scheme == "http" {
+			addr = ":http"
+		} else {
+			return fmt.Errorf("不支持协议：%s", scheme)
+		}
+	} else {
+		addr = ":" + addr
+	}
+	path := u.Path
+
 	w := &Watcher{
-		Dir:  src,
+		Dir: src,
+
 		Info: info,
 		Erro: erro,
 		Succ: succ,
-		F: func() error {
+
+		Serve: func() error {
 			return Serve(src, addr, path, info)
 		},
+
+		Build: func() error {
+			return Build(src, base)
+		},
+
 		builded: time.Now(),
 	}
 
-	if err := Build(src); err != nil {
+	if err := w.Build(); err != nil {
 		return err
 	}
 
 	return w.Watch()
 }
 
-func (w *Watcher) info(v ...interface{}) {
-	if w.Info != nil {
-		w.Info.Println(v...)
-	}
-}
-
-func (w *Watcher) erro(v ...interface{}) {
-	if w.Erro != nil {
-		w.Erro.Println(v...)
-	}
-}
-
-func (w *Watcher) succ(v ...interface{}) {
-	if w.Succ != nil {
-		w.Succ.Println(v...)
-	}
-}
-
 // Watch 监视变化并进行编译
 func (w *Watcher) Watch() error {
 	go func() {
-		if err := w.F(); err != nil {
+		if err := w.Serve(); err != nil {
 			w.erro(err)
 			return
 		}
@@ -90,7 +109,7 @@ func (w *Watcher) Watch() error {
 			w.info("触发事件：", event, "，开始重新编译！")
 
 			go func() {
-				if err = Build(w.Dir); err != nil {
+				if err = w.Build(); err != nil {
 					w.erro(err)
 					return
 				}
@@ -139,4 +158,22 @@ func (w *Watcher) getWatcher() (*fsnotify.Watcher, error) {
 	}
 
 	return watcher, nil
+}
+
+func (w *Watcher) info(v ...interface{}) {
+	if w.Info != nil {
+		w.Info.Println(v...)
+	}
+}
+
+func (w *Watcher) erro(v ...interface{}) {
+	if w.Erro != nil {
+		w.Erro.Println(v...)
+	}
+}
+
+func (w *Watcher) succ(v ...interface{}) {
+	if w.Succ != nil {
+		w.Succ.Println(v...)
+	}
 }

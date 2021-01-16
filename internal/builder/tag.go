@@ -9,11 +9,13 @@ import (
 
 type tags struct {
 	XMLName struct{} `xml:"tags"`
+	Base    string   `xml:"base,attr"`
 	Tags    []*tag   `xml:"tag"`
 }
 
 type tag struct {
 	XMLName   struct{}    `xml:"tag"`
+	Base      string      `xml:"base,attr,omitempty"`
 	Permalink string      `xml:"permalink,attr"`
 	Title     string      `xml:"title"`
 	Created   string      `xml:"created,attr,omitempty"`
@@ -36,6 +38,7 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 
 	return &tag{
 		Permalink: d.BuildURL(t.Path),
+		Base:      d.URL,
 		Title:     t.Title,
 		Created:   ft(t.Created),
 		Modified:  ft(t.Modified),
@@ -45,7 +48,7 @@ func newTag(t *data.Tag, d *data.Data) *tag {
 }
 
 func (b *builder) buildTags(d *data.Data) error {
-	tags := make([]*tag, 0, len(d.Tags))
+	ts := make([]*tag, 0, len(d.Tags))
 
 	for _, t := range d.Tags {
 		tt := newTag(t, d)
@@ -54,8 +57,13 @@ func (b *builder) buildTags(d *data.Data) error {
 		}
 
 		tt.Posts = nil
-		tags = append(tags, tt)
+		tt.Base = ""
+		ts = append(ts, tt)
 	}
 
-	return b.appendXMLFile(d, vars.TagsXML, d.Theme.Tags, d.Modified, tags)
+	t := &tags{
+		Base: d.URL,
+		Tags: ts,
+	}
+	return b.appendXMLFile(d, vars.TagsXML, d.Theme.Tags, d.Modified, t)
 }

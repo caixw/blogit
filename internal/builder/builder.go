@@ -55,8 +55,8 @@ func newHTML(html string) *innerhtml {
 }
 
 // Build 编译成 xml 文件
-func Build(dir string) error {
-	b, err := newBuilder(dir)
+func Build(dir, base string) error {
+	b, err := newBuilder(dir, base)
 	if err != nil {
 		return err
 	}
@@ -64,11 +64,19 @@ func Build(dir string) error {
 	return b.dump()
 }
 
-// newBuilder 声明新的 Builder 变量
-func newBuilder(dir string) (*builder, error) {
+func newBuilder(dir, base string) (*builder, error) {
 	d, err := data.Load(dir)
 	if err != nil {
 		return nil, err
+	}
+
+	// base 被用于替换 data.URL，所以了要和其有一样规则：保证以 / 结尾。
+	if base != "" && base[len(base)-1] != '/' {
+		base += "/"
+	}
+
+	if base != "" {
+		d.URL = base
 	}
 
 	b := &builder{

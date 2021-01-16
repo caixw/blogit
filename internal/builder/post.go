@@ -9,6 +9,7 @@ import (
 
 type posts struct {
 	XMLName struct{}    `xml:"posts"`
+	Base    string      `xml:"base,attr"`
 	Posts   []*postMeta `xml:"post"`
 }
 
@@ -28,6 +29,7 @@ type tagMeta struct {
 
 type post struct {
 	XMLName   struct{}   `xml:"post"`
+	Base      string     `xml:"base,attr"`
 	Permalink string     `xml:"permalink,attr"`
 	Title     string     `xml:"title"`
 	Created   string     `xml:"created,attr,omitempty"`
@@ -62,7 +64,10 @@ type outdated struct {
 }
 
 func (b *builder) buildPosts(d *data.Data) error {
-	index := &posts{Posts: make([]*postMeta, 0, len(d.Posts))}
+	index := &posts{
+		Base:  d.URL,
+		Posts: make([]*postMeta, 0, len(d.Posts)),
+	}
 
 	for _, p := range d.Posts {
 		tags := make([]*tagMeta, 0, len(p.Tags))
@@ -92,6 +97,7 @@ func (b *builder) buildPosts(d *data.Data) error {
 		}
 
 		pp := &post{
+			Base:      d.URL,
 			Permalink: d.BuildURL(p.Path),
 			Title:     p.Title,
 			Created:   ft(p.Created),

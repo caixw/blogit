@@ -29,7 +29,7 @@ func TestBuild(t *testing.T) {
 
 	a.NotError(os.RemoveAll("../testdata/index.xml"))
 
-	err := Build("../testdata")
+	err := Build("../testdata", "")
 	a.NotError(err)
 	a.FileExists("../testdata/index.xml")
 }
