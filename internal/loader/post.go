@@ -146,11 +146,14 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 		return &FieldError{Field: "title", Message: "不能为空"}
 	}
 
+	dir = filepath.ToSlash(dir)
+	path = filepath.ToSlash(path)
+
 	slug := strings.TrimPrefix(path, dir)
 	if len(slug) > 3 && strings.ToLower(slug[len(slug)-3:]) == ".md" {
 		slug = slug[:len(slug)-3]
 	}
-	slug = strings.Trim(filepath.ToSlash(slug), "./")
+	slug = strings.Trim(slug, "./")
 	if strings.IndexFunc(slug, func(r rune) bool { return unicode.IsSpace(r) }) >= 0 {
 		return &FieldError{Field: "slug", Message: "不能包含空格", Value: slug}
 	}
