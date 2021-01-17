@@ -60,8 +60,8 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 		return &FieldError{Message: "不存在默认的模板文件", Field: "templates"}
 	}
 
-	if len(t.Templates) == 0 {
-		t.Templates = []string{vars.DefaultTemplate}
+	if sliceutil.Count(t.Templates, func(i int) bool { return t.Templates[i] == vars.DefaultTemplate }) == 0 {
+		t.Templates = append(t.Templates, vars.DefaultTemplate)
 	}
 	indexes := sliceutil.Dup(t.Templates, func(i, j int) bool { return t.Templates[i] == t.Templates[j] })
 	if len(indexes) > 0 {
@@ -78,7 +78,7 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 			return &FieldError{Message: "不存在的示例图", Field: "screenshots[" + strconv.Itoa(index) + "]"}
 		}
 	}
-	indexes = sliceutil.Dup(t.Templates, func(i, j int) bool { return t.Screenshots[i] == t.Screenshots[j] })
+	indexes = sliceutil.Dup(t.Screenshots, func(i, j int) bool { return t.Screenshots[i] == t.Screenshots[j] })
 	if len(indexes) > 0 {
 		return &FieldError{Message: "重复的值示例图", Field: "screenshots[" + strconv.Itoa(indexes[0]) + "]"}
 	}
