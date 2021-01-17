@@ -25,7 +25,6 @@ const (
 )
 
 type builder struct {
-	dir   string
 	files []*file
 }
 
@@ -61,7 +60,7 @@ func Build(dir, base string) error {
 		return err
 	}
 
-	return b.dump()
+	return b.dump(dir)
 }
 
 func newBuilder(dir, base string) (*builder, error) {
@@ -80,7 +79,6 @@ func newBuilder(dir, base string) (*builder, error) {
 	}
 
 	b := &builder{
-		dir:   dir,
 		files: make([]*file, 0, 20),
 	}
 
@@ -119,13 +117,13 @@ func (f *file) dump(dir string) error {
 	return ioutil.WriteFile(filepath.Join(dir, f.path), f.content, os.ModePerm)
 }
 
-func (b *builder) dump() error {
-	if err := os.MkdirAll(filepath.Join(b.dir, vars.TagsDir), os.ModePerm); err != nil {
+func (b *builder) dump(dir string) error {
+	if err := os.MkdirAll(filepath.Join(dir, vars.TagsDir), os.ModePerm); err != nil {
 		return err
 	}
 
 	for _, f := range b.files {
-		if err := f.dump(b.dir); err != nil {
+		if err := f.dump(dir); err != nil {
 			return err
 		}
 	}
