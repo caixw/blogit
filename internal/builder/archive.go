@@ -10,6 +10,11 @@ import (
 	"github.com/caixw/blogit/internal/loader"
 )
 
+type archives struct {
+	Archives []*archive `xml:"archive"`
+	Base     string     `xml:"base,attr"`
+}
+
 type archive struct {
 	date  time.Time   // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
 	Title string      `xml:"title"` // 当前存档页的标题
@@ -21,7 +26,7 @@ func (b *builder) buildArchive(path string, d *data.Data) error {
 		return nil
 	}
 
-	archives := make([]*archive, 0, 10)
+	list := make([]*archive, 0, 10)
 	for _, post := range d.Posts {
 		t := post.Created
 		var date time.Time
@@ -52,7 +57,7 @@ func (b *builder) buildArchive(path string, d *data.Data) error {
 		}
 
 		found := false
-		for _, archive := range archives {
+		for _, archive := range list {
 			if archive.date.Equal(date) {
 				archive.Posts = append(archive.Posts, pm)
 				found = true
@@ -60,7 +65,7 @@ func (b *builder) buildArchive(path string, d *data.Data) error {
 			}
 		}
 		if !found {
-			archives = append(archives, &archive{
+			list = append(list, &archive{
 				date:  date,
 				Title: date.Format(d.Archive.Format),
 				Posts: []*postMeta{pm},
@@ -68,12 +73,15 @@ func (b *builder) buildArchive(path string, d *data.Data) error {
 		}
 	} // end for
 
-	sort.SliceStable(archives, func(i, j int) bool {
+	sort.SliceStable(list, func(i, j int) bool {
 		if d.Archive.Order == loader.ArchiveOrderDesc {
-			return archives[i].date.After(archives[j].date)
+			return list[i].date.After(list[j].date)
 		}
-		return archives[i].date.Before(archives[j].date)
+		return list[i].date.Before(list[j].date)
 	})
 
-	return b.appendXMLFile(d, path, d.Theme.Archive, d.Modified, archives)
+	return b.appendXMLFile(d, path, d.Theme.Archive, d.Modified, &archives{
+		Archives: list,
+		Base:     d.URL,
+	})
 }
