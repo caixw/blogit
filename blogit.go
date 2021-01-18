@@ -15,11 +15,12 @@ const Version = "0.1.0"
 
 // Build 编译并输出内容
 //
-// dir 表示源码目录，同时也是输出的目录；
+// dir 表示源码目录；
+// dest 表示输出的目录；
 // base 表示网站的基地址，如果此值不为空，会替代 conf.yaml 中的 url 变量，
 // 在预览模式下，此参数会很有用。
-func Build(dir, base string) error {
-	return builder.Build(dir, base)
+func Build(src, dest, base string) error {
+	return builder.Build(src, dest, base)
 }
 
 // Serve 运行服务

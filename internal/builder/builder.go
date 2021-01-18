@@ -7,9 +7,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/issue9/errwrap"
+	"github.com/otiai10/copy"
 
 	"github.com/caixw/blogit/internal/data"
 	"github.com/caixw/blogit/internal/vars"
@@ -23,6 +25,22 @@ const (
 	// NOTE: 时间可能会被当作 XML 的属性值，如果格式中带引号，需要注意正确处理。
 	timeFormat = time.RFC3339
 )
+
+var copyOptions = copy.Options{
+	Skip: func(src string) (bool, error) {
+		ext := strings.ToLower(filepath.Ext(src))
+		return ext == ".md" ||
+			ext == ".yaml" ||
+			ext == ".yml" ||
+			ext == ".gitignore" ||
+			ext == ".git", nil
+	},
+
+	OnSymlink: func(src string) copy.SymlinkAction {
+		return copy.Skip
+	},
+	AddPermission: 0200,
+}
 
 type builder struct {
 	files []*file
@@ -54,13 +72,19 @@ func newHTML(html string) *innerhtml {
 }
 
 // Build 编译成 xml 文件
-func Build(dir, base string) error {
-	b, err := newBuilder(dir, base)
+func Build(src, dest, base string) error {
+	if src != dest {
+		if err := copy.Copy(src, dest, copyOptions); err != nil {
+			return err
+		}
+	}
+
+	b, err := newBuilder(src, base)
 	if err != nil {
 		return err
 	}
 
-	return b.dump(dir)
+	return b.dump(src)
 }
 
 func newBuilder(dir, base string) (*builder, error) {

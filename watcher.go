@@ -40,6 +40,9 @@ func Watch(src, base string, info, erro, succ *log.Logger) error {
 		return err
 	}
 
+	// 预览文件输出至一个临时目录
+	dest := filepath.Join(os.TempDir(), "blogit")
+
 	addr := u.Port()
 	if addr == "" {
 		if scheme := strings.ToLower(u.Scheme); scheme == "https" {
@@ -66,7 +69,7 @@ func Watch(src, base string, info, erro, succ *log.Logger) error {
 		},
 
 		Build: func() error {
-			return Build(src, base)
+			return Build(src, dest, base)
 		},
 
 		builded: time.Now(),
