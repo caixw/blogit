@@ -29,7 +29,7 @@ func TestTag_sanitize(t *testing.T) {
 func TestLoadTags(t *testing.T) {
 	a := assert.New(t)
 
-	tags, err := LoadTags("../testdata/tags.yaml")
+	tags, err := LoadTags("../../testdata/src/tags.yaml")
 	a.NotError(err).NotNil(tags)
 	a.Equal(4, len(tags))
 	a.Equal(tags[0].Slug, "default").
@@ -37,11 +37,11 @@ func TestLoadTags(t *testing.T) {
 		Equal(tags[2].Slug, "firefox").
 		Equal(tags[3].Slug, "git")
 
-	tags, err = LoadTags("../testdata/not-exists.yaml")
+	tags, err = LoadTags("../../testdata/src/not-exists.yaml")
 	a.ErrorIs(err, os.ErrNotExist).Empty(tags)
 
-	tags, err = LoadTags("../testdata/failed_tags.yaml")
+	tags, err = LoadTags("../../testdata/src/failed_tags.yaml")
 	a.Error(err).Nil(tags)
 	ferr, ok := err.(*FieldError)
-	a.True(ok).Equal(ferr.File, "../testdata/failed_tags.yaml")
+	a.True(ok).Equal(ferr.File, "../../testdata/src/failed_tags.yaml")
 }

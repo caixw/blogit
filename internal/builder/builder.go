@@ -18,8 +18,6 @@ import (
 )
 
 const (
-	xmlContentType = "application/xml"
-
 	// 输出的时间格式
 	//
 	// NOTE: 时间可能会被当作 XML 的属性值，如果格式中带引号，需要注意正确处理。
@@ -43,14 +41,7 @@ var copyOptions = copy.Options{
 }
 
 type builder struct {
-	files []*file
-}
-
-type file struct {
-	path    string
-	lastmod time.Time
-	content []byte
-	ct      string
+	files map[string][]byte
 }
 
 type innerhtml struct {
@@ -84,7 +75,7 @@ func Build(src, dest, base string) error {
 		return err
 	}
 
-	return b.dump(src)
+	return b.dump(dest)
 }
 
 func newBuilder(dir, base string) (*builder, error) {
@@ -103,7 +94,7 @@ func newBuilder(dir, base string) (*builder, error) {
 	}
 
 	b := &builder{
-		files: make([]*file, 0, 20),
+		files: make(map[string][]byte, 20),
 	}
 
 	if err := b.buildInfo(vars.InfoXML, d); err != nil {
@@ -137,17 +128,14 @@ func newBuilder(dir, base string) (*builder, error) {
 	return b, nil
 }
 
-func (f *file) dump(dir string) error {
-	return ioutil.WriteFile(filepath.Join(dir, f.path), f.content, os.ModePerm)
-}
-
 func (b *builder) dump(dir string) error {
 	if err := os.MkdirAll(filepath.Join(dir, vars.TagsDir), os.ModePerm); err != nil {
 		return err
 	}
 
-	for _, f := range b.files {
-		if err := f.dump(dir); err != nil {
+	for path, content := range b.files {
+		err := ioutil.WriteFile(filepath.Join(dir, path), content, os.ModePerm)
+		if err != nil {
 			return err
 		}
 	}
@@ -175,11 +163,6 @@ func (b *builder) appendXMLFile(d *data.Data, path, xsl string, lastmod time.Tim
 		return buf.Err
 	}
 
-	b.files = append(b.files, &file{
-		path:    path,
-		lastmod: lastmod,
-		content: buf.Bytes(),
-		ct:      xmlContentType,
-	})
+	b.files[path] = buf.Bytes()
 	return nil
 }

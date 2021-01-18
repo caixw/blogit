@@ -14,7 +14,7 @@ import (
 func TestLoad(t *testing.T) {
 	a := assert.New(t)
 
-	data, err := Load("../testdata")
+	data, err := Load("../../testdata/src")
 	a.NotError(err).NotNil(data)
 
 	a.Equal(data.Icon.Type, "image/png").Equal(data.Icon.Sizes, "256x256")

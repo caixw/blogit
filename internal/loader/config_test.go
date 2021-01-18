@@ -11,16 +11,16 @@ import (
 
 func TestLoadConfig(t *testing.T) {
 	a := assert.New(t)
-	conf, err := LoadConfig("../testdata/conf.yaml")
+	conf, err := LoadConfig("../../testdata/src/conf.yaml")
 	a.NotError(err).NotNil(conf).Equal(conf.URL[len(conf.URL)-1], "/")
 
 	a.Equal(conf.Authors[0].Name, "caixw")
 	a.Equal(conf.Language, "cmn-Hans")
 
-	conf, err = LoadConfig("../testdata/not-exists.yaml")
+	conf, err = LoadConfig("../../testdata/src/not-exists.yaml")
 	a.ErrorIs(err, os.ErrNotExist).Nil(conf)
 
-	conf, err = LoadConfig("../testdata/failed_conf.yaml")
+	conf, err = LoadConfig("../../testdata/src/failed_conf.yaml")
 	a.ErrorType(err, &FieldError{}, err).Nil(conf)
 }
 

@@ -27,9 +27,9 @@ func TestNewHTML(t *testing.T) {
 func TestBuild(t *testing.T) {
 	a := assert.New(t)
 
-	a.NotError(os.RemoveAll("../testdata/index.xml"))
+	a.NotError(os.RemoveAll("../../testdata/dest/index.xml"))
 
-	err := Build("../testdata", "../testdata", "")
+	err := Build("../../testdata/src", "../../testdata/dest", "")
 	a.NotError(err)
-	a.FileExists("../testdata/index.xml")
+	a.FileExists("../../testdata/dest/index.xml")
 }
