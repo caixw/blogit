@@ -18,7 +18,6 @@ func TestLoad(t *testing.T) {
 	a.NotError(err).NotNil(data)
 
 	a.Equal(data.Icon.Type, "image/png").Equal(data.Icon.Sizes, "256x256")
-	a.Equal(5, len(data.Menus))
 	a.Equal(3, len(data.Posts)).
 		Equal(data.Posts[1].Prev, data.Posts[0]).
 		Equal(data.Posts[1].Next, data.Posts[2])

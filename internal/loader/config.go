@@ -34,23 +34,14 @@ type Config struct {
 	Language string    `yaml:"language,omitempty"`
 	Uptime   time.Time `yaml:"uptime"`
 	Icon     *Icon     `yaml:"icon,omitempty"`
-	Menus    []*Menu   `yaml:"menus,omitempty"`
 	Authors  []*Author `yaml:"authors"`
 	License  *License  `yaml:"license"`
-	Outdated *Outdated `yaml:"outdated,omitempty"` // 如果为空，则仅允许 post.Outdated 出现自定义内容
 	Theme    string    `yaml:"theme"`
 
 	Archive *Archive `yaml:"archive,omitempty"`
 	RSS     *RSS     `yaml:"rss,omitempty"`
 	Atom    *RSS     `yaml:"atom,omitempty"`
 	Sitemap *Sitemap `yaml:"sitemap,omitempty"`
-}
-
-// Outdated 过期提示的配置项
-type Outdated struct {
-	Outdated time.Duration `yaml:"outdated"`
-	Created  string        `yaml:"created"`
-	Modified string        `yaml:"modified"`
 }
 
 // RSS RSS 和 Atom 相关的配置项
@@ -102,13 +93,6 @@ func (conf *Config) sanitize() *FieldError {
 
 	if len(conf.Language) == 0 {
 		conf.Language = "cmn-Hans"
-	}
-
-	if conf.Outdated != nil {
-		if err := conf.Outdated.sanitize(); err != nil {
-			err.Field = "outdated." + err.Field
-			return err
-		}
 	}
 
 	if conf.Uptime.IsZero() {
@@ -183,22 +167,6 @@ func (conf *Config) sanitize() *FieldError {
 			err.Field = "sitemap." + err.Field
 			return err
 		}
-	}
-
-	// menus
-	for index, link := range conf.Menus {
-		if err := link.sanitize(); err != nil {
-			err.Field = "menus[" + strconv.Itoa(index) + "]." + err.Field
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (o *Outdated) sanitize() *FieldError {
-	if o.Outdated <= 0 {
-		return &FieldError{Message: "必须大于 0", Field: "outdated", Value: o.Outdated}
 	}
 
 	return nil

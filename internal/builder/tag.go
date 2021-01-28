@@ -10,12 +10,16 @@ import (
 )
 
 type tags struct {
-	Info *info
-	Tags []*tag
+	Info      *info
+	Tags      []*tag
+	HTMLTitle string
+	Permalink string
+	Title     string
 }
 
 type tag struct {
 	Info      *info
+	HTMLTitle string
 	Permalink string
 	Title     string
 	Created   time.Time
@@ -39,6 +43,7 @@ func newTag(t *data.Tag, d *data.Data, i *info) *tag {
 
 	return &tag{
 		Info:      i,
+		HTMLTitle: t.Title + d.TitleSuffix,
 		Permalink: d.BuildURL(t.Path),
 		Title:     t.Title,
 		Created:   t.Created,
@@ -61,9 +66,13 @@ func (b *builder) buildTags(d *data.Data, i *info) error {
 		ts = append(ts, tt)
 	}
 
+	// TODO
 	t := &tags{
-		Info: i,
-		Tags: ts,
+		Info:      i,
+		Tags:      ts,
+		HTMLTitle: "todo" + d.TitleSuffix,
+		Permalink: "TODO",
+		Title:     "todo",
 	}
 	return b.appendTemplateFile(d, vars.TagsFilename, vars.TagsTemplate, t)
 }

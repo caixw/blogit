@@ -5,10 +5,6 @@ subtitle: subtitle
 uptime: 2016-03-06T00:00:01+08:00
 language: cmn-Hans
 theme: default
-outdated: 
-  outdated: 1h # 24*365 小时，遵守 time.ParseDuration 语法
-  created: 这篇文章创建于 2006-01-02，其中的信息可能已经有所发展或是发生改变。
-  modified: 这篇文章修改于 2006-01-02，其中的信息可能已经有所发展或是发生改变。
 
 # 程序图标
 icon:
@@ -26,29 +22,6 @@ authors:
 license:
   text: 署名 4.0 国际 (CC BY 4.0)
   url: https://creativecommons.org/licenses/by/4.0/deed.zh
-
-# 导航菜单栏
-menus:
-  - url: /
-    text: 首页
-    icon: home
-
-  - url: /tags.xml
-    text: 标签
-    icon: tags
-
-  - url: /archives.xml
-    text: 归档
-    icon: archive
-
-  - url: /posts/2020/about.xml
-    text: 关于
-    icon: info
-
-  - url: /rss.xml
-    text: RSS 订阅
-    icon: rss
-
 
 # 归档
 archive:

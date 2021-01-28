@@ -21,7 +21,6 @@ type (
 		Subtitle    string
 		TitleSuffix string // 每篇文章标题的后缀
 		Icon        *loader.Icon
-		Menus       []*loader.Menu
 		Language    string
 		Authors     []*loader.Author
 		License     *loader.License
@@ -94,7 +93,6 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 		Subtitle:    conf.Subtitle,
 		TitleSuffix: suffix,
 		Icon:        conf.Icon,
-		Menus:       conf.Menus,
 		Language:    conf.Language,
 		Authors:     conf.Authors,
 		License:     conf.License,

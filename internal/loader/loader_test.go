@@ -21,19 +21,6 @@ func TestLicense_sanitize(t *testing.T) {
 	a.NotError(l.sanitize())
 }
 
-func TestMenu_sanitize(t *testing.T) {
-	a := assert.New(t)
-
-	m := &Menu{}
-	a.Error(m.sanitize())
-
-	m = &Menu{Text: "t"}
-	a.Error(m.sanitize())
-
-	m = &Menu{Text: "t", URL: "/favicon.ico"}
-	a.NotError(m.sanitize())
-}
-
 func TestAuthor_sanitize(t *testing.T) {
 	a := assert.New(t)
 

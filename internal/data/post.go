@@ -22,7 +22,6 @@ type Post struct {
 	Tags     []*Tag
 	tags     []string
 	Language string
-	Outdated *Outdated
 	Authors  []*loader.Author
 	License  *loader.License
 	Summary  string
@@ -31,12 +30,6 @@ type Post struct {
 	Prev     *Post
 	Next     *Post
 	Template string
-}
-
-// Outdated 定义文章过时显示的信息
-type Outdated struct {
-	Outdated time.Time
-	Content  string
 }
 
 func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) ([]*Post, error) {
@@ -77,32 +70,6 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		p.Template = vars.DefaultTemplate
 	}
 
-	var od *Outdated
-	switch p.Outdated {
-	case "":
-	case loader.OutdatedCreated:
-		if conf.Outdated == nil {
-			return nil, &loader.FieldError{File: p.Slug, Field: "outdated", Message: "仅允许自定义内容"}
-		}
-		od = &Outdated{
-			Outdated: p.Created.Add(conf.Outdated.Outdated),
-			Content:  p.Created.Format(conf.Outdated.Created),
-		}
-	case loader.OutdatedModified:
-		if conf.Outdated == nil {
-			return nil, &loader.FieldError{File: p.Slug, Field: "outdated", Message: "仅允许自定义内容"}
-		}
-		od = &Outdated{
-			Outdated: p.Modified.Add(conf.Outdated.Outdated),
-			Content:  p.Modified.Format(conf.Outdated.Modified),
-		}
-	default:
-		od = &Outdated{
-			Outdated: time.Time{},
-			Content:  p.Outdated,
-		}
-	}
-
 	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 0 {
 		return nil, &loader.FieldError{Message: "模板不存在于 theme.yaml", Field: "template", File: p.Slug + ".md", Value: p.Template}
 	}
@@ -115,7 +82,6 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		Modified: p.Modified,
 		tags:     p.Tags,
 		Language: p.Language,
-		Outdated: od,
 		Authors:  p.Authors,
 		License:  p.License,
 		Summary:  p.Summary,

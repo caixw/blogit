@@ -39,14 +39,6 @@ type License struct {
 	Text string `yaml:"text"` // 链接的文本
 }
 
-// Menu 描述链接的内容
-type Menu struct {
-	// 链接对应的图标。可以是字体图标或是图片链接，模板根据情况自动选择。
-	Icon string `yaml:"icon,omitempty"`
-	URL  string `yaml:"url"`  // 链接地址
-	Text string `yaml:"text"` // 链接的文本
-}
-
 // Icon 表示网站图标，比如 html>head>link.rel="short icon"
 type Icon struct {
 	URL   string `yaml:"url"`
@@ -95,18 +87,6 @@ func (l *License) sanitize() *FieldError {
 	}
 
 	if len(l.URL) == 0 {
-		return &FieldError{Field: "url", Message: "不能为空"}
-	}
-
-	return nil
-}
-
-func (menu *Menu) sanitize() *FieldError {
-	if len(menu.Text) == 0 {
-		return &FieldError{Field: "text", Message: "不能为空"}
-	}
-
-	if len(menu.URL) == 0 {
 		return &FieldError{Field: "url", Message: "不能为空"}
 	}
 

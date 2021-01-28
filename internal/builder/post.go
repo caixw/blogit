@@ -10,8 +10,11 @@ import (
 )
 
 type posts struct {
-	Info  *info
-	Posts []*postMeta
+	Info      *info
+	Posts     []*postMeta
+	HTMLTitle string
+	Permalink string
+	Title     string
 }
 
 type postMeta struct {
@@ -31,13 +34,13 @@ type tagMeta struct {
 
 type post struct {
 	Info      *info
+	HTMLTitle string
 	Permalink string
 	Title     string
 	Created   time.Time
 	Modified  time.Time
 	Tags      []*tagMeta
 	Language  string
-	Outdated  *outdated
 	Authors   []*author
 	License   *link
 	Summary   string
@@ -59,15 +62,13 @@ type link struct {
 	Text string
 }
 
-type outdated struct {
-	Outdated time.Time // 过期的时间
-	Content  string
-}
-
 func (b *builder) buildPosts(d *data.Data, i *info) error {
 	index := &posts{
-		Info:  i,
-		Posts: make([]*postMeta, 0, len(d.Posts)),
+		Info:      i,
+		Posts:     make([]*postMeta, 0, len(d.Posts)),
+		HTMLTitle: d.Title,
+		Permalink: d.URL,
+		Title:     d.Title,
 	}
 
 	for _, p := range d.Posts {
@@ -89,23 +90,15 @@ func (b *builder) buildPosts(d *data.Data, i *info) error {
 			})
 		}
 
-		var od *outdated
-		if p.Outdated != nil {
-			od = &outdated{
-				Content:  p.Outdated.Content,
-				Outdated: p.Outdated.Outdated,
-			}
-		}
-
 		pp := &post{
 			Info:      i,
+			HTMLTitle: p.Title + d.TitleSuffix,
 			Permalink: d.BuildURL(p.Path),
 			Title:     p.Title,
 			Created:   p.Created,
 			Modified:  p.Modified,
 			Tags:      tags,
 			Language:  p.Language,
-			Outdated:  od,
 			Authors:   authors,
 			License: &link{
 				URL:  p.License.URL,
