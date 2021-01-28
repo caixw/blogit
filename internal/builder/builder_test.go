@@ -16,5 +16,5 @@ func TestBuild(t *testing.T) {
 
 	err := Build("../../testdata/src", "../../testdata/dest", "")
 	a.NotError(err)
-	a.FileExists("../../testdata/dest/index.xml")
+	a.FileExists("../../testdata/dest/index.html")
 }

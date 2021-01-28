@@ -53,7 +53,7 @@ func (b *builder) buildTags(d *data.Data, i *info) error {
 
 	for _, t := range d.Tags {
 		tt := newTag(t, d, i)
-		if err := b.appendTemplateFile(d, t.Path, vars.TagsTemplate, tt); err != nil {
+		if err := b.appendTemplateFile(d, t.Path, vars.TagTemplate, tt); err != nil {
 			return err
 		}
 

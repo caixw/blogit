@@ -47,7 +47,7 @@ type builder struct {
 	files map[string][]byte
 }
 
-// Build 编译成 xml 文件
+// Build 编译内容
 func Build(src, dest, base string) error {
 	if src != dest {
 		if err := copy.Copy(src, dest, copyOptions); err != nil {
@@ -78,7 +78,7 @@ func newBuilder(dir, base string) (*builder, error) {
 		d.URL = base
 	}
 
-	tpl, err := template.ParseGlob(filepath.Join(dir, d.Theme.ID, vars.LayoutDir, "/*"))
+	tpl, err := template.ParseGlob(filepath.Join(dir, vars.ThemesDir, d.Theme.ID, vars.LayoutDir, "/*"))
 	if err != nil {
 		return nil, err
 	}

@@ -5,10 +5,7 @@ authors:
   - name: example
     url: https://example.com
 
-index: index.xsl
-tags: tags.xsl
-tag: tag.xsl
 templates:
-  - style.xsl
+  - post
 
-sitemap: style.xsl
+sitemap: sitemap.xsl

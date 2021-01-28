@@ -142,5 +142,5 @@ func (b *builder) buildPosts(d *data.Data, i *info) error {
 		})
 	}
 
-	return b.appendXMLFile(d, vars.IndexFilename, vars.IndexTemplate, index)
+	return b.appendTemplateFile(d, vars.IndexFilename, vars.IndexTemplate, index)
 }

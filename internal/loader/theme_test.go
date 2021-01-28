@@ -23,17 +23,13 @@ func TestLoadTheme(t *testing.T) {
 
 func TestTheme_sanitize(t *testing.T) {
 	a := assert.New(t)
-	theme := &Theme{Templates: []string{"post.xsl"}}
+	theme := &Theme{Templates: []string{"post"}}
 	a.NotError(theme.sanitize("../../testdata/src/themes/default", "default"))
 	a.Equal(theme.ID, "default").
 		Empty(theme.Description).
-		Equal(theme.Templates, []string{"post.xsl"})
-
-	theme = &Theme{Templates: []string{"style.xsl", "not-exists"}}
-	err := theme.sanitize("../../testdata/src/themes/default", "default")
-	a.Error(err).Equal(err.Field, "templates.not-exists")
+		Equal(theme.Templates, []string{"post"})
 
 	theme = &Theme{Templates: []string{"style.xsl"}, Screenshots: []string{"not-exists"}}
-	err = theme.sanitize("../../testdata/src/themes/default", "default")
+	err := theme.sanitize("../../testdata/src/themes/default", "default")
 	a.Error(err).Equal(err.Field, "screenshots[0]")
 }

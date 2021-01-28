@@ -26,7 +26,6 @@ type Theme struct {
 	Sitemap string `yaml:"sitemap,omitempty"`
 	RSS     string `yaml:"rss,omitempty"`
 	Atom    string `yaml:"atom,omitempty"`
-	Archive string `yaml:"archive,omitempty"`
 }
 
 // dir 为主题目录；id 为主题目录的名称
@@ -40,33 +39,12 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 		}
 	}
 
-	if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, vars.IndexTemplate)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "index", Value: vars.IndexTemplate}
-	}
-
-	if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, vars.TagsTemplate)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "tags", Value: vars.TagsTemplate}
-	}
-
-	if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, vars.TagTemplate)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "tag", Value: vars.TagTemplate}
-	}
-
-	if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, vars.DefaultTemplate)) {
-		return &FieldError{Message: "不存在默认的模板文件", Field: "templates"}
-	}
-
 	if sliceutil.Count(t.Templates, func(i int) bool { return t.Templates[i] == vars.DefaultTemplate }) == 0 {
 		t.Templates = append(t.Templates, vars.DefaultTemplate)
 	}
 	indexes := sliceutil.Dup(t.Templates, func(i, j int) bool { return t.Templates[i] == t.Templates[j] })
 	if len(indexes) > 0 {
 		return &FieldError{Message: "重复的值模板列表", Field: "templates." + t.Templates[indexes[0]]}
-	}
-	for _, tpl := range t.Templates {
-		if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, tpl)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "templates." + tpl}
-		}
 	}
 
 	for index, s := range t.Screenshots {
@@ -94,12 +72,6 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 	if t.Atom != "" {
 		if !utils.FileExists(filepath.Join(dir, t.Atom)) {
 			return &FieldError{Message: "不存在该模板文件", Field: "atom", Value: t.Atom}
-		}
-	}
-
-	if t.Archive != "" {
-		if !utils.FileExists(filepath.Join(dir, t.Archive)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "archive", Value: t.Archive}
 		}
 	}
 

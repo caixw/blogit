@@ -8,6 +8,7 @@ import (
 
 	"github.com/caixw/blogit/internal/data"
 	"github.com/caixw/blogit/internal/loader"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 type archives struct {
@@ -80,7 +81,7 @@ func (b *builder) buildArchive(path string, d *data.Data, i *info) error {
 		return list[i].date.Before(list[j].date)
 	})
 
-	return b.appendTemplateFile(d, path, d.Theme.Archive, &archives{
+	return b.appendTemplateFile(d, path, vars.ArchiveTemplate, &archives{
 		Info:     i,
 		Archives: list,
 	})
