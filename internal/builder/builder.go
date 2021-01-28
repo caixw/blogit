@@ -3,7 +3,9 @@
 package builder
 
 import (
+	"bytes"
 	"encoding/xml"
+	"html/template"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -41,25 +43,8 @@ var copyOptions = copy.Options{
 }
 
 type builder struct {
+	tpl   *template.Template
 	files map[string][]byte
-}
-
-type innerhtml struct {
-	Content string `xml:",innerxml"`
-}
-
-func ft(t time.Time) string {
-	if t.IsZero() {
-		return ""
-	}
-	return t.Format(timeFormat)
-}
-
-func newHTML(html string) *innerhtml {
-	if html == "" {
-		return nil
-	}
-	return &innerhtml{Content: html}
 }
 
 // Build 编译成 xml 文件
@@ -93,19 +78,22 @@ func newBuilder(dir, base string) (*builder, error) {
 		d.URL = base
 	}
 
+	tpl, err := template.ParseGlob(filepath.Join(dir, d.Theme.ID, vars.LayoutDir, "/*"))
+	if err != nil {
+		return nil, err
+	}
 	b := &builder{
+		tpl:   tpl,
 		files: make(map[string][]byte, 20),
 	}
 
-	if err := b.buildInfo(vars.InfoXML, d); err != nil {
+	i := b.buildInfo(d)
+
+	if err := b.buildTags(d, i); err != nil {
 		return nil, err
 	}
 
-	if err := b.buildTags(d); err != nil {
-		return nil, err
-	}
-
-	if err := b.buildPosts(d); err != nil {
+	if err := b.buildPosts(d, i); err != nil {
 		return nil, err
 	}
 
@@ -113,7 +101,7 @@ func newBuilder(dir, base string) (*builder, error) {
 		return nil, err
 	}
 
-	if err := b.buildArchive(vars.ArchiveXML, d); err != nil {
+	if err := b.buildArchive(vars.ArchiveFilename, d, i); err != nil {
 		return nil, err
 	}
 
@@ -143,9 +131,20 @@ func (b *builder) dump(dir string) error {
 }
 
 // path 表示输出的文件路径，相对于源目录；
+func (b *builder) appendTemplateFile(d *data.Data, path, tpl string, v interface{}) error {
+	buf := &bytes.Buffer{}
+
+	if err := b.tpl.ExecuteTemplate(buf, tpl, v); err != nil {
+		return err
+	}
+
+	b.files[path] = buf.Bytes()
+	return nil
+}
+
+// path 表示输出的文件路径，相对于源目录；
 // xsl 表示关联的 xsl，相对于当前主题目录的路径，如果不需要则可能为空；
-// ct 表示内容的 content-type 值，为空表示采用 application/xml；
-func (b *builder) appendXMLFile(d *data.Data, path, xsl string, lastmod time.Time, v interface{}) error {
+func (b *builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) error {
 	data, err := xml.MarshalIndent(v, "", "\t")
 	if err != nil {
 		return err

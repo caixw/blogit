@@ -2,53 +2,55 @@
 
 package builder
 
-import "github.com/caixw/blogit/internal/data"
+import (
+	"time"
+
+	"github.com/caixw/blogit/internal/data"
+)
 
 type info struct {
-	XMLName struct{} `xml:"info"`
+	URL         string
+	Title       string
+	Subtitle    string
+	TitleSuffix string // 每篇文章标题的后缀
+	Icon        *icon
+	Menus       []*menu
+	Language    string
+	Authors     []*author
+	License     *link
+	Theme       *theme
 
-	URL         string    `xml:"url,attr"`
-	Title       string    `xml:"title"`
-	Subtitle    string    `xml:"subtitle"`
-	TitleSuffix string    `xml:"titleSuffix"` // 每篇文章标题的后缀
-	Icon        *icon     `xml:"icon"`
-	Menus       []*menu   `xml:"menu"`
-	Language    string    `xml:"language,attr"`
-	Authors     []*author `xml:"author"`
-	License     *link     `xml:"license"`
-	Theme       *theme    `xml:"theme"`
+	Atom    bool
+	RSS     bool
+	Sitemap bool
+	Archive bool
 
-	Atom    bool `xml:"atom,omitempty"`
-	RSS     bool `xml:"rss,omitempty"`
-	Sitemap bool `xml:"sitemap,omitempty"`
-	Archive bool `xml:"archive,omitempty"`
-
-	Uptime   string `xml:"uptime,attr"`
-	Created  string `xml:"created,attr"`
-	Modified string `xml:"modified,attr"`
-	Builded  string `xml:"builded,attr"` // 最后次编译时间
+	Uptime   time.Time
+	Created  time.Time
+	Modified time.Time
+	Builded  time.Time // 最后次编译时间
 }
 
 type theme struct {
-	ID          string    `xml:"id,attr"`
-	Base        string    `xml:"base,attr"`
-	Description string    `xml:"description,omitempty"`
-	Authors     []*author `xml:"authors,omitempty"`
+	ID          string
+	Base        string
+	Description string
+	Authors     []*author
 }
 
 type menu struct {
 	// 链接对应的图标。可以是字体图标或是图片链接，模板根据情况自动选择。
-	Icon string `xml:"icon,attr"`
-	URL  string `xml:"url,attr"`  // 链接地址
-	Text string `xml:",chardata"` // 链接的文本
+	Icon string
+	URL  string // 链接地址
+	Text string // 链接的文本
 }
 
 type icon struct {
-	URL  string `xml:"url,attr"`
-	Type string `xml:"type,attr"` // mime type
+	URL  string
+	Type string // mime type
 }
 
-func (b *builder) buildInfo(path string, d *data.Data) error {
+func (b *builder) buildInfo(d *data.Data) *info {
 	menus := make([]*menu, 0, len(d.Menus))
 	for _, m := range d.Menus {
 		menus = append(menus, &menu{
@@ -78,7 +80,7 @@ func (b *builder) buildInfo(path string, d *data.Data) error {
 		})
 	}
 
-	i := info{
+	i := &info{
 		URL:         d.URL,
 		Title:       d.Title,
 		Subtitle:    d.Subtitle,
@@ -98,10 +100,10 @@ func (b *builder) buildInfo(path string, d *data.Data) error {
 			Authors:     themeAuthors,
 		},
 
-		Uptime:   ft(d.Uptime),
-		Created:  ft(d.Created),
-		Modified: ft(d.Modified),
-		Builded:  ft(d.Builded),
+		Uptime:   d.Uptime,
+		Created:  d.Created,
+		Modified: d.Modified,
+		Builded:  d.Builded,
 	}
 
 	i.Atom = d.Atom != nil
@@ -109,5 +111,5 @@ func (b *builder) buildInfo(path string, d *data.Data) error {
 	i.Sitemap = d.Sitemap != nil
 	i.Archive = d.Archive != nil
 
-	return b.appendXMLFile(d, path, "", d.Modified, i)
+	return i
 }

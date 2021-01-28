@@ -18,3 +18,5 @@
 .idea/
 *.swp
 .DS_Store
+
+testdata/dest/

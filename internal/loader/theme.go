@@ -19,11 +19,7 @@ type Theme struct {
 	Authors     []*Author `yaml:"authors,omitempty"`
 	Screenshots []string  `yaml:"screenshots,omitempty"`
 
-	// 必须提供的几个模板文件
-	Index     string   `yaml:"index"`
-	Tags      string   `yaml:"tags"`
-	Tag       string   `yaml:"tag"`
-	Templates []string `yaml:"templates"`
+	Templates []string `yaml:"templates,omitempty"`
 
 	// 部分可选内容的模板，如果为空，则其输出相应的 xml 文件时不会为其添加 xsl 文件。
 	// 模板名称为相对于当前主题目录的文件路径。
@@ -44,19 +40,19 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 		}
 	}
 
-	if t.Index == "" || !utils.FileExists(filepath.Join(dir, t.Index)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "index", Value: t.Index}
+	if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, vars.IndexTemplate)) {
+		return &FieldError{Message: "不存在该模板文件", Field: "index", Value: vars.IndexTemplate}
 	}
 
-	if t.Tags == "" || !utils.FileExists(filepath.Join(dir, t.Tags)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "tags", Value: t.Tags}
+	if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, vars.TagsTemplate)) {
+		return &FieldError{Message: "不存在该模板文件", Field: "tags", Value: vars.TagsTemplate}
 	}
 
-	if t.Tag == "" || !utils.FileExists(filepath.Join(dir, t.Tag)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "tag", Value: t.Tag}
+	if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, vars.TagTemplate)) {
+		return &FieldError{Message: "不存在该模板文件", Field: "tag", Value: vars.TagTemplate}
 	}
 
-	if !utils.FileExists(filepath.Join(dir, vars.DefaultTemplate)) {
+	if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, vars.DefaultTemplate)) {
 		return &FieldError{Message: "不存在默认的模板文件", Field: "templates"}
 	}
 
@@ -68,7 +64,7 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 		return &FieldError{Message: "重复的值模板列表", Field: "templates." + t.Templates[indexes[0]]}
 	}
 	for _, tpl := range t.Templates {
-		if !utils.FileExists(filepath.Join(dir, tpl)) {
+		if !utils.FileExists(filepath.Join(dir, vars.LayoutDir, tpl)) {
 			return &FieldError{Message: "不存在该模板文件", Field: "templates." + tpl}
 		}
 	}

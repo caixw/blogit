@@ -3,70 +3,70 @@
 package builder
 
 import (
+	"time"
+
 	"github.com/caixw/blogit/internal/data"
 	"github.com/caixw/blogit/internal/vars"
 )
 
 type posts struct {
-	XMLName struct{}    `xml:"posts"`
-	Base    string      `xml:"base,attr"`
-	Posts   []*postMeta `xml:"post"`
+	Info  *info
+	Posts []*postMeta
 }
 
 type postMeta struct {
-	Permalink string     `xml:"permalink,attr"`
-	Title     string     `xml:"title"`
-	Language  string     `xml:"language,attr"`
-	Created   string     `xml:"created,attr,omitempty"`
-	Modified  string     `xml:"modified,attr,omitempty"`
-	Tags      []*tagMeta `xml:"tag,omitempty"`
-	Summary   *innerhtml `xml:"summary,omitempty"`
+	Permalink string
+	Title     string
+	Language  string
+	Created   time.Time
+	Modified  time.Time
+	Tags      []*tagMeta
+	Summary   string
 }
 
 type tagMeta struct {
-	Permalink string `xml:"permalink,attr"`
-	Title     string `xml:",chardata"`
+	Permalink string
+	Title     string
 }
 
 type post struct {
-	XMLName   struct{}   `xml:"post"`
-	Base      string     `xml:"base,attr"`
-	Permalink string     `xml:"permalink,attr"`
-	Title     string     `xml:"title"`
-	Created   string     `xml:"created,attr,omitempty"`
-	Modified  string     `xml:"modified,attr,omitempty"`
-	Tags      []*tagMeta `xml:"tag"`
-	Language  string     `xml:"language,attr"`
-	Outdated  *outdated  `xml:"outdated,omitempty"`
-	Authors   []*author  `xml:"author"`
-	License   *link      `xml:"license"`
-	Summary   *innerhtml `xml:"summary,omitempty"`
-	Content   *innerhtml `xml:"content"`
-	Image     string     `xml:"image,attr,omitempty"`
-	Prev      *link      `xml:"prev"`
-	Next      *link      `xml:"next"`
+	Info      *info
+	Permalink string
+	Title     string
+	Created   time.Time
+	Modified  time.Time
+	Tags      []*tagMeta
+	Language  string
+	Outdated  *outdated
+	Authors   []*author
+	License   *link
+	Summary   string
+	Content   string
+	Image     string
+	Prev      *link
+	Next      *link
 }
 
 type author struct {
-	Name   string `xml:",chardata"`
-	URL    string `xml:"url,attr,omitempty"`
-	Email  string `xml:"email,attr,omitempty"`
-	Avatar string `xml:"avatar,attr,omitempty"`
+	Name   string
+	URL    string
+	Email  string
+	Avatar string
 }
 
 type link struct {
-	URL  string `xml:"url,attr"`
-	Text string `xml:",chardata"`
+	URL  string
+	Text string
 }
 
 type outdated struct {
-	Outdated string `xml:"outdated,attr,omitempty"` // 过期的时间
-	Content  string `xml:",chardata"`
+	Outdated time.Time // 过期的时间
+	Content  string
 }
 
-func (b *builder) buildPosts(d *data.Data) error {
+func (b *builder) buildPosts(d *data.Data, i *info) error {
 	index := &posts{
-		Base:  d.URL,
+		Info:  i,
 		Posts: make([]*postMeta, 0, len(d.Posts)),
 	}
 
@@ -93,16 +93,16 @@ func (b *builder) buildPosts(d *data.Data) error {
 		if p.Outdated != nil {
 			od = &outdated{
 				Content:  p.Outdated.Content,
-				Outdated: ft(p.Outdated.Outdated),
+				Outdated: p.Outdated.Outdated,
 			}
 		}
 
 		pp := &post{
-			Base:      d.URL,
+			Info:      i,
 			Permalink: d.BuildURL(p.Path),
 			Title:     p.Title,
-			Created:   ft(p.Created),
-			Modified:  ft(p.Modified),
+			Created:   p.Created,
+			Modified:  p.Modified,
 			Tags:      tags,
 			Language:  p.Language,
 			Outdated:  od,
@@ -111,8 +111,8 @@ func (b *builder) buildPosts(d *data.Data) error {
 				URL:  p.License.URL,
 				Text: p.License.Text,
 			},
-			Content: newHTML(p.Content),
-			Summary: newHTML(p.Summary),
+			Content: p.Content,
+			Summary: p.Summary,
 		}
 		if p.Prev != nil {
 			pp.Prev = &link{
@@ -126,7 +126,7 @@ func (b *builder) buildPosts(d *data.Data) error {
 				Text: p.Next.Title,
 			}
 		}
-		err := b.appendXMLFile(d, p.Path, p.Template, p.Modified, pp)
+		err := b.appendTemplateFile(d, p.Path, p.Template, pp)
 		if err != nil {
 			return err
 		}
@@ -135,12 +135,12 @@ func (b *builder) buildPosts(d *data.Data) error {
 			Permalink: d.BuildURL(p.Path),
 			Language:  p.Language,
 			Title:     p.Title,
-			Created:   ft(p.Created),
-			Modified:  ft(p.Modified),
+			Created:   p.Created,
+			Modified:  p.Modified,
 			Tags:      tags,
-			Summary:   newHTML(p.Summary),
+			Summary:   p.Summary,
 		})
 	}
 
-	return b.appendXMLFile(d, vars.IndexXML, d.Theme.Index, d.Modified, index)
+	return b.appendXMLFile(d, vars.IndexFilename, vars.IndexTemplate, index)
 }

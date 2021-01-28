@@ -11,17 +11,17 @@ import (
 )
 
 type archives struct {
-	Archives []*archive `xml:"archive"`
-	Base     string     `xml:"base,attr"`
+	Info     *info
+	Archives []*archive
 }
 
 type archive struct {
 	date  time.Time   // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
-	Title string      `xml:"title"` // 当前存档页的标题
-	Posts []*postMeta `xml:"post"`  // 当前存档的文章列表
+	Title string      // 当前存档页的标题
+	Posts []*postMeta // 当前存档的文章列表
 }
 
-func (b *builder) buildArchive(path string, d *data.Data) error {
+func (b *builder) buildArchive(path string, d *data.Data, i *info) error {
 	if d.Archive == nil {
 		return nil
 	}
@@ -51,8 +51,8 @@ func (b *builder) buildArchive(path string, d *data.Data) error {
 		pm := &postMeta{
 			Permalink: d.BuildURL(post.Path),
 			Title:     post.Title,
-			Created:   ft(post.Created),
-			Modified:  ft(post.Modified),
+			Created:   post.Created,
+			Modified:  post.Modified,
 			Tags:      tags,
 		}
 
@@ -80,8 +80,8 @@ func (b *builder) buildArchive(path string, d *data.Data) error {
 		return list[i].date.Before(list[j].date)
 	})
 
-	return b.appendXMLFile(d, path, d.Theme.Archive, d.Modified, &archives{
+	return b.appendTemplateFile(d, path, d.Theme.Archive, &archives{
+		Info:     i,
 		Archives: list,
-		Base:     d.URL,
 	})
 }

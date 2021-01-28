@@ -37,7 +37,7 @@ func (b *builder) buildSitemap(path string, d *data.Data) error {
 
 	conf := d.Sitemap
 	if conf.EnableTag {
-		s.append(d.BuildURL(vars.TagsXML), d.Modified, conf.Changefreq, conf.Priority)
+		s.append(d.BuildURL(vars.TagsFilename), d.Modified, conf.Changefreq, conf.Priority)
 		for _, tag := range d.Tags {
 			s.append(d.BuildURL(tag.Path), tag.Modified, conf.Changefreq, conf.Priority)
 		}
@@ -48,7 +48,7 @@ func (b *builder) buildSitemap(path string, d *data.Data) error {
 		s.append(d.BuildURL(p.Path), p.Modified, conf.PostChangefreq, conf.PostPriority)
 	}
 
-	return b.appendXMLFile(d, path, d.Theme.Sitemap, d.Modified, s)
+	return b.appendXMLFile(d, path, d.Theme.Sitemap, s)
 }
 
 func (us *urlset) append(loc string, lastmod time.Time, changefreq string, priority float64) {
