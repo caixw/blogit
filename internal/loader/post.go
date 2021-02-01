@@ -28,12 +28,6 @@ const (
 	StateDefault = ""      // 默认值
 )
 
-// 文章是否过时的比较方式
-const (
-	OutdatedCreated  = "created"
-	OutdatedModified = "modified"
-)
-
 // Post 表示文章的信息
 type Post struct {
 	Title    string    `yaml:"title"`
@@ -45,13 +39,6 @@ type Post struct {
 	//
 	// 标签名为各个标签的 slug 值，可以保证其唯一。
 	Tags []string `yaml:"tags"`
-
-	// Outdated 用户记录文章的一个过时情况，可以由以下几种值构成：
-	// - created 表示该篇文章以创建时间来计算其是否已经过时，该值也是默认值；
-	// - modified 表示该文章以其修改时间来计算其是否已经过时；
-	// - none 表示该文章永远不会过时；
-	// - 其它任意非空值，表示直接以该字符串当作过时信息展示给用语.
-	Outdated string `yaml:"outdated,omitempty"`
 
 	// State 表示文章的状态，有以下四种值：
 	// - top 表示文章被置顶；
