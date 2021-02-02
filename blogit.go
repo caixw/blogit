@@ -8,10 +8,13 @@ import (
 	"net/http"
 
 	"github.com/caixw/blogit/internal/builder"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 // Version 版本号
-const Version = "0.1.0"
+func Version() string {
+	return vars.Version()
+}
 
 // Build 编译并输出内容
 //
