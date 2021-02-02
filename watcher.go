@@ -65,7 +65,7 @@ func Watch(src, base string, info, erro, succ *log.Logger) error {
 		Succ: succ,
 
 		Serve: func() error {
-			return Serve(src, addr, path, info)
+			return Serve(dest, addr, path, info)
 		},
 
 		Build: func() error {
