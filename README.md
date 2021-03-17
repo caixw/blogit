@@ -1,7 +1,7 @@
 # blogit
 
 [![Test](https://github.com/caixw/blogit/workflows/Test/badge.svg)](https://github.com/caixw/blogit/actions?query=workflow%3ATest)
-[![Go version](https://img.shields.io/github/go-mod/go-version/issue9/web)](https://golang.org)
+[![Go version](https://img.shields.io/github/go-mod/go-version/caixw/blogit)](https://golang.org)
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/caixw/blogit)](https://pkg.go.dev/github.com/caixw/blogit)
 
 用于将 md 文件转换成 xml 的静态博客工具。

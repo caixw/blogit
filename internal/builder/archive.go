@@ -11,18 +11,13 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
-type archives struct {
-	Info     *info
-	Archives []*archive
-}
-
 type archive struct {
-	date  time.Time   // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
-	Title string      // 当前存档页的标题
-	Posts []*postMeta // 当前存档的文章列表
+	date  time.Time    // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
+	Title string       // 当前存档页的标题
+	Posts []*data.Post // 当前存档的文章列表
 }
 
-func (b *builder) buildArchive(path string, d *data.Data, i *info) error {
+func (b *builder) buildArchive(path string, d *data.Data) error {
 	if d.Archive == nil {
 		return nil
 	}
@@ -41,26 +36,10 @@ func (b *builder) buildArchive(path string, d *data.Data, i *info) error {
 			panic("无效的 archive.type 值")
 		}
 
-		tags := make([]*tagMeta, 0, len(post.Tags))
-		for _, t := range post.Tags {
-			tags = append(tags, &tagMeta{
-				Permalink: d.BuildURL(t.Path),
-				Title:     t.Title,
-			})
-		}
-
-		pm := &postMeta{
-			Permalink: d.BuildURL(post.Path),
-			Title:     post.Title,
-			Created:   post.Created,
-			Modified:  post.Modified,
-			Tags:      tags,
-		}
-
 		found := false
 		for _, archive := range list {
 			if archive.date.Equal(date) {
-				archive.Posts = append(archive.Posts, pm)
+				archive.Posts = append(archive.Posts, post)
 				found = true
 				break
 			}
@@ -69,7 +48,7 @@ func (b *builder) buildArchive(path string, d *data.Data, i *info) error {
 			list = append(list, &archive{
 				date:  date,
 				Title: date.Format(d.Archive.Format),
-				Posts: []*postMeta{pm},
+				Posts: []*data.Post{post},
 			})
 		}
 	} // end for
@@ -81,8 +60,12 @@ func (b *builder) buildArchive(path string, d *data.Data, i *info) error {
 		return list[i].date.Before(list[j].date)
 	})
 
-	return b.appendTemplateFile(d, path, vars.ArchiveTemplate, &archives{
-		Info:     i,
-		Archives: list,
-	})
+	p := b.page(vars.ArchiveTemplate)
+	p.Title = d.Archive.Title
+	p.Permalink = d.BuildURL(vars.ArchiveFilename)
+	p.Keywords = "TODO"
+	p.Description = "TODO"
+	p.Language = d.Language
+
+	return b.appendTemplateFile(vars.ArchiveFilename, p)
 }

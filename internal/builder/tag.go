@@ -3,76 +3,34 @@
 package builder
 
 import (
-	"time"
+	"strings"
 
 	"github.com/caixw/blogit/internal/data"
 	"github.com/caixw/blogit/internal/vars"
 )
 
-type tags struct {
-	Info      *info
-	Tags      []*tag
-	HTMLTitle string
-	Permalink string
-	Title     string
-}
-
-type tag struct {
-	Info      *info
-	HTMLTitle string
-	Permalink string
-	Title     string
-	Created   time.Time
-	Modified  time.Time
-	Posts     []*postMeta
-	Content   string
-}
-
-func newTag(t *data.Tag, d *data.Data, i *info) *tag {
-	ps := make([]*postMeta, 0, len(t.Posts))
-	for _, p := range t.Posts {
-		ps = append(ps, &postMeta{
-			Permalink: d.BuildURL(p.Path),
-			Language:  p.Language,
-			Title:     p.Title,
-			Created:   p.Created,
-			Modified:  p.Modified,
-			Summary:   p.Summary,
-		})
-	}
-
-	return &tag{
-		Info:      i,
-		HTMLTitle: t.Title + d.TitleSuffix,
-		Permalink: d.BuildURL(t.Path),
-		Title:     t.Title,
-		Created:   t.Created,
-		Modified:  t.Modified,
-		Posts:     ps,
-		Content:   t.Content,
-	}
-}
-
-func (b *builder) buildTags(d *data.Data, i *info) error {
-	ts := make([]*tag, 0, len(d.Tags))
+func (b *builder) buildTags(d *data.Data) error {
+	keys := make([]string, 0, len(d.Tags))
 
 	for _, t := range d.Tags {
-		tt := newTag(t, d, i)
-		if err := b.appendTemplateFile(d, t.Path, vars.TagTemplate, tt); err != nil {
+		p := b.page(vars.TagTemplate)
+		p.Title = t.Title
+		p.Permalink = t.Permalink
+		p.Keywords = t.Title + "," + t.Slug
+		p.Description = t.Content
+		p.Language = d.Language
+		p.Tag = t
+		if err := b.appendTemplateFile(t.Path, p); err != nil {
 			return err
 		}
 
-		tt.Posts = nil
-		ts = append(ts, tt)
+		keys = append(keys, t.Slug, t.Title)
 	}
 
-	// TODO
-	t := &tags{
-		Info:      i,
-		Tags:      ts,
-		HTMLTitle: "todo" + d.TitleSuffix,
-		Permalink: "TODO",
-		Title:     "todo",
-	}
-	return b.appendTemplateFile(d, vars.TagsFilename, vars.TagsTemplate, t)
+	p := b.page(vars.TagTemplate)
+	p.Permalink = d.BuildURL(vars.TagsFilename)
+	p.Keywords = strings.Join(keys, ",")
+	p.Language = d.Language
+	p.Tags = d.Tags
+	return b.appendTemplateFile(vars.TagsFilename, p)
 }

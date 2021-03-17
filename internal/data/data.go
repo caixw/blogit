@@ -72,7 +72,7 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 		suffix = conf.TitleSeparator + conf.Title
 	}
 
-	ts, err := buildTags(tags)
+	ts, err := buildTags(conf.URL, tags)
 	if err != nil {
 		return nil, err
 	}
@@ -117,23 +117,31 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 
 // BuildURL 根据配置网站域名生成地址
 func (data *Data) BuildURL(p ...string) string {
+	return buildURL(data.URL, p...)
+}
+
+func buildURL(url string, p ...string) string {
 	pp := path.Join(p...)
 
 	if len(pp) == 0 {
-		return data.URL
+		return url
 	}
 
 	if pp[0] == '/' {
-		return data.URL + pp[1:]
+		return url + pp[1:]
 	}
-	return data.URL + pp
+	return url + pp
 }
 
 // BuildThemeURL 根据配置网站域名生成主题下的文件地址
 func (data *Data) BuildThemeURL(p ...string) string {
+	return buildThemeURL(data.URL, data.Theme.ID, p...)
+}
+
+func buildThemeURL(url, themeID string, p ...string) string {
 	pp := make([]string, 0, len(p)+2)
-	pp = append(pp, vars.ThemesDir, data.Theme.ID)
-	return data.BuildURL(append(pp, p...)...)
+	pp = append(pp, vars.ThemesDir, themeID)
+	return buildURL(url, append(pp, p...)...)
 }
 
 func buildPath(slug string) string {

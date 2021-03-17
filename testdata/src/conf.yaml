@@ -25,6 +25,7 @@ license:
 
 # 归档
 archive:
+  title: 存档
   order: desc
   type: year
   format: 2006 年

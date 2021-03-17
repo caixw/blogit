@@ -12,23 +12,26 @@ import (
 
 // Tag 单个标签的内容
 type Tag struct {
-	Slug     string
-	Path     string
-	Title    string
-	Content  string // 对该标签的详细描述
-	Posts    []*Post
-	Created  time.Time
-	Modified time.Time
+	Permalink string
+	Slug      string
+	Path      string
+	Title     string
+	Content   string // 对该标签的详细描述
+	Posts     []*Post
+	Created   time.Time
+	Modified  time.Time
 }
 
-func buildTags(tags []*loader.Tag) ([]*Tag, error) {
+func buildTags(baseURL string, tags []*loader.Tag) ([]*Tag, error) {
 	ts := make([]*Tag, 0, len(tags))
 	for _, t := range tags {
+		p := buildPath(path.Join(vars.TagsDir, t.Slug))
 		ts = append(ts, &Tag{
-			Slug:    t.Slug,
-			Path:    buildPath(path.Join(vars.TagsDir, t.Slug)),
-			Title:   t.Title,
-			Content: t.Content,
+			Permalink: buildURL(baseURL, p),
+			Slug:      t.Slug,
+			Path:      p,
+			Title:     t.Title,
+			Content:   t.Content,
 		})
 	}
 

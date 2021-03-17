@@ -14,22 +14,23 @@ import (
 
 // Post 文章详情
 type Post struct {
-	Slug     string
-	Path     string
-	Title    string
-	Created  time.Time
-	Modified time.Time
-	Tags     []*Tag
-	tags     []string
-	Language string
-	Authors  []*loader.Author
-	License  *loader.License
-	Summary  string
-	Content  string
-	Image    string
-	Prev     *Post
-	Next     *Post
-	Template string
+	Permalink string
+	Slug      string
+	Path      string
+	Title     string
+	Created   time.Time
+	Modified  time.Time
+	Tags      []*Tag
+	tags      []string
+	Language  string
+	Authors   []*loader.Author
+	License   *loader.License
+	Summary   string
+	Content   string
+	Image     string
+	Prev      *Post
+	Next      *Post
+	Template  string
 }
 
 func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) ([]*Post, error) {
@@ -74,20 +75,22 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		return nil, &loader.FieldError{Message: "模板不存在于 theme.yaml", Field: "template", File: p.Slug + ".md", Value: p.Template}
 	}
 
+	path := buildPath(p.Slug)
 	pp := &Post{
-		Slug:     p.Slug,
-		Path:     buildPath(p.Slug),
-		Title:    p.Title,
-		Created:  p.Created,
-		Modified: p.Modified,
-		tags:     p.Tags,
-		Language: p.Language,
-		Authors:  p.Authors,
-		License:  p.License,
-		Summary:  p.Summary,
-		Content:  p.Content,
-		Image:    p.Image,
-		Template: p.Template,
+		Permalink: buildURL(conf.URL, path),
+		Slug:      p.Slug,
+		Path:      path,
+		Title:     p.Title,
+		Created:   p.Created,
+		Modified:  p.Modified,
+		tags:      p.Tags,
+		Language:  p.Language,
+		Authors:   p.Authors,
+		License:   p.License,
+		Summary:   p.Summary,
+		Content:   p.Content,
+		Image:     p.Image,
+		Template:  p.Template,
 	}
 
 	return pp, nil

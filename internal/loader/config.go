@@ -63,6 +63,7 @@ type Sitemap struct {
 
 // Archive 存档页的配置内容
 type Archive struct {
+	Title  string `yaml:"title"`  // 存档页的标题
 	Order  string `yaml:"order"`  // 排序方式
 	Type   string `yaml:"type"`   // 存档的分类方式，可以按年或是按月
 	Format string `yaml:"format"` // 标题的格式化字符串，被 time.Format 所格式化。
@@ -201,6 +202,10 @@ func (s *Sitemap) sanitize() *FieldError {
 }
 
 func (a *Archive) sanitize() *FieldError {
+	if a.Title == "" {
+		return &FieldError{Message: "不能为空", Field: "title"}
+	}
+
 	if len(a.Type) == 0 {
 		a.Type = ArchiveTypeYear
 	} else {

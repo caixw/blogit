@@ -43,6 +43,7 @@ var copyOptions = copy.Options{
 }
 
 type builder struct {
+	site  *site
 	tpl   *template.Template
 	files map[string][]byte
 }
@@ -83,17 +84,16 @@ func newBuilder(dir, base string) (*builder, error) {
 		return nil, err
 	}
 	b := &builder{
+		site:  newSite(d),
 		tpl:   tpl,
 		files: make(map[string][]byte, 20),
 	}
 
-	i := b.buildInfo(d)
-
-	if err := b.buildTags(d, i); err != nil {
+	if err := b.buildTags(d); err != nil {
 		return nil, err
 	}
 
-	if err := b.buildPosts(d, i); err != nil {
+	if err := b.buildPosts(d); err != nil {
 		return nil, err
 	}
 
@@ -101,7 +101,7 @@ func newBuilder(dir, base string) (*builder, error) {
 		return nil, err
 	}
 
-	if err := b.buildArchive(vars.ArchiveFilename, d, i); err != nil {
+	if err := b.buildArchive(vars.ArchiveFilename, d); err != nil {
 		return nil, err
 	}
 
@@ -131,10 +131,10 @@ func (b *builder) dump(dir string) error {
 }
 
 // path 表示输出的文件路径，相对于源目录；
-func (b *builder) appendTemplateFile(d *data.Data, path, tpl string, v interface{}) error {
+func (b *builder) appendTemplateFile(path string, p *page) error {
 	buf := &bytes.Buffer{}
 
-	if err := b.tpl.ExecuteTemplate(buf, tpl, v); err != nil {
+	if err := b.tpl.ExecuteTemplate(buf, p.Type, p); err != nil {
 		return err
 	}
 
