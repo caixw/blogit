@@ -23,7 +23,7 @@ type (
 		Icon        *loader.Icon
 		Language    string
 		Authors     []*loader.Author
-		License     *loader.License
+		License     *loader.Link
 		Theme       *loader.Theme
 
 		Archive *loader.Archive

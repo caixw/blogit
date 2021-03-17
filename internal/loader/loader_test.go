@@ -11,13 +11,13 @@ import (
 func TestLicense_sanitize(t *testing.T) {
 	a := assert.New(t)
 
-	l := &License{}
+	l := &Link{}
 	a.Error(l.sanitize())
 
-	l = &License{Text: "t"}
+	l = &Link{Text: "t"}
 	a.Error(l.sanitize())
 
-	l = &License{Text: "t", URL: "/favicon.ico"}
+	l = &Link{Text: "t", URL: "/favicon.ico"}
 	a.NotError(l.sanitize())
 }
 

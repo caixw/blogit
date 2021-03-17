@@ -52,7 +52,7 @@ type Post struct {
 
 	// 以下内容不存在时，则会使用全局的默认选项
 	Authors  []*Author `yaml:"author,omitempty"`
-	License  *License  `yaml:"license,omitempty"`
+	License  *Link     `yaml:"license,omitempty"`
 	Template string    `yaml:"template,omitempty"`
 	Language string    `yaml:"language,omitempty"`
 

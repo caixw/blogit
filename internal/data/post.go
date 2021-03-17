@@ -24,7 +24,7 @@ type Post struct {
 	tags      []string
 	Language  string
 	Authors   []*loader.Author
-	License   *loader.License
+	License   *loader.Link
 	Summary   string
 	Content   string
 	Image     string

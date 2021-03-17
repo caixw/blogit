@@ -19,6 +19,7 @@ func (b *builder) buildTags(d *data.Data) error {
 		p.Keywords = t.Title + "," + t.Slug
 		p.Description = t.Content
 		p.Language = d.Language
+		// TODO prev
 		p.Tag = t
 		if err := b.appendTemplateFile(t.Path, p); err != nil {
 			return err

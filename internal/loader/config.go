@@ -35,7 +35,7 @@ type Config struct {
 	Uptime   time.Time `yaml:"uptime"`
 	Icon     *Icon     `yaml:"icon,omitempty"`
 	Authors  []*Author `yaml:"authors"`
-	License  *License  `yaml:"license"`
+	License  *Link     `yaml:"license"`
 	Theme    string    `yaml:"theme"`
 
 	Archive *Archive `yaml:"archive,omitempty"`

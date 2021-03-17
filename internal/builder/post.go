@@ -16,6 +16,7 @@ func (b *builder) buildPosts(d *data.Data) error {
 		page.Description = p.Summary
 		page.Language = d.Language
 		page.Post = p
+		// TODO prev
 
 		if err := b.appendTemplateFile(p.Path, page); err != nil {
 			return err

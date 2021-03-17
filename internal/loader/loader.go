@@ -33,8 +33,8 @@ type FieldError struct {
 	Value   interface{}
 }
 
-// License 描述链接的内容
-type License struct {
+// Link 描述链接的内容
+type Link struct {
 	URL  string `yaml:"url"`  // 链接地址
 	Text string `yaml:"text"` // 链接的文本
 }
@@ -81,7 +81,7 @@ func (icon *Icon) sanitize() *FieldError {
 	return nil
 }
 
-func (l *License) sanitize() *FieldError {
+func (l *Link) sanitize() *FieldError {
 	if len(l.Text) == 0 {
 		return &FieldError{Field: "text", Message: "不能为空"}
 	}
