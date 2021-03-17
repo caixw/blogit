@@ -26,7 +26,6 @@ type (
 		License     *loader.Link
 		Theme       *loader.Theme
 
-		Archive *loader.Archive
 		RSS     *loader.RSS
 		Atom    *loader.RSS
 		Sitemap *loader.Sitemap
@@ -36,8 +35,9 @@ type (
 		Modified time.Time
 		Builded  time.Time // 最后次编译时间
 
-		Tags  []*Tag
-		Posts []*Post
+		Tags     []*Tag
+		Posts    []*Post
+		Archives *Archives
 	}
 )
 
@@ -82,6 +82,11 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 		return nil, err
 	}
 
+	archives, err := buildArchive(conf, ps)
+	if err != nil {
+		return nil, err
+	}
+
 	created, modified, err := checkTags(ts, ps)
 	if err != nil {
 		return nil, err
@@ -98,7 +103,6 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 		License:     conf.License,
 		Theme:       theme,
 
-		Archive: conf.Archive,
 		RSS:     conf.RSS,
 		Atom:    conf.Atom,
 		Sitemap: conf.Sitemap,
@@ -108,8 +112,9 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 		Created:  created,
 		Modified: modified,
 
-		Tags:  ts,
-		Posts: ps,
+		Tags:     ts,
+		Posts:    ps,
+		Archives: archives,
 	}
 
 	return data, nil

@@ -10,20 +10,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/issue9/errwrap"
 	"github.com/otiai10/copy"
 
 	"github.com/caixw/blogit/internal/data"
 	"github.com/caixw/blogit/internal/vars"
-)
-
-const (
-	// 输出的时间格式
-	//
-	// NOTE: 时间可能会被当作 XML 的属性值，如果格式中带引号，需要注意正确处理。
-	timeFormat = time.RFC3339
 )
 
 var copyOptions = copy.Options{
@@ -101,7 +93,7 @@ func newBuilder(dir, base string) (*builder, error) {
 		return nil, err
 	}
 
-	if err := b.buildArchive(vars.ArchiveFilename, d); err != nil {
+	if err := b.buildArchive(d); err != nil {
 		return nil, err
 	}
 
