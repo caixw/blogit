@@ -29,6 +29,7 @@ type Tag struct {
 	Slug      string
 	Path      string
 	Title     string
+	Keywords  string
 	Content   string // 对该标签的详细描述
 	Posts     []*Post
 	Prev      *Tag
@@ -52,7 +53,17 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 		Description: tags.Description,
 		Tags:        make([]*Tag, 0, len(tags.Tags)),
 	}
+
+	keys := make([]string, 0, len(tags.Tags))
 	for _, t := range tags.Tags {
+		keys = append(keys, t.Slug)
+
+		key := t.Slug
+		if t.Slug != t.Title {
+			key += "," + t.Title
+			keys = append(keys, t.Title)
+		}
+
 		p := buildPath(path.Join(vars.TagsDir, t.Slug))
 		ts.Tags = append(ts.Tags, &Tag{
 			Permalink: buildURL(conf.URL, p),
@@ -60,7 +71,12 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 			Path:      p,
 			Title:     t.Title,
 			Content:   t.Content,
+			Keywords:  key,
 		})
+	}
+
+	if ts.Keywords == "" {
+		ts.Keywords = strings.Join(keys, ",")
 	}
 
 	sortTags(ts, tags.OrderType, tags.Order)
