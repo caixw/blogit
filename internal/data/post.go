@@ -12,6 +12,15 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
+// Index 首页内容
+type Index struct {
+	Title       string
+	Permalink   string
+	Keywords    string
+	Description string
+	Posts       []*Post
+}
+
 // Post 文章详情
 type Post struct {
 	Permalink string
@@ -33,7 +42,7 @@ type Post struct {
 	Template  string
 }
 
-func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) ([]*Post, error) {
+func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) (*Index, error) {
 	sortPosts(posts)
 
 	ps := make([]*Post, 0, len(posts))
@@ -47,7 +56,13 @@ func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) 
 
 	prevNext(ps)
 
-	return ps, nil
+	return &Index{
+		Title:       conf.Title,
+		Permalink:   conf.URL,
+		Keywords:    conf.Keywords,
+		Description: conf.Description,
+		Posts:       ps,
+	}, nil
 }
 
 func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post, error) {

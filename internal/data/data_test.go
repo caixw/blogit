@@ -18,11 +18,11 @@ func TestLoad(t *testing.T) {
 	a.NotError(err).NotNil(data)
 
 	a.Equal(data.Icon.Type, "image/png").Equal(data.Icon.Sizes, "256x256")
-	a.Equal(3, len(data.Posts)).
-		Equal(data.Posts[1].Prev, data.Posts[0]).
-		Equal(data.Posts[1].Next, data.Posts[2])
-	a.NotNil(data.Posts[1].Authors)
-	a.NotNil(data.Posts[1].License)
+	a.Equal(3, len(data.Index.Posts)).
+		Equal(data.Index.Posts[1].Prev, data.Index.Posts[0]).
+		Equal(data.Index.Posts[1].Next, data.Index.Posts[2])
+	a.NotNil(data.Index.Posts[1].Authors)
+	a.NotNil(data.Index.Posts[1].License)
 	a.NotNil(data.License)
 	a.NotEmpty(data.Authors)
 

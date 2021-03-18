@@ -26,7 +26,7 @@ type Archive struct {
 	Posts []*Post   // 当前存档的文章列表
 }
 
-func buildArchive(conf *loader.Config, posts []*Post) (*Archives, error) {
+func buildArchives(conf *loader.Config, posts []*Post) (*Archives, error) {
 	if conf.Archive == nil {
 		return nil, nil
 	}

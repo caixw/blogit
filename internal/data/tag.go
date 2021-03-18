@@ -44,6 +44,7 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 		Permalink:   buildURL(conf.URL, vars.TagsFilename),
 		Keywords:    tags.Keywords,
 		Description: tags.Description,
+		Tags:        make([]*Tag, 0, len(tags.Tags)),
 	}
 	for _, t := range tags.Tags {
 		p := buildPath(path.Join(vars.TagsDir, t.Slug))

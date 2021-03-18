@@ -36,7 +36,7 @@ type (
 		Builded  time.Time // 最后次编译时间
 
 		Tags     *Tags
-		Posts    []*Post
+		Index    *Index
 		Archives *Archives
 	}
 )
@@ -77,17 +77,17 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		return nil, err
 	}
 
-	ps, err := buildPosts(conf, theme, posts)
+	index, err := buildPosts(conf, theme, posts)
 	if err != nil {
 		return nil, err
 	}
 
-	archives, err := buildArchive(conf, ps)
+	archives, err := buildArchives(conf, index.Posts)
 	if err != nil {
 		return nil, err
 	}
 
-	created, modified, err := checkTags(ts.Tags, ps)
+	created, modified, err := checkTags(ts.Tags, index.Posts)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		Modified: modified,
 
 		Tags:     ts,
-		Posts:    ps,
+		Index:    index,
 		Archives: archives,
 	}
 
