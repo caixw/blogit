@@ -44,7 +44,7 @@ type Post struct {
 	// - top 表示文章被置顶；
 	// - last 表示文章会被放置在最后；
 	// - draft 表示这是一篇草稿，并不会被加地到内存中；
-	// - default 表示默认情况，也可以为空，按默认的方式进行处理。
+	// - 空值 按默认的方式进行处理。
 	State string `yaml:"state,omitempty"`
 
 	// 封面地址，可以为空。

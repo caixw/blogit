@@ -43,7 +43,7 @@ func (b *builder) buildTags(d *data.Data) error {
 	}
 
 	p := b.page(vars.TagTemplate)
-	p.Permalink = d.BuildURL(vars.TagsFilename)
+	p.Permalink = d.Tags.Permalink
 	p.Keywords = strings.Join(keys, ",")
 	p.Language = d.Language
 	p.Tags = d.Tags.Tags

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 const (
@@ -36,7 +37,7 @@ type item struct {
 	PubDate     string `xml:"pubDate,omitempty"`
 }
 
-func (b *builder) buildRSS(path string, d *data.Data) error {
+func (b *builder) buildRSS(d *data.Data) error {
 	if d.RSS == nil {
 		return nil
 	}
@@ -62,11 +63,11 @@ func (b *builder) buildRSS(path string, d *data.Data) error {
 		p := d.Index.Posts[i]
 		r.Channel.Items = append(r.Channel.Items, &item{
 			Title:       p.Title,
-			Link:        d.BuildURL(p.Path),
+			Link:        p.Permalink,
 			Description: html.EscapeString(p.Summary),
 			PubDate:     p.Created.Format(rssDateFormat),
 		})
 	}
 
-	return b.appendXMLFile(d, path, d.Theme.RSS, r)
+	return b.appendXMLFile(d, vars.RssXML, d.RSS.XSL, r)
 }

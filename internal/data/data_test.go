@@ -7,8 +7,6 @@ import (
 	"time"
 
 	"github.com/issue9/assert"
-
-	"github.com/caixw/blogit/internal/loader"
 )
 
 func TestLoad(t *testing.T) {
@@ -29,24 +27,72 @@ func TestLoad(t *testing.T) {
 	a.True(data.Builded.After(time.Time{}))
 }
 
-func TestData_BuildURL(t *testing.T) {
+func TestBuildURL(t *testing.T) {
 	a := assert.New(t)
 
-	data := &Data{URL: "https://example.com/"} // 传入的 URL 必定是以 / 结尾的
-	a.Equal(data.BuildURL("/p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(data.BuildURL("p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(data.BuildURL(""), "https://example.com/")
-	a.Equal(data.BuildURL("/"), "https://example.com/")
+	base := "https://example.com/"
+	a.Equal(buildURL(base, "/p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(buildURL(base, "p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(buildURL(base, ""), "https://example.com/")
+	a.Equal(buildURL(base, "/"), "https://example.com/")
+
+	base = "https://example.com"
+	a.Equal(buildURL(base, "/p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(buildURL(base, "p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(buildURL(base, ""), "https://example.com/")
+	a.Equal(buildURL(base, "/"), "https://example.com/")
+
+	base = ""
+	a.Equal(buildURL(base, "/p1/p2.md"), "/p1/p2.md")
+	a.Equal(buildURL(base, "p1/p2.md"), "/p1/p2.md")
+	a.Equal(buildURL(base, ""), "/")
+	a.Equal(buildURL(base, "/"), "/")
 }
 
-func TestData_buildThemeURL(t *testing.T) {
+func TestBuildThemeURL(t *testing.T) {
 	a := assert.New(t)
 
-	data := &Data{URL: "https://example.com/", Theme: &loader.Theme{ID: "def"}} // 传入的 URL 必定是以 / 结尾的
-	a.Equal(data.BuildThemeURL("/p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
-	a.Equal(data.BuildThemeURL("p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
-	a.Equal(data.BuildThemeURL(""), "https://example.com/themes/def")
-	a.Equal(data.BuildThemeURL("/"), "https://example.com/themes/def")
+	url := "https://example.com/"
+	id := "def"
+	a.Equal(buildThemeURL(url, id, "/p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, "p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, ""), "https://example.com/themes/def")
+	a.Equal(buildThemeURL(url, id, "/"), "https://example.com/themes/def")
+
+	url = "https://example.com"
+	id = "def"
+	a.Equal(buildThemeURL(url, id, "/p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, "p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, ""), "https://example.com/themes/def")
+	a.Equal(buildThemeURL(url, id, "/"), "https://example.com/themes/def")
+
+	url = "https://example.com/"
+	id = "/def"
+	a.Equal(buildThemeURL(url, id, "/p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, "p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, ""), "https://example.com/themes/def")
+	a.Equal(buildThemeURL(url, id, "/"), "https://example.com/themes/def")
+
+	url = "https://example.com"
+	id = "/def"
+	a.Equal(buildThemeURL(url, id, "/p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, "p1/p2.md"), "https://example.com/themes/def/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, ""), "https://example.com/themes/def")
+	a.Equal(buildThemeURL(url, id, "/"), "https://example.com/themes/def")
+
+	url = "https://example.com/"
+	id = ""
+	a.Equal(buildThemeURL(url, id, "/p1/p2.md"), "https://example.com/themes/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, "p1/p2.md"), "https://example.com/themes/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, ""), "https://example.com/themes")
+	a.Equal(buildThemeURL(url, id, "/"), "https://example.com/themes")
+
+	url = "https://example.com"
+	id = ""
+	a.Equal(buildThemeURL(url, id, "/p1/p2.md"), "https://example.com/themes/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, "p1/p2.md"), "https://example.com/themes/p1/p2.md")
+	a.Equal(buildThemeURL(url, id, ""), "https://example.com/themes")
+	a.Equal(buildThemeURL(url, id, "/"), "https://example.com/themes")
 }
 
 func TestBuildPath(t *testing.T) {

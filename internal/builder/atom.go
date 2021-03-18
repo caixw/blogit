@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 const (
@@ -45,7 +46,7 @@ type atomContent struct {
 	Content string `xml:",chardata"`
 }
 
-func (b *builder) buildAtom(path string, d *data.Data) error {
+func (b *builder) buildAtom(d *data.Data) error {
 	if d.Atom == nil {
 		return nil
 	}
@@ -63,24 +64,23 @@ func (b *builder) buildAtom(path string, d *data.Data) error {
 		Updated:  d.Modified.Format(atomDateFormat),
 		Links: []*atomLink{
 			{Href: d.URL},
-			{Href: d.BuildURL(path), Rel: "self"},
+			{Href: d.Atom.Permalink, Rel: "self"},
 		},
 		Entries: make([]*entry, 0, size),
 	}
 
 	for i := 0; i < size; i++ {
 		p := d.Index.Posts[i]
-		permalink := d.BuildURL(p.Path)
 		a.Entries = append(a.Entries, &entry{
 			Title:   atomContent{Content: p.Title},
-			ID:      permalink,
+			ID:      p.Permalink,
 			Updated: p.Modified.Format(atomDateFormat),
 			Links: []*atomLink{
-				{Href: permalink, Type: "application/xml"},
+				{Href: p.Permalink, Type: "application/xml"},
 			},
 			Summary: &atomContent{Type: "text/html", Content: p.Summary},
 		})
 	}
 
-	return b.appendXMLFile(d, path, d.Theme.Atom, a)
+	return b.appendXMLFile(d, vars.AtomXML, d.Atom.XSL, a)
 }

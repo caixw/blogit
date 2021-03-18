@@ -54,7 +54,7 @@ type site struct {
 }
 
 func newSite(d *data.Data) *site {
-	return &site{
+	s := &site{
 		AppName:    vars.Name,
 		AppURL:     vars.URL,
 		AppVersion: vars.Version(),
@@ -65,15 +65,24 @@ func newSite(d *data.Data) *site {
 		Subtitle:    d.Subtitle,
 		URL:         d.URL,
 		Icon:        d.Icon,
-		RSS:         &loader.Link{URL: d.BuildURL(vars.RssXML), Text: d.RSS.Title},
-		Atom:        &loader.Link{URL: d.BuildURL(vars.AtomXML), Text: d.Atom.Title},
-		Sitemap:     &loader.Link{URL: d.BuildURL(vars.SitemapXML), Text: d.Title},
 
 		Uptime:   d.Uptime,
 		Created:  d.Created,
 		Modified: d.Modified,
 		Builded:  d.Builded,
 	}
+
+	if d.RSS != nil {
+		s.RSS = &loader.Link{URL: d.RSS.Permalink, Text: d.RSS.Title}
+	}
+	if d.Atom != nil {
+		s.Atom = &loader.Link{URL: d.Atom.Permalink, Text: d.Atom.Title}
+	}
+	if d.Sitemap != nil {
+		s.Sitemap = &loader.Link{URL: d.Sitemap.Permalink, Text: d.Title}
+	}
+
+	return s
 }
 
 func (s *site) page(t string) *page {

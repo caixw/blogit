@@ -89,7 +89,7 @@ func newBuilder(dir, base string) (*builder, error) {
 		return nil, err
 	}
 
-	if err := b.buildSitemap(vars.SitemapXML, d); err != nil {
+	if err := b.buildSitemap(d); err != nil {
 		return nil, err
 	}
 
@@ -97,11 +97,11 @@ func newBuilder(dir, base string) (*builder, error) {
 		return nil, err
 	}
 
-	if err := b.buildAtom(vars.AtomXML, d); err != nil {
+	if err := b.buildAtom(d); err != nil {
 		return nil, err
 	}
 
-	if err := b.buildRSS(vars.RssXML, d); err != nil {
+	if err := b.buildRSS(d); err != nil {
 		return nil, err
 	}
 
@@ -135,7 +135,7 @@ func (b *builder) appendTemplateFile(path string, p *page) error {
 }
 
 // path 表示输出的文件路径，相对于源目录；
-// xsl 表示关联的 xsl，相对于当前主题目录的路径，如果不需要则可能为空；
+// xsl 表示关联的 xsl，如果不需要则可能为空；
 func (b *builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) error {
 	data, err := xml.MarshalIndent(v, "", "\t")
 	if err != nil {
@@ -145,7 +145,6 @@ func (b *builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) e
 	buf := &errwrap.Buffer{}
 	buf.WString(xml.Header)
 	if xsl != "" {
-		xsl = d.BuildThemeURL(xsl)
 		buf.Printf(`<?xml-stylesheet type="text/xsl" href="%s"?>`, xsl).WByte('\n')
 	}
 	buf.WBytes(data)

@@ -25,7 +25,7 @@ type url struct {
 	Priority   string `xml:"priority"`
 }
 
-func (b *builder) buildSitemap(path string, d *data.Data) error {
+func (b *builder) buildSitemap(d *data.Data) error {
 	if d.Sitemap == nil {
 		return nil
 	}
@@ -37,18 +37,18 @@ func (b *builder) buildSitemap(path string, d *data.Data) error {
 
 	conf := d.Sitemap
 	if conf.EnableTag {
-		s.append(d.BuildURL(vars.TagsFilename), d.Modified, conf.Changefreq, conf.Priority)
+		s.append(d.Tags.Permalink, d.Modified, conf.Changefreq, conf.Priority)
 		for _, tag := range d.Tags.Tags {
-			s.append(d.BuildURL(tag.Path), tag.Modified, conf.Changefreq, conf.Priority)
+			s.append(tag.Permalink, tag.Modified, conf.Changefreq, conf.Priority)
 		}
 	}
 
 	s.append(d.URL, d.Modified, conf.Changefreq, conf.Priority)
 	for _, p := range d.Index.Posts {
-		s.append(d.BuildURL(p.Path), p.Modified, conf.PostChangefreq, conf.PostPriority)
+		s.append(p.Permalink, p.Modified, conf.PostChangefreq, conf.PostPriority)
 	}
 
-	return b.appendXMLFile(d, path, d.Theme.Sitemap, s)
+	return b.appendXMLFile(d, vars.SitemapXML, d.Sitemap.XSL, s)
 }
 
 func (us *urlset) append(loc string, lastmod time.Time, changefreq string, priority float64) {

@@ -26,9 +26,9 @@ type (
 		License     *loader.Link
 		Theme       *loader.Theme
 
-		RSS     *loader.RSS
-		Atom    *loader.RSS
-		Sitemap *loader.Sitemap
+		RSS     *RSS
+		Atom    *RSS
+		Sitemap *Sitemap
 
 		Uptime   time.Time
 		Created  time.Time
@@ -40,6 +40,46 @@ type (
 		Archives *Archives
 	}
 )
+
+// RSS Atom 和 RSS 的相关配置项
+type RSS struct {
+	*loader.RSS
+	Permalink string
+	XSL       string
+}
+
+// Sitemap 的相关配置项
+type Sitemap struct {
+	*loader.Sitemap
+	Permalink string
+	XSL       string
+}
+
+func newRSS(conf *loader.Config, rss *loader.RSS, path, xsl string) *RSS {
+	r := &RSS{
+		RSS:       rss,
+		Permalink: buildURL(conf.URL, path),
+	}
+
+	if xsl != "" {
+		r.XSL = buildThemeURL(conf.URL, conf.Theme, xsl)
+	}
+
+	return r
+}
+
+func newSitemap(conf *loader.Config, theme *loader.Theme) *Sitemap {
+	sm := &Sitemap{
+		Sitemap:   conf.Sitemap,
+		Permalink: buildURL(conf.URL, vars.SitemapXML),
+	}
+
+	if theme.Sitemap != "" {
+		sm.XSL = buildThemeURL(conf.URL, conf.Theme, theme.Sitemap)
+	}
+
+	return sm
+}
 
 // Load 加载并处理数据
 func Load(dir string) (*Data, error) {
@@ -103,10 +143,6 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		License:     conf.License,
 		Theme:       theme,
 
-		RSS:     conf.RSS,
-		Atom:    conf.Atom,
-		Sitemap: conf.Sitemap,
-
 		Uptime:   conf.Uptime,
 		Builded:  time.Now(),
 		Created:  created,
@@ -117,15 +153,24 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		Archives: archives,
 	}
 
+	if conf.RSS != nil {
+		data.RSS = newRSS(conf, conf.RSS, vars.RssXML, theme.RSS)
+	}
+	if conf.Atom != nil {
+		data.Atom = newRSS(conf, conf.Atom, vars.AtomXML, theme.Atom)
+	}
+	if conf.Sitemap != nil {
+		data.Sitemap = newSitemap(conf, theme)
+	}
+
 	return data, nil
 }
 
-// BuildURL 根据配置网站域名生成地址
-func (data *Data) BuildURL(p ...string) string {
-	return buildURL(data.URL, p...)
-}
-
 func buildURL(url string, p ...string) string {
+	if url == "" || url[len(url)-1] != '/' {
+		url += "/"
+	}
+
 	pp := path.Join(p...)
 
 	if len(pp) == 0 {
@@ -136,11 +181,6 @@ func buildURL(url string, p ...string) string {
 		return url + pp[1:]
 	}
 	return url + pp
-}
-
-// BuildThemeURL 根据配置网站域名生成主题下的文件地址
-func (data *Data) BuildThemeURL(p ...string) string {
-	return buildThemeURL(data.URL, data.Theme.ID, p...)
 }
 
 func buildThemeURL(url, themeID string, p ...string) string {
