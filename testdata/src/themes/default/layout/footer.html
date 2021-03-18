@@ -1,3 +1,112 @@
-{{define "footer"}}
+{{define "footer" -}}
+                {{if or .PrevPage .NextPage -}}
+                <div class="pages-nav">
+                    {{if .PrevPage -}}
+                        <a rel="prev" href="{{.PrevPage.URL}}" aria-label="前一页">
+                            &#171;&#160;{{.PrevPage.Text}}
+                        </a>
+                    {{- end}}
+                    {{if .NextPage -}}
+                        <a rel="next" href="{{.NextPage.URL}}" aria-label="后一页">
+                            {{.NextPage.Text}}&#160;&#187;
+                        </a>
+                    {{- end}}
+                    <div class="clearfix" aria-hidden="true"></div>
+                </div>
+                {{- end}}
 
+            </div> <!-- end .container -->
+        </main> <!-- end #content -->
+
+        <footer id="footer">
+            <div class="container">
+                <div>
+                    <span>&#169; 2016 - {{.Site.CurrYear}} by
+                        <a href="{{.Site.URL}}" type="text/html">caixw</a>
+                    </span>
+                    <span aria-hidden="true">&#8901;</span>
+                    Powered by <a href="{{.Site.AppURL}}" type="text/html">{{.Site.AppName}}</a>
+                    &#160;
+                    <a href="http://www.beian.miit.gov.cn">{{.Site.Beian}}</a>
+                </div>
+
+                <div id="sidebar-nav">
+                    <a id="top" href="#">
+                        <i class="fa fa-chevron-up fa-2x" aria-hidden="true"></i>
+                        <span class="text">返回顶部</span>
+                    </a>
+
+                    <span class="separator" aria-hidden="true">&#8901;</span>
+
+                    <a type="text/html" href="https://github.com/caixw/blogs/issues/new?title={{.Canonical}}">
+                        <i class="fa fa-check fa-2x" aria-hidden="true"></i>
+                        <span class="text">纠正错误</span>
+                    </a>
+                </div>
+            </div>
+        </footer>
+        {{- if eq .Type "post"}}
+        <script type="application/ld+json">
+            {
+                "@context": "http://schema.org/",
+                "@type": "BlogPosting",
+                "mainEntityOfPage": "{{.Canonical}}",
+                "url": "{{.Canonical}}",
+                "headline": "{{.Title}}",
+                "author": {
+                    "@type": "Person",
+                    "name": "{{.Author.Name}}",
+                    "url": "{{.Author.URL}}",
+                    "email": "{{.Author.Email}}"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "{{.Author.Name}}",
+                    "url": "{{.Author.URL}}",
+                    "email": "{{.Author.Email}}"
+                },
+                "description": "{{.Post.Summary}}",
+                "inLanguage": "{{.Site.Language}}",
+                "keywords": "{{.Keywords}}",
+                "datePublished": "{{.Post.Created|rfc3339}}",
+                "dateModified": "{{.Post.Modified|rfc3339}}",
+                "image": "{{.Post.Image}}",
+                "license": "{{.License}}",
+                "articleBody":"{{.Post.Content}}"
+            }
+        </script>
+        {{end -}}
+
+        {{- if eq .Type "index"}}
+        <script type="application/ld+json">
+            {
+                "@context": "http://schema.org/",
+                "@type": "Blog",
+                "mainEntityOfPage": "{{.Canonical}}",
+                "url": "{{.Canonical}}",
+                "headline": "{{.Title}}",
+                {{- if .Author}}
+                "author": {
+                    "@type": "Person",
+                    "name": "{{.Author.Name}}",
+                    "url": "{{.Author.URL}}",
+                    "email": "{{.Author.Email}}"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "{{.Author.Name}}",
+                    "url": "{{.Author.URL}}",
+                    "email": "{{.Author.Email}}"
+                },
+                {{end -}}
+                "inLanguage": "{{.Site.Language}}",
+                "datePublished": "{{.Site.Uptime|rfc3339}}",
+                "dateModified": "{{.Site.LastUpdated|rfc3339}}"
+            }
+        </script>
+        {{end -}}
+
+        {{template "tongji"}}
+    </body>
+</html>
 {{end}}

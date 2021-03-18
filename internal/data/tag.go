@@ -29,6 +29,8 @@ type Tag struct {
 	Title     string
 	Content   string // 对该标签的详细描述
 	Posts     []*Post
+	Prev      *Tag
+	Next      *Tag
 	Created   time.Time
 	Modified  time.Time
 }
@@ -60,8 +62,22 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 	}
 
 	sortTags(ts, tags.OrderType, tags.Order)
+	tagsPrevNext(ts.Tags)
 
 	return ts, nil
+}
+
+func tagsPrevNext(tags []*Tag) {
+	max := len(tags)
+	for i := 0; i < max; i++ {
+		tag := tags[i]
+		if i > 0 {
+			tag.Prev = tags[i-1]
+		}
+		if i < max-1 {
+			tag.Next = tags[i+1]
+		}
+	}
 }
 
 func sortTags(tags *Tags, typ, order string) {

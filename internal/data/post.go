@@ -54,7 +54,7 @@ func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) 
 		ps = append(ps, post)
 	}
 
-	prevNext(ps)
+	postsPrevNext(ps)
 
 	return &Index{
 		Title:       conf.Title,
@@ -111,7 +111,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 	return pp, nil
 }
 
-func prevNext(posts []*Post) {
+func postsPrevNext(posts []*Post) {
 	max := len(posts)
 	for i := 0; i < max; i++ {
 		post := posts[i]

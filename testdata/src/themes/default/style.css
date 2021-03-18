@@ -1,0 +1,356 @@
+@charset "utf-8";
+
+:root {
+    /* --max-width 表示页面的最大宽度。
+     * -- phone-width 表示手机模式下的最大宽度，当宽度值小于此值时，
+     * 页面自动转换为手机模式，部分内容不再显示。
+     *
+     * 这两个值同时作用于 media query 功能，
+     * 但是 media query 本身并不支持 css variable，所以修改这两个值，
+     * 需要同时修改之后的 media query 的相关数值。 */
+    --max-width: 70rem;
+    --phone-width: 600px;
+
+    /* 标题栏的字体大小 */
+    --nav-font-size: 1.2rem;
+
+    /* 下面这些变量主要用于自定义颜色用。
+     * 用户可以根据通过 JS 控制这些变更的值，达到更换颜色的目的。 */
+
+    --background: #fff;
+
+    --appbar-background: #3f51b5;
+    --appbar-foreground: #ebeaf6;
+    --appbar-link-foreground: #bbb;
+
+    --post-background: #ebeaf6;
+    --post-foreground: #212121;
+    --post-foreground-link: #000;
+    --post-foreground-meta: #757575;
+
+    --divider-foreground: #f5f5f5;
+
+    --placeholder-foreground: #bdbdbd;
+}
+
+/*********************** reset */
+
+body {
+    margin: 0 auto;
+    background: var(--background);
+    font-family: 'Lantinghei SC', 'Open Sans', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, Helvetica, sans-serif;
+}
+
+a {
+    text-decoration:none;
+    color: var(--link-foreground);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.clearfix {
+    clear: both;
+}
+
+/* 调整图标，使其上下居中 */
+.fa {
+    margin-top: .1rem;
+}
+
+:-ms-input-placeholder{ /* IE */
+    color: var(--placeholder-foreground);
+}
+
+::-ms-input-placeholder{ /* Edge */
+    color: var(--placeholder-foreground);
+}
+
+::-moz-placeholder{
+    color: var(--placeholder-foreground);
+}
+
+::-webkit-input-placeholder {
+    color: var(--placeholder-foreground);
+}
+
+::placeholder {
+    color: var(--placeholder-foreground);
+}
+
+/*********** #header ************/
+#header {
+    box-shadow: 0px 1px 2px var(--appbar-background);
+    background: var(--appbar-background);
+    color: var(--appbar-foreground);
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index:1000;
+    padding-top: .2rem; /* 调整 header 的内容，使其垂直居中 */
+}
+
+#header a {
+    color: var(--appbar-link-foreground);
+}
+
+#header nav {
+    max-width: var(--max-width);
+    margin: auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#header .item i {
+    margin-right: 3px;
+}
+
+#header .item {
+    font-size: var(--nav-font-size);
+    border-bottom:1px solid transparent;
+    color: var(--appbar-foreground);
+    padding: 1rem;
+    text-decoration: none;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+#header .item:hover {
+    color: var(--appbar-link-foreground);
+}
+
+#header .item:first-child {
+    padding-left: 0;
+}
+
+#header .item:last-child {
+    padding-right: 0;
+}
+
+#header .item.search {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 2rem;
+    z-index: 100;
+    text-align: right;
+
+    position: relative; /* 用于 input:foucs 定位用 */
+}
+
+#header .search input {
+    font-size: var(--nav-font-size);
+    text-align: left;
+    outline: none;
+    border: none;
+    padding: 0; /* iOS Safari 下必须指这此值，否则会被扩大 */
+    color: var(--appbar-foreground);
+    background: var(--appbar-background);
+    border-bottom: 1px solid var(--appbar-foreground);
+    width: 100%;
+    max-width: 300px;
+    transition: width 1s;
+    position: absolute;
+    right: 0;
+    -webkit-appearance: none; /* safari */
+}
+
+#header .item.search input:focus {
+    width: calc(100vw - 2rem); /* 保证在极小的屏幕下，不会超过整个屏幕的宽度 */
+}
+
+
+/* 600px 需要与 var(--iphone-width) 的值相同，但是 media query 不能直接引用 css 变量。 */
+@media (max-width: 600px) {
+    #header .item {
+        padding: .3rem .7rem;
+    }
+
+    #header .item span {
+        display: none !important;
+    }
+}
+
+/******************* #footer **************/
+#footer {
+    background: var(--appbar-background);
+    color: var(--appbar-foreground);
+    line-height: 2.3rem;
+}
+
+#footer a {
+    color: var(--appbar-link-foreground);
+}
+
+#footer .container {
+    max-width: var(--max-width);
+    margin: auto;
+    padding: 1rem;
+
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#footer p {
+    margin: 0;
+}
+
+/************ #content *****************/
+
+#content {
+    word-break: break-all;
+    color: var(--post-foreground);
+}
+
+#content .container {
+    max-width: var(--max-width);
+    margin: auto;
+    padding: 1rem;
+}
+
+#content .post .title a {
+    margin-bottom: .2rem;
+}
+
+#content .post .meta {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: .5rem;
+    color: var(--post-foreground-meta);
+}
+
+#content .post .meta .item {
+    margin-right: .7rem;
+}
+
+#content .post section>p {
+    text-indent: 2em;
+}
+
+#content .post a {
+    color: var(--post-foreground-link);
+}
+
+#content .post .meta .item a[rel=tag] {
+    margin-right: .5rem;
+    color: var(--post-foreground-meta);
+}
+
+#content .posts .post {
+    border-bottom: 1px solid var(--divider-foreground);
+}
+
+#content .tags, #content .archives {
+    margin-bottom: 1rem;
+}
+
+#content .archives .date {
+    margin-left: 1rem;
+}
+
+#content .tags .item {
+    margin-right: 1rem;
+}
+
+#content footer {
+    margin-top: 2rem;
+    border-top: 1px solid var(--divider-foreground);
+}
+
+#content footer p {
+    text-indent: 0 !important;
+    margin: .3rem 0;
+}
+
+.pages-nav {
+    margin: 2rem 0 1rem 0;
+}
+
+.pages-nav a[rel=next] {
+    float: right;
+}
+
+/************ #sidebar-nav ************/
+
+/* 70rem 需要与 var(--max-width) 的值相同，但是 media query 不能直接引用 css 变量。 */
+@media (max-width: 70rem) {
+    #sidebar-nav .fa {
+        display: none !important;
+    }
+
+    #sidebar-nav a {
+        display: inline;
+    }
+}
+
+/* 70rem 需要与 var(--max-width) 的值相同，但是 media query 不能直接引用 css 变量。 */
+@media (min-width: 70rem) {
+    #sidebar-nav {
+        position: fixed;
+        right: 1.5rem;
+        bottom: 7rem;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--divider-foreground);
+        line-height: 1; /* 重置由 footer 中的 line-height */
+    }
+
+    #sidebar-nav .text,
+    #sidebar-nav .separator {
+        display: none;
+    }
+
+    #sidebar-nav a {
+        padding: 2px 5px;
+        position: relative; /* 方便下面的 a:hover .text 定位 */
+    }
+
+    #sidebar-nav:hover {
+        background: var(--divider-foreground);
+    }
+
+    #sidebar-nav a:hover {
+        color: var(--post-foreground);
+    }
+
+    #sidebar-nav a:hover .text {
+        position: absolute;
+        right: 2.5rem;
+        width: 5rem;
+        top: 0;
+        bottom: 0;
+        display: block;
+        text-align: center;
+        line-height: 2.3;
+        background: var(--divider-foreground);
+        border: 1px solid var(--divider-foreground);
+    }
+} /* end meida-query */
+
+
+
+/**************** .post ***********/
+/* 包含文章内的一些元素格式定义 */
+
+.post img {
+    max-width: 100%; /* 小屏幕上限定宽度 */
+}
+
+.post table {
+    text-align: left;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.post table th {
+    font-weight: 500;
+}
+
+.post table th, .post table td {
+    border: 1px solid var(--divider-foreground);
+    padding: .2rem .5rem;
+}
