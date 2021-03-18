@@ -32,19 +32,19 @@ func (b *builder) buildSitemap(path string, d *data.Data) error {
 
 	s := &urlset{
 		XMLNS:  sitempaNamespace,
-		URLSet: make([]*url, 0, len(d.Tags)+len(d.Posts)),
+		URLSet: make([]*url, 0, len(d.Tags.Tags)+len(d.Index.Posts)),
 	}
 
 	conf := d.Sitemap
 	if conf.EnableTag {
 		s.append(d.BuildURL(vars.TagsFilename), d.Modified, conf.Changefreq, conf.Priority)
-		for _, tag := range d.Tags {
+		for _, tag := range d.Tags.Tags {
 			s.append(d.BuildURL(tag.Path), tag.Modified, conf.Changefreq, conf.Priority)
 		}
 	}
 
 	s.append(d.URL, d.Modified, conf.Changefreq, conf.Priority)
-	for _, p := range d.Posts {
+	for _, p := range d.Index.Posts {
 		s.append(d.BuildURL(p.Path), p.Modified, conf.PostChangefreq, conf.PostPriority)
 	}
 

@@ -7,9 +7,10 @@ import (
 	"sort"
 	"time"
 
+	"github.com/issue9/sliceutil"
+
 	"github.com/caixw/blogit/internal/loader"
 	"github.com/caixw/blogit/internal/vars"
-	"github.com/issue9/sliceutil"
 )
 
 // Tags 标签列表及相关设置项

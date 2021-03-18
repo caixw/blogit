@@ -51,8 +51,8 @@ func (b *builder) buildAtom(path string, d *data.Data) error {
 	}
 
 	size := d.RSS.Size
-	if len(d.Posts) < size {
-		size = len(d.Posts)
+	if len(d.Index.Posts) < size {
+		size = len(d.Index.Posts)
 	}
 
 	a := &atom{
@@ -69,7 +69,7 @@ func (b *builder) buildAtom(path string, d *data.Data) error {
 	}
 
 	for i := 0; i < size; i++ {
-		p := d.Posts[i]
+		p := d.Index.Posts[i]
 		permalink := d.BuildURL(p.Path)
 		a.Entries = append(a.Entries, &entry{
 			Title:   atomContent{Content: p.Title},

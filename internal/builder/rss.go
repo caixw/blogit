@@ -42,8 +42,8 @@ func (b *builder) buildRSS(path string, d *data.Data) error {
 	}
 
 	size := d.RSS.Size
-	if len(d.Posts) < size {
-		size = len(d.Posts)
+	if len(d.Index.Posts) < size {
+		size = len(d.Index.Posts)
 	}
 
 	r := &rss{
@@ -59,7 +59,7 @@ func (b *builder) buildRSS(path string, d *data.Data) error {
 	}
 
 	for i := 0; i < size; i++ {
-		p := d.Posts[i]
+		p := d.Index.Posts[i]
 		r.Channel.Items = append(r.Channel.Items, &item{
 			Title:       p.Title,
 			Link:        d.BuildURL(p.Path),
