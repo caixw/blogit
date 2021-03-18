@@ -4,10 +4,12 @@ package data
 
 import (
 	"path"
+	"sort"
 	"time"
 
 	"github.com/caixw/blogit/internal/loader"
 	"github.com/caixw/blogit/internal/vars"
+	"github.com/issue9/sliceutil"
 )
 
 // Tags 标签列表及相关设置项
@@ -57,7 +59,21 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 		})
 	}
 
+	sortTags(ts, tags.OrderType, tags.Order)
+
 	return ts, nil
+}
+
+func sortTags(tags *Tags, typ, order string) {
+	if typ == loader.TagOrderTypeSize {
+		sort.SliceStable(tags.Tags, func(i, j int) bool {
+			return len(tags.Tags[i].Posts) > len(tags.Tags[j].Posts)
+		})
+	}
+
+	if order == loader.OrderDesc {
+		sliceutil.Reverse(tags.Tags)
+	}
 }
 
 func checkTags(tags []*Tag, posts []*Post) (created, modified time.Time, err error) {
