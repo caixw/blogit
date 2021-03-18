@@ -16,7 +16,7 @@ func TestArchive_sanitize(t *testing.T) {
 
 	archive = &Archive{Title: "archive"}
 	a.NotError(archive.sanitize())
-	a.Equal(archive.Order, ArchiveOrderDesc).
+	a.Equal(archive.Order, OrderDesc).
 		Equal(archive.Type, ArchiveTypeYear).
 		Equal(archive.Format, defaultArchiveFormats[archive.Type])
 

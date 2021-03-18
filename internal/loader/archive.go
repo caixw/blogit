@@ -8,12 +8,6 @@ const (
 	ArchiveTypeMonth = "month"
 )
 
-// 归档的排序方式
-const (
-	ArchiveOrderDesc = "desc"
-	ArchiveOrderAsc  = "asc"
-)
-
 var defaultArchiveFormats = map[string]string{
 	ArchiveTypeYear:  "2006",
 	ArchiveTypeMonth: "2006-01",
@@ -43,9 +37,9 @@ func (a *Archive) sanitize() *FieldError {
 	}
 
 	if a.Order == "" {
-		a.Order = ArchiveOrderDesc
+		a.Order = OrderDesc
 	} else {
-		if a.Order != ArchiveOrderAsc && a.Order != ArchiveOrderDesc {
+		if a.Order != OrderAsc && a.Order != OrderDesc {
 			return &FieldError{Message: "取值不正确", Field: "order", Value: a.Order}
 		}
 	}

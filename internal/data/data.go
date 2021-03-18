@@ -35,7 +35,7 @@ type (
 		Modified time.Time
 		Builded  time.Time // 最后次编译时间
 
-		Tags     []*Tag
+		Tags     *Tags
 		Posts    []*Post
 		Archives *Archives
 	}
@@ -66,13 +66,13 @@ func Load(dir string) (*Data, error) {
 	return build(conf, tags, posts, theme)
 }
 
-func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme *loader.Theme) (*Data, error) {
+func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *loader.Theme) (*Data, error) {
 	var suffix string
 	if conf.TitleSeparator != "" {
 		suffix = conf.TitleSeparator + conf.Title
 	}
 
-	ts, err := buildTags(conf.URL, tags)
+	ts, err := buildTags(conf, tags)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func build(conf *loader.Config, tags []*loader.Tag, posts []*loader.Post, theme 
 		return nil, err
 	}
 
-	created, modified, err := checkTags(ts, ps)
+	created, modified, err := checkTags(ts.Tags, ps)
 	if err != nil {
 		return nil, err
 	}

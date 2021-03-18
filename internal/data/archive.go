@@ -63,27 +63,25 @@ func buildArchive(conf *loader.Config, posts []*Post) (*Archives, error) {
 	} // end for
 
 	sort.SliceStable(list, func(i, j int) bool {
-		if conf.Archive.Order == loader.ArchiveOrderDesc {
+		if conf.Archive.Order == loader.OrderDesc {
 			return list[i].date.After(list[j].date)
 		}
 		return list[i].date.Before(list[j].date)
 	})
 
-	keywords := conf.Archive.Keywords
-	if keywords == "" {
-		keywords = conf.Keywords
+	if conf.Archive.Keywords == "" {
+		conf.Archive.Keywords = conf.Keywords
 	}
 
-	desc := conf.Archive.Description
-	if desc == "" {
-		desc = conf.Description
+	if conf.Archive.Description == "" {
+		conf.Archive.Description = conf.Description
 	}
 
 	return &Archives{
 		Title:       conf.Archive.Title,
 		Permalink:   buildURL(conf.URL, vars.ArchiveFilename),
-		Keywords:    keywords,
-		Description: desc,
+		Keywords:    conf.Archive.Keywords,
+		Description: conf.Archive.Description,
 		Archives:    list,
 	}, nil
 }

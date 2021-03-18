@@ -22,20 +22,20 @@ func TestTag_sanitize(t *testing.T) {
 
 	tag.Content = "c1"
 	a.NotError(tag.sanitize(nil))
-	a.NotError(tag.sanitize([]*Tag{tag}))
-	a.ErrorString(tag.sanitize([]*Tag{tag, tag}), "重复的值")
+	a.NotError(tag.sanitize(&Tags{Tags: []*Tag{tag}}))
+	a.ErrorString(tag.sanitize(&Tags{Tags: []*Tag{tag, tag}}), "重复的值")
 }
 
 func TestLoadTags(t *testing.T) {
 	a := assert.New(t)
 
 	tags, err := LoadTags("../../testdata/src/tags.yaml")
-	a.NotError(err).NotNil(tags)
-	a.Equal(4, len(tags))
-	a.Equal(tags[0].Slug, "default").
-		Equal(tags[1].Slug, "api").
-		Equal(tags[2].Slug, "firefox").
-		Equal(tags[3].Slug, "git")
+	a.NotError(err).NotNil(tags).Equal(tags.Title, "标签").Equal(tags.OrderType, TagOrderTypeSize)
+	a.Equal(4, len(tags.Tags))
+	a.Equal(tags.Tags[0].Slug, "default").
+		Equal(tags.Tags[1].Slug, "api").
+		Equal(tags.Tags[2].Slug, "firefox").
+		Equal(tags.Tags[3].Slug, "git")
 
 	tags, err = LoadTags("../../testdata/src/not-exists.yaml")
 	a.ErrorIs(err, os.ErrNotExist).Empty(tags)

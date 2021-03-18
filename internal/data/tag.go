@@ -10,6 +10,15 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
+// Tags 标签列表及相关设置项
+type Tags struct {
+	Title       string
+	Permalink   string
+	Keywords    string
+	Description string
+	Tags        []*Tag
+}
+
 // Tag 单个标签的内容
 type Tag struct {
 	Permalink string
@@ -22,12 +31,24 @@ type Tag struct {
 	Modified  time.Time
 }
 
-func buildTags(baseURL string, tags []*loader.Tag) ([]*Tag, error) {
-	ts := make([]*Tag, 0, len(tags))
-	for _, t := range tags {
+func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
+	if tags.Keywords == "" {
+		tags.Keywords = conf.Keywords
+	}
+	if tags.Description == "" {
+		tags.Description = conf.Description
+	}
+
+	ts := &Tags{
+		Title:       tags.Title,
+		Permalink:   buildURL(conf.URL, vars.TagsFilename),
+		Keywords:    tags.Keywords,
+		Description: tags.Description,
+	}
+	for _, t := range tags.Tags {
 		p := buildPath(path.Join(vars.TagsDir, t.Slug))
-		ts = append(ts, &Tag{
-			Permalink: buildURL(baseURL, p),
+		ts.Tags = append(ts.Tags, &Tag{
+			Permalink: buildURL(conf.URL, p),
 			Slug:      t.Slug,
 			Path:      p,
 			Title:     t.Title,

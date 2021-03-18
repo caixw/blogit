@@ -25,6 +25,12 @@ var markdown = goldmark.New(goldmark.WithExtensions(
 	highlighting.Highlighting,
 ))
 
+// 排序方式
+const (
+	OrderDesc = "desc"
+	OrderAsc  = "asc"
+)
+
 // FieldError 表示配置项内容的错误信息
 type FieldError struct {
 	File    string
