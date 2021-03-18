@@ -11,9 +11,10 @@ func (b *builder) buildArchive(d *data.Data) error {
 	p := b.page(vars.ArchiveTemplate)
 	p.Title = d.Archives.Title
 	p.Permalink = d.Archives.Permalink
-	p.Keywords = "TODO"
-	p.Description = "TODO"
+	p.Keywords = d.Archives.Keywords
+	p.Description = d.Archives.Description
 	p.Language = d.Language
+	p.Archives = d.Archives.Archives
 
 	return b.appendTemplateFile(vars.ArchiveFilename, p)
 }

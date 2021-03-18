@@ -13,7 +13,7 @@ func (b *builder) buildPosts(d *data.Data) error {
 		page := b.page(p.Template)
 		page.Title = p.Title
 		page.Permalink = p.Permalink
-		page.Keywords = "todo"
+		page.Keywords = p.Keywords
 		page.Description = p.Summary
 		page.Language = d.Language
 		page.Post = p
@@ -38,8 +38,8 @@ func (b *builder) buildPosts(d *data.Data) error {
 
 	page := b.page(vars.IndexTemplate)
 	page.Permalink = d.URL
-	page.Keywords = "todo"
-	page.Description = "todo"
+	page.Keywords = d.Index.Keywords
+	page.Description = d.Index.Description
 	page.Language = d.Language
 	page.Posts = d.Index.Posts
 

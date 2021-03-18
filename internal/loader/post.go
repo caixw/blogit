@@ -55,6 +55,7 @@ type Post struct {
 	License  *Link     `yaml:"license,omitempty"`
 	Template string    `yaml:"template,omitempty"`
 	Language string    `yaml:"language,omitempty"`
+	Keywords string    `yaml:"keywords,omitempty"`
 
 	Content string `yaml:"-"` // markdown 内容
 	Slug    string `yaml:"-"`

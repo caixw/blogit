@@ -5,6 +5,7 @@ package data
 import (
 	"path"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/issue9/sliceutil"
@@ -93,7 +94,8 @@ func sortTags(tags *Tags, typ, order string) {
 	}
 }
 
-func checkTags(tags []*Tag, posts []*Post) (created, modified time.Time, err error) {
+// 关联 tags 和 posts 的信息
+func relationTagsPosts(tags []*Tag, posts []*Post) (created, modified time.Time, err error) {
 	for _, p := range posts {
 		if created.Before(p.Created) {
 			created = p.Created
@@ -117,6 +119,16 @@ func checkTags(tags []*Tag, posts []*Post) (created, modified time.Time, err err
 			if t.Modified.Before(p.Modified) {
 				t.Modified = p.Modified
 			}
+		}
+
+		if p.Keywords == "" {
+			keywords := make([]string, 0, len(p.Tags)*2)
+			for _, t := range p.Tags {
+				keywords = append(keywords, t.Slug, t.Title)
+			}
+			size := sliceutil.Unique(keywords, func(i, j int) bool { return keywords[i] == keywords[j] })
+			keywords = keywords[:size]
+			p.Keywords = strings.Join(keywords, ",")
 		}
 	}
 

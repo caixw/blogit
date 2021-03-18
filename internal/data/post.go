@@ -34,6 +34,7 @@ type Post struct {
 	Language  string
 	Authors   []*loader.Author
 	License   *loader.Link
+	Keywords  string
 	Summary   string
 	Content   string
 	Image     string
@@ -102,6 +103,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		Language:  p.Language,
 		Authors:   p.Authors,
 		License:   p.License,
+		Keywords:  p.Keywords,
 		Summary:   p.Summary,
 		Content:   p.Content,
 		Image:     p.Image,
