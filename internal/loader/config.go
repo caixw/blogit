@@ -6,20 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/issue9/sliceutil"
 	"github.com/issue9/validation/is"
-)
-
-// 归档的类型
-const (
-	ArchiveTypeYear  = "year"
-	ArchiveTypeMonth = "month"
-)
-
-// 归档的排序方式
-const (
-	ArchiveOrderDesc = "desc"
-	ArchiveOrderAsc  = "asc"
 )
 
 // Config 配置信息，用于从文件中读取
@@ -30,13 +17,15 @@ type Config struct {
 	// 标题后缀分隔符，文章页面浏览器标题上会加上此后缀，如果为空，则表示不需要后缀。
 	TitleSeparator string `yaml:"titleSeparator,omitempty"`
 
-	URL      string    `yaml:"url"` // 网站根域名，比如 https://example.com/blog
-	Language string    `yaml:"language,omitempty"`
-	Uptime   time.Time `yaml:"uptime"`
-	Icon     *Icon     `yaml:"icon,omitempty"`
-	Authors  []*Author `yaml:"authors"`
-	License  *Link     `yaml:"license"`
-	Theme    string    `yaml:"theme"`
+	URL         string    `yaml:"url"` // 网站根域名，比如 https://example.com/blog
+	Language    string    `yaml:"language,omitempty"`
+	Uptime      time.Time `yaml:"uptime"`
+	Icon        *Icon     `yaml:"icon,omitempty"`
+	Authors     []*Author `yaml:"authors"`
+	License     *Link     `yaml:"license"`
+	Theme       string    `yaml:"theme"`
+	Keywords    string    `yaml:"keywords,omitempty"`    // 所有页面默认情况下的 keywords
+	Description string    `yaml:"description,omitempty"` // 所有页面默认情况下的 description
 
 	Archive *Archive `yaml:"archive,omitempty"`
 	RSS     *RSS     `yaml:"rss,omitempty"`
@@ -48,25 +37,6 @@ type Config struct {
 type RSS struct {
 	Title string `yaml:"title,omitempty"`
 	Size  int    `yaml:"size"` // 显示数量
-}
-
-// Sitemap sitemap 相关的配置
-type Sitemap struct {
-	Priority   float64 `yaml:"priority"`            // 默认的优先级
-	Changefreq string  `yaml:"changefreq"`          // 默认的更新频率
-	EnableTag  bool    `yaml:"enableTag,omitempty"` // 是否将标签相关的页面写入 sitemap
-
-	// 文章可以指定一个专门的值
-	PostPriority   float64 `yaml:"postPriority"`
-	PostChangefreq string  `yaml:"postChangefreq"`
-}
-
-// Archive 存档页的配置内容
-type Archive struct {
-	Title  string `yaml:"title"`  // 存档页的标题
-	Order  string `yaml:"order"`  // 排序方式
-	Type   string `yaml:"type"`   // 存档的分类方式，可以按年或是按月
-	Format string `yaml:"format"` // 标题的格式化字符串，被 time.Format 所格式化。
 }
 
 // LoadConfig 加载配置文件
@@ -183,64 +153,4 @@ func (rss *RSS) sanitize(conf *Config) *FieldError {
 	}
 
 	return nil
-}
-
-// 检测 sitemap 取值是否正确
-func (s *Sitemap) sanitize() *FieldError {
-	switch {
-	case s.Priority > 1 || s.Priority < 0:
-		return &FieldError{Message: "介于[0,1]之间的浮点数", Field: "priority", Value: s.Priority}
-	case s.PostPriority > 1 || s.PostPriority < 0:
-		return &FieldError{Message: "介于[0,1]之间的浮点数", Field: "postPriority", Value: s.PostPriority}
-	case !inStrings(s.Changefreq, changereqs):
-		return &FieldError{Message: "取值不正确", Field: "changefreq", Value: s.Changefreq}
-	case !inStrings(s.PostChangefreq, changereqs):
-		return &FieldError{Message: "取值不正确", Field: "postChangefreq", Value: s.PostChangefreq}
-	}
-
-	return nil
-}
-
-func (a *Archive) sanitize() *FieldError {
-	if a.Title == "" {
-		return &FieldError{Message: "不能为空", Field: "title"}
-	}
-
-	if len(a.Type) == 0 {
-		a.Type = ArchiveTypeYear
-	} else {
-		if a.Type != ArchiveTypeMonth && a.Type != ArchiveTypeYear {
-			return &FieldError{Message: "取值不正确", Field: "type", Value: a.Type}
-		}
-	}
-
-	if len(a.Order) == 0 {
-		a.Order = ArchiveOrderDesc
-	} else {
-		if a.Order != ArchiveOrderAsc && a.Order != ArchiveOrderDesc {
-			return &FieldError{Message: "取值不正确", Field: "order", Value: a.Order}
-		}
-	}
-
-	if len(a.Format) == 0 {
-		return &FieldError{Message: "不能为空", Field: "format"}
-	}
-
-	return nil
-}
-
-var changereqs = []string{
-	"never",
-	"yearly",
-	"monthly",
-	"weekly",
-	"daily",
-	"hourly",
-	"always",
-}
-
-func inStrings(val string, vals []string) bool {
-	return sliceutil.Count(vals, func(i int) bool {
-		return vals[i] == val
-	}) > 0
 }

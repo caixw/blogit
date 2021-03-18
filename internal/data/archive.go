@@ -10,12 +10,16 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
+// Archives 存档的相关信息
 type Archives struct {
-	Title     string
-	Permalink string
-	Archives  []*Archive
+	Title       string
+	Permalink   string
+	Keywords    string
+	Description string
+	Archives    []*Archive
 }
 
+// Archive 单个存档项
 type Archive struct {
 	date  time.Time // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
 	Title string    // 当前存档页的标题
@@ -65,9 +69,21 @@ func buildArchive(conf *loader.Config, posts []*Post) (*Archives, error) {
 		return list[i].date.Before(list[j].date)
 	})
 
+	keywords := conf.Archive.Keywords
+	if keywords == "" {
+		keywords = conf.Keywords
+	}
+
+	desc := conf.Archive.Description
+	if desc == "" {
+		desc = conf.Description
+	}
+
 	return &Archives{
-		Title:     conf.Archive.Title,
-		Permalink: buildURL(conf.URL, vars.ArchiveFilename),
-		Archives:  list,
+		Title:       conf.Archive.Title,
+		Permalink:   buildURL(conf.URL, vars.ArchiveFilename),
+		Keywords:    keywords,
+		Description: desc,
+		Archives:    list,
 	}, nil
 }
