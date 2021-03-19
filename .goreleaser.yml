@@ -7,43 +7,64 @@ release:
   name_template: '{{.Tag}}'
 
 builds:
-  - id: blogit
+- id: blogit
 
-    goos:
-    - darwin
-    - linux
-    - windows
+  goos:
+  - darwin
+  - linux
+  - windows
 
-    goarch:
-    - amd64
+  goarch:
+  - amd64
 
-    main: ./cmd/blogit
+  main: ./cmd/blogit
 
-    binary: blogit
+  binary: blogit
 
-    flags:
-      - -trimpath
+  flags:
+  - -trimpath
 
-    ldflags:
-      - -s -w -X main.commitHash={{.Commit}} -X main.buildDate={{time "20060102"}}
+  ldflags:
+  - -s -w -X main.commitHash={{.Commit}} -X main.buildDate={{time "20060102"}}
+
+  env:
+  - CGO_ENABLED=0
+
+dockers:
+  -
+    ids: ['blogit']
+    goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+
+    image_templates:
+    - "docker.io/caixw/blogit:{{ .Tag }}"
+    - "docker.io/caixw/blogit:v{{ .Major }}"
+    - "docker.io/caixw/blogit:v{{ .Major }}.{{ .Minor }}"
+    - "docker.io/caixw/blogit:latest"
+
+    - "ghcr.io/caixw/blogit:{{ .Tag }}"
+    - "ghcr.io/caixw/blogit:v{{ .Major }}"
+    - "ghcr.io/caixw/blogit:v{{ .Major }}.{{ .Minor }}"
+    - "ghcr.io/caixw/blogit:latest"
 
 archives:
-  - builds:
-    - blogit
-    replacements:
-      darwin: macOS
-    format_overrides:
-    - goos: windows
-      format: zip
-    files:
-    - licence*
-    - LICENCE*
-    - license*
-    - LICENSE*
-    - readme*
-    - README*
-    - changelog*
-    - CHANGELOG*
+- builds:
+  - blogit
+  replacements:
+    darwin: macOS
+  format_overrides:
+  - goos: windows
+    format: zip
+  files:
+  - licence*
+  - LICENCE*
+  - license*
+  - LICENSE*
+  - readme*
+  - README*
+  - changelog*
+  - CHANGELOG*
 
 checksum:
   name_template: checksums.txt
