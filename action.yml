@@ -1,0 +1,11 @@
+name: blogit
+description: static blog generator
+author: caixw
+inputs:
+  version:
+    required: true
+    description: "blogit 的版本号，可以使用 latest 指定最新版本"
+    default: latest
+runs:
+  using: docker
+  image: Dockerfile
