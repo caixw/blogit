@@ -1,6 +1,6 @@
 name: blogit
 description: 静态博客生成工具
-author: caixw
+author: caixw <https://caixw.io>
 
 inputs:
   version:
