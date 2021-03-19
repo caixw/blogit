@@ -1,11 +1,25 @@
 name: blogit
-description: static blog generator
+description: 静态博客生成工具
 author: caixw
+
 inputs:
   version:
     required: true
-    description: "blogit 的版本号，可以使用 latest 指定最新版本"
+    description: blogit 的版本号，可以使用 latest 指定最新版本
     default: latest
+
+  owner:
+    required: true
+    description: 输出仓库的所有者
+
+  repository:
+    required: true
+    description: 输出的仓库名
+
 runs:
   using: docker
-  image: Dockerfile
+  image: docker://caixw/blogit:${{ input.version }}
+  args:
+  - build
+  - -src=.
+  - -dest=.
