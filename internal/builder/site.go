@@ -23,6 +23,7 @@ type page struct {
 	Authors     []*loader.Author
 	License     *loader.Link // 当前页的版本信息，可以为空
 	Language    string       // 页面语言
+	JSONLD      string       // JSON-LD 数据
 
 	// 以下内容，仅在对应的页面才会有内容
 	Tag      *data.Tag       // 标签详细页面，非标签详细页，则为空

@@ -41,6 +41,7 @@ type Post struct {
 	Prev      *Post
 	Next      *Post
 	Template  string
+	JSONLD    string
 }
 
 func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) (*Index, error) {
@@ -91,8 +92,17 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		return nil, &loader.FieldError{Message: "模板不存在于 theme.yaml", Field: "template", File: p.Slug + ".md", Value: p.Template}
 	}
 
+	// NOTE: p.JSONLD 用到以上的一些变量，比如 p.License 等，所以需要放在最后初始化。
+	if p.JSONLD == "" {
+		ld, err := buildPostLD(p)
+		if err != nil {
+			return nil, err
+		}
+		p.JSONLD = ld
+	}
+
 	path := buildPath(p.Slug)
-	pp := &Post{
+	return &Post{
 		Permalink: buildURL(conf.URL, path),
 		Slug:      p.Slug,
 		Path:      path,
@@ -108,9 +118,8 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		Content:   p.Content,
 		Image:     p.Image,
 		Template:  p.Template,
-	}
-
-	return pp, nil
+		JSONLD:    p.JSONLD,
+	}, nil
 }
 
 func postsPrevNext(posts []*Post) {

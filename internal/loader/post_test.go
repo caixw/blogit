@@ -21,4 +21,11 @@ func TestLoadPost(t *testing.T) {
 	post, err := loadPost("../../testdata/src", "../../testdata/src/posts/2020/12/p3.md")
 	a.NotError(err).NotNil(post)
 	a.Equal(post.Title, "p3").Equal(post.Slug, "posts/2020/12/p3")
+
+	post, err = loadPost("../../testdata/src", "../../testdata/src/posts/p1.md")
+	a.NotError(err).NotNil(post)
+	a.Equal(post.Title, "p1").Equal(post.Slug, "posts/p1").Equal(post.JSONLD, `{
+    "@context": "https://schema.org/"
+}
+`)
 }
