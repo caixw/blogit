@@ -2,6 +2,6 @@
 
 FROM scratch
 
-COPY ./dist/blogit_linux_amd64/blogit ./blogit
+COPY ./blogit /
 
-ENTRYPOINT ['./blogit']
+ENTRYPOINT ['/blogit']

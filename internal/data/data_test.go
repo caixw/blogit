@@ -31,22 +31,22 @@ func TestBuildURL(t *testing.T) {
 	a := assert.New(t)
 
 	base := "https://example.com/"
-	a.Equal(buildURL(base, "/p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(buildURL(base, "p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(buildURL(base, ""), "https://example.com/")
-	a.Equal(buildURL(base, "/"), "https://example.com/")
+	a.Equal(BuildURL(base, "/p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(BuildURL(base, "p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(BuildURL(base, ""), "https://example.com/")
+	a.Equal(BuildURL(base, "/"), "https://example.com/")
 
 	base = "https://example.com"
-	a.Equal(buildURL(base, "/p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(buildURL(base, "p1/p2.md"), "https://example.com/p1/p2.md")
-	a.Equal(buildURL(base, ""), "https://example.com/")
-	a.Equal(buildURL(base, "/"), "https://example.com/")
+	a.Equal(BuildURL(base, "/p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(BuildURL(base, "p1/p2.md"), "https://example.com/p1/p2.md")
+	a.Equal(BuildURL(base, ""), "https://example.com/")
+	a.Equal(BuildURL(base, "/"), "https://example.com/")
 
 	base = ""
-	a.Equal(buildURL(base, "/p1/p2.md"), "/p1/p2.md")
-	a.Equal(buildURL(base, "p1/p2.md"), "/p1/p2.md")
-	a.Equal(buildURL(base, ""), "/")
-	a.Equal(buildURL(base, "/"), "/")
+	a.Equal(BuildURL(base, "/p1/p2.md"), "/p1/p2.md")
+	a.Equal(BuildURL(base, "p1/p2.md"), "/p1/p2.md")
+	a.Equal(BuildURL(base, ""), "/")
+	a.Equal(BuildURL(base, "/"), "/")
 }
 
 func TestBuildThemeURL(t *testing.T) {
@@ -100,7 +100,7 @@ func TestBuildPath(t *testing.T) {
 
 	a.Panic(func() { buildPath("") })
 
-	a.Equal(buildPath("slug"), "slug.xml")
-	a.Equal(buildPath("/slug"), "slug.xml")
-	a.Equal(buildPath("/slug.xml"), "slug.xml.xml")
+	a.Equal(buildPath("slug"), "slug.html")
+	a.Equal(buildPath("/slug"), "slug.html")
+	a.Equal(buildPath("/slug.xml"), "slug.xml.html")
 }

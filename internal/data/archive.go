@@ -79,7 +79,7 @@ func buildArchives(conf *loader.Config, posts []*Post) (*Archives, error) {
 
 	return &Archives{
 		Title:       conf.Archive.Title,
-		Permalink:   buildURL(conf.URL, vars.ArchiveFilename),
+		Permalink:   BuildURL(conf.URL, vars.ArchiveFilename),
 		Keywords:    conf.Archive.Keywords,
 		Description: conf.Archive.Description,
 		Archives:    list,

@@ -11,7 +11,7 @@ import (
 func (b *builder) buildPosts(d *data.Data) error {
 	for _, p := range d.Index.Posts {
 		page := b.page(p.Template)
-		page.Title = p.Title
+		page.Title = p.Title + d.TitleSuffix
 		page.Permalink = p.Permalink
 		page.Keywords = p.Keywords
 		page.Description = p.Summary
@@ -42,6 +42,7 @@ func (b *builder) buildPosts(d *data.Data) error {
 	page.Description = d.Index.Description
 	page.Language = d.Language
 	page.Posts = d.Index.Posts
+	page.Title = d.Title
 
 	return b.appendTemplateFile(vars.IndexFilename, page)
 }

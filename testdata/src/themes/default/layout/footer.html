@@ -27,7 +27,6 @@
                     <span aria-hidden="true">&#8901;</span>
                     Powered by <a href="{{.Site.AppURL}}" type="text/html">{{.Site.AppName}}</a>
                     &#160;
-                    <a href="http://www.beian.miit.gov.cn">{{.Site.Beian}}</a>
                 </div>
 
                 <div id="sidebar-nav">
@@ -45,68 +44,6 @@
                 </div>
             </div>
         </footer>
-        {{- if eq .Type "post"}}
-        <script type="application/ld+json">
-            {
-                "@context": "http://schema.org/",
-                "@type": "BlogPosting",
-                "mainEntityOfPage": "{{.Canonical}}",
-                "url": "{{.Canonical}}",
-                "headline": "{{.Title}}",
-                "author": {
-                    "@type": "Person",
-                    "name": "{{.Author.Name}}",
-                    "url": "{{.Author.URL}}",
-                    "email": "{{.Author.Email}}"
-                },
-                "publisher": {
-                    "@type": "Person",
-                    "name": "{{.Author.Name}}",
-                    "url": "{{.Author.URL}}",
-                    "email": "{{.Author.Email}}"
-                },
-                "description": "{{.Post.Summary}}",
-                "inLanguage": "{{.Site.Language}}",
-                "keywords": "{{.Keywords}}",
-                "datePublished": "{{.Post.Created|rfc3339}}",
-                "dateModified": "{{.Post.Modified|rfc3339}}",
-                "image": "{{.Post.Image}}",
-                "license": "{{.License}}",
-                "articleBody":"{{.Post.Content}}"
-            }
-        </script>
-        {{end -}}
-
-        {{- if eq .Type "index"}}
-        <script type="application/ld+json">
-            {
-                "@context": "http://schema.org/",
-                "@type": "Blog",
-                "mainEntityOfPage": "{{.Canonical}}",
-                "url": "{{.Canonical}}",
-                "headline": "{{.Title}}",
-                {{- if .Author}}
-                "author": {
-                    "@type": "Person",
-                    "name": "{{.Author.Name}}",
-                    "url": "{{.Author.URL}}",
-                    "email": "{{.Author.Email}}"
-                },
-                "publisher": {
-                    "@type": "Person",
-                    "name": "{{.Author.Name}}",
-                    "url": "{{.Author.URL}}",
-                    "email": "{{.Author.Email}}"
-                },
-                {{end -}}
-                "inLanguage": "{{.Site.Language}}",
-                "datePublished": "{{.Site.Uptime|rfc3339}}",
-                "dateModified": "{{.Site.LastUpdated|rfc3339}}"
-            }
-        </script>
-        {{end -}}
-
-        {{template "tongji"}}
     </body>
 </html>
 {{end}}

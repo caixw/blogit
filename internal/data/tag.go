@@ -48,7 +48,7 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 
 	ts := &Tags{
 		Title:       tags.Title,
-		Permalink:   buildURL(conf.URL, vars.TagsFilename),
+		Permalink:   BuildURL(conf.URL, vars.TagsFilename),
 		Keywords:    tags.Keywords,
 		Description: tags.Description,
 		Tags:        make([]*Tag, 0, len(tags.Tags)),
@@ -66,7 +66,7 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 
 		p := buildPath(path.Join(vars.TagsDir, t.Slug))
 		ts.Tags = append(ts.Tags, &Tag{
-			Permalink: buildURL(conf.URL, p),
+			Permalink: BuildURL(conf.URL, p),
 			Slug:      t.Slug,
 			Path:      p,
 			Title:     t.Title,

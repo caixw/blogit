@@ -103,7 +103,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 
 	path := buildPath(p.Slug)
 	return &Post{
-		Permalink: buildURL(conf.URL, path),
+		Permalink: BuildURL(conf.URL, path),
 		Slug:      p.Slug,
 		Path:      path,
 		Title:     p.Title,

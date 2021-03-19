@@ -58,7 +58,7 @@ type Sitemap struct {
 func newRSS(conf *loader.Config, rss *loader.RSS, path, xsl string) *RSS {
 	r := &RSS{
 		RSS:       rss,
-		Permalink: buildURL(conf.URL, path),
+		Permalink: BuildURL(conf.URL, path),
 	}
 
 	if xsl != "" {
@@ -71,7 +71,7 @@ func newRSS(conf *loader.Config, rss *loader.RSS, path, xsl string) *RSS {
 func newSitemap(conf *loader.Config, theme *loader.Theme) *Sitemap {
 	sm := &Sitemap{
 		Sitemap:   conf.Sitemap,
-		Permalink: buildURL(conf.URL, vars.SitemapXML),
+		Permalink: BuildURL(conf.URL, vars.SitemapXML),
 	}
 
 	if theme.Sitemap != "" {
@@ -166,27 +166,28 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 	return data, nil
 }
 
-func buildURL(url string, p ...string) string {
-	if url == "" || url[len(url)-1] != '/' {
-		url += "/"
+// BuildURL 将 p 添加到 baseURL 形成一条完整的 URL
+func BuildURL(baseURL string, p ...string) string {
+	if baseURL == "" || baseURL[len(baseURL)-1] != '/' {
+		baseURL += "/"
 	}
 
 	pp := path.Join(p...)
 
 	if len(pp) == 0 {
-		return url
+		return baseURL
 	}
 
 	if pp[0] == '/' {
-		return url + pp[1:]
+		return baseURL + pp[1:]
 	}
-	return url + pp
+	return baseURL + pp
 }
 
-func buildThemeURL(url, themeID string, p ...string) string {
+func buildThemeURL(baseURL, themeID string, p ...string) string {
 	pp := make([]string, 0, len(p))
 	pp = append(pp, vars.ThemesDir, themeID)
-	return buildURL(url, append(pp, p...)...)
+	return BuildURL(baseURL, append(pp, p...)...)
 }
 
 func buildPath(slug string) string {
@@ -197,5 +198,5 @@ func buildPath(slug string) string {
 	if slug[0] == '/' || slug[0] == os.PathSeparator {
 		slug = slug[1:]
 	}
-	return slug + ".xml"
+	return slug + ".html"
 }

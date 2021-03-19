@@ -71,7 +71,7 @@ func newBuilder(dir, base string) (*builder, error) {
 		d.URL = base
 	}
 
-	tpl, err := template.ParseGlob(filepath.Join(dir, vars.ThemesDir, d.Theme.ID, vars.LayoutDir, "/*"))
+	tpl, err := newTemplate(d, dir)
 	if err != nil {
 		return nil, err
 	}

@@ -39,14 +39,13 @@ type site struct {
 	AppVersion string // 当前程序的版本号
 	Theme      *loader.Theme
 
-	TitleSuffix string // 非首页标题的后缀
-	Title       string
-	Subtitle    string       // 网站副标题
-	URL         string       // 网站地址，若是一个子目录，则需要包含该子目录
-	Icon        *loader.Icon // 网站图标
-	RSS         *loader.Link // RSS 指针方便模板判断其值是否为空
-	Atom        *loader.Link
-	Sitemap     *loader.Link
+	Title    string
+	Subtitle string       // 网站副标题
+	URL      string       // 网站地址，若是一个子目录，则需要包含该子目录
+	Icon     *loader.Icon // 网站图标
+	RSS      *loader.Link // RSS 指针方便模板判断其值是否为空
+	Atom     *loader.Link
+	Sitemap  *loader.Link
 
 	Uptime   time.Time
 	Created  time.Time
@@ -61,11 +60,10 @@ func newSite(d *data.Data) *site {
 		AppVersion: vars.Version(),
 		Theme:      d.Theme,
 
-		TitleSuffix: d.TitleSuffix,
-		Title:       d.Title,
-		Subtitle:    d.Subtitle,
-		URL:         d.URL,
-		Icon:        d.Icon,
+		Title:    d.Title,
+		Subtitle: d.Subtitle,
+		URL:      d.URL,
+		Icon:     d.Icon,
 
 		Uptime:   d.Uptime,
 		Created:  d.Created,

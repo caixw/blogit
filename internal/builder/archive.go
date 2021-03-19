@@ -9,7 +9,7 @@ import (
 
 func (b *builder) buildArchive(d *data.Data) error {
 	p := b.page(vars.ArchiveTemplate)
-	p.Title = d.Archives.Title
+	p.Title = d.Archives.Title + d.TitleSuffix
 	p.Permalink = d.Archives.Permalink
 	p.Keywords = d.Archives.Keywords
 	p.Description = d.Archives.Description

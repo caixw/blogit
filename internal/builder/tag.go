@@ -11,7 +11,7 @@ import (
 func (b *builder) buildTags(d *data.Data) error {
 	for _, t := range d.Tags.Tags {
 		p := b.page(vars.TagTemplate)
-		p.Title = t.Title
+		p.Title = t.Title + d.TitleSuffix
 		p.Permalink = t.Permalink
 		p.Keywords = t.Keywords
 		p.Description = t.Content
@@ -37,6 +37,7 @@ func (b *builder) buildTags(d *data.Data) error {
 	}
 
 	p := b.page(vars.TagTemplate)
+	p.Title = d.Tags.Title + d.TitleSuffix
 	p.Permalink = d.Tags.Permalink
 	p.Keywords = d.Tags.Keywords
 	p.Description = d.Tags.Description

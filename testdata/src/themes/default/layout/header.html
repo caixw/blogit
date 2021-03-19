@@ -1,31 +1,33 @@
 {{define "header" -}}
 <!DOCTYPE html>
-<html lang="{{.Site.Language}}">
-    <head profile="http://gmpg.org/xfn/11">
-        <meta charset="{{.Charset}}" />
+<html lang="{{.Language}}">
+    <head>
+        <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{{.Title}}</title>
-        {{if .Site.Icon -}}<link rel="icon" type="{{.Site.Icon.Type}}" href="{{.Site.Icon.URL}}" />{{- end}}
-        {{if .Canonical -}}
-        <link rel="canonical" href="{{.Canonical}}" />
-        {{- end}}
+        {{if .Site.Icon}}<link rel="icon" type="{{.Site.Icon.Type}}" href="{{.Site.Icon.URL}}" />{{end}}
+        {{if .Permalink}}<link rel="canonical" href="{{.Permalink}}" />{{end}}
         {{if .Site.RSS -}}
-        <link rel="alternate" type="{{.Site.RSS.Type|html}}" title="{{.Site.RSS.Title}}" href="{{.Site.RSS.URL}}" />
+        <link rel="alternate" type="application/rss+xml" title="{{.Site.RSS.Text}}" href="{{.Site.RSS.URL}}" />
         {{- end}}
         {{if .Site.Atom -}}
-        <link rel="alternate" type="{{.Site.Atom.Type|html}}" title="{{.Site.Atom.Title}}" href="{{.Site.Atom.URL}}" />
+        <link rel="alternate" type="application/atom+xml" title="{{.Site.Atom.Text}}" href="{{.Site.Atom.URL}}" />
         {{- end}}
-        {{if .Author -}}<link rel="author" href="{{.Author.URL}}" />{{- end}}
-        {{if .License -}}<link rel="license" href="{{.License.URL}}" />{{- end}}
-        {{if .Keywords -}}<meta name="keywords" content="{{.Keywords}}" />{{- end}}
-        {{if .Description -}}
-        <meta name="description" content="{{.Description|strip}}" />
-        {{- end}}
+        {{- range .Authors}}<link rel="author" href="{{.URL}}" />{{end}}
+        {{if .License}}<link rel="license" href="{{.License.URL}}" />{{end}}
+        {{if .Keywords}}<meta name="keywords" content="{{.Keywords}}" />{{end}}
+        {{if .Description}}<meta name="description" content="{{.Description|strip}}" />{{end}}
+        {{if .Next}}<link rel="next" href="{{.Next.URL}}" />{{end}}
+        {{if .Prev}}<link rel="prev" href="{{.Prev.URL}}" />{{end}}
+
         <link rel="stylesheet" href="{{"default/style.css"|themeURL}}" />
-        <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-        <script src="{{"default/theme.js"|themeURL}}"></script>
-        <script src="{{"default/app.js"|themeURL}}"></script>
+
+        {{- if .JSONLD}}
+        <script type="application/ld+json">
+        {{.JSONLD}}
+        </script>
+        {{end -}}
     </head>
 
     <body>
