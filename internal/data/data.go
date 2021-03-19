@@ -184,7 +184,7 @@ func buildURL(url string, p ...string) string {
 }
 
 func buildThemeURL(url, themeID string, p ...string) string {
-	pp := make([]string, 0, len(p)+2)
+	pp := make([]string, 0, len(p))
 	pp = append(pp, vars.ThemesDir, themeID)
 	return buildURL(url, append(pp, p...)...)
 }
