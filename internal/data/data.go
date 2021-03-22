@@ -82,10 +82,13 @@ func newSitemap(conf *loader.Config, theme *loader.Theme) *Sitemap {
 }
 
 // Load 加载并处理数据
-func Load(dir string) (*Data, error) {
+func Load(dir, baseURL string) (*Data, error) {
 	conf, err := loader.LoadConfig(filepath.Join(dir, vars.ConfYAML))
 	if err != nil {
 		return nil, err
+	}
+	if baseURL != "" {
+		conf.URL = baseURL
 	}
 
 	tags, err := loader.LoadTags(filepath.Join(dir, vars.TagsYAML))

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 
 // Package loader 加载数据内容
+//
+// 仅加载各个模块的自身的数据，并判断格式是否正确。
+// 但是不会对各个模块之间的关联数据进行校验。
 package loader
 
 import (

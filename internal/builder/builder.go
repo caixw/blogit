@@ -62,18 +62,9 @@ func Build(src, dest, base string) error {
 }
 
 func newBuilder(dir, base string) (*builder, error) {
-	d, err := data.Load(dir)
+	d, err := data.Load(dir, base)
 	if err != nil {
 		return nil, err
-	}
-
-	// base 被用于替换 data.URL，所以了要和其有一样规则：保证以 / 结尾。
-	if base != "" && base[len(base)-1] != '/' {
-		base += "/"
-	}
-
-	if base != "" {
-		d.URL = base
 	}
 
 	tpl, err := newTemplate(d, dir)

@@ -58,9 +58,6 @@ func (conf *Config) sanitize() *FieldError {
 	if len(conf.URL) == 0 || !is.URL(conf.URL) {
 		return &FieldError{Message: "格式不正确", Field: "url", Value: conf.URL}
 	}
-	if conf.URL[len(conf.URL)-1] != '/' { // 保证以 / 结尾
-		conf.URL += "/"
-	}
 
 	if len(conf.Language) == 0 {
 		conf.Language = "cmn-Hans"

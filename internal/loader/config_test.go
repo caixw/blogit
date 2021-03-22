@@ -12,7 +12,7 @@ import (
 func TestLoadConfig(t *testing.T) {
 	a := assert.New(t)
 	conf, err := LoadConfig("../../testdata/src/conf.yaml")
-	a.NotError(err).NotNil(conf).Equal(conf.URL[len(conf.URL)-1], "/")
+	a.NotError(err).NotNil(conf)
 
 	a.Equal(conf.Authors[0].Name, "caixw")
 	a.Equal(conf.Language, "cmn-Hans")
