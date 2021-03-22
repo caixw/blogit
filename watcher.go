@@ -34,6 +34,9 @@ type Watcher struct {
 }
 
 // Watch 热编译
+//
+// src 源码目录，该目录下的内容一量修改，就会重新编译；
+// base 网站的根地址，会替换配置文件中的 URL，一般为 localhost。
 func Watch(src, base string, info, erro, succ *log.Logger) error {
 	u, err := url.Parse(base)
 	if err != nil {
@@ -104,7 +107,7 @@ func (w *Watcher) Watch() error {
 				continue
 			}
 
-			if time.Now().Sub(w.builded) <= 1*time.Second {
+			if time.Since(w.builded) <= time.Second {
 				w.info("watcher.Events:更新太频繁，该监控事件被忽略:", event)
 				continue
 			}

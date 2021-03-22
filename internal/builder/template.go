@@ -17,6 +17,7 @@ func newTemplate(d *data.Data, src string) (*template.Template, error) {
 		"strip":   stripTags,
 		"html":    htmlEscaped,
 		"rfc3339": rfc3339,
+		"year":    yearFormat,
 		"themeURL": func(p string) string {
 			return data.BuildURL(d.URL, p)
 		},
@@ -29,6 +30,10 @@ func newTemplate(d *data.Data, src string) (*template.Template, error) {
 
 func rfc3339(t time.Time) interface{} {
 	return t.Format(time.RFC3339)
+}
+
+func yearFormat(t time.Time) interface{} {
+	return t.Format("2006")
 }
 
 // 将内容显示为 HTML 内容

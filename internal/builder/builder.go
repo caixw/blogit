@@ -20,6 +20,11 @@ import (
 
 var copyOptions = copy.Options{
 	Skip: func(src string) (bool, error) {
+		// 忽略 themes/xxx/layout
+		if filepath.Base(filepath.Dir(src)) == vars.LayoutDir || filepath.Base(src) == vars.LayoutDir {
+			return true, nil
+		}
+
 		ext := strings.ToLower(filepath.Ext(src))
 		return ext == ".md" ||
 			ext == ".yaml" ||

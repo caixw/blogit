@@ -36,7 +36,7 @@ func (b *builder) buildTags(d *data.Data) error {
 		}
 	}
 
-	p := b.page(vars.TagTemplate)
+	p := b.page(vars.TagsTemplate)
 	p.Title = d.Tags.Title + d.TitleSuffix
 	p.Permalink = d.Tags.Permalink
 	p.Keywords = d.Tags.Keywords

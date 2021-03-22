@@ -1,3 +1,10 @@
 {{define "post"}}
-post
+{{template "header" .}}
+
+<h1>{{.Post.Title}}</h1>
+<article>
+{{.Post.Content|html}}
+</article>
+
+{{template "footer" .}}
 {{end}}

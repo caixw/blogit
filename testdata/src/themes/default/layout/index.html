@@ -1,5 +1,13 @@
 {{define "index"}}
-{{template "header"}}
-<p1>index</p1>
-{{template "footer"}}
+{{template "header" .}}
+
+<ul>
+    {{range .Posts}}
+        <li>
+            <a href="{{.Permalink}}">{{.Title}}</a>
+        </li>
+    {{end}}
+</ul>
+
+{{template "footer" .}}
 {{end}}

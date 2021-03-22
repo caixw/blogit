@@ -1,3 +1,18 @@
 {{define "tag"}}
+{{template "header" .}}
 
+<h1>{{.Tag.Title}}</h2>
+<article>
+    {{.Tag.Content}}
+</article>
+
+{{if .Tag.Posts}}
+<ul>
+    {{range .Tag.Posts}}
+    <li><a href=".Permalink">{{.Title}}</a></li>
+    {{end}}
+</ul>
+{{end}}
+
+{{template "footer" .}}
 {{end}}

@@ -42,7 +42,7 @@ func (b *builder) buildPosts(d *data.Data) error {
 	page.Description = d.Index.Description
 	page.Language = d.Language
 	page.Posts = d.Index.Posts
-	page.Title = d.Title
+	page.Title = d.Index.Title
 
 	return b.appendTemplateFile(vars.IndexFilename, page)
 }

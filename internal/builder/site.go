@@ -26,11 +26,11 @@ type page struct {
 	JSONLD      string       // JSON-LD 数据
 
 	// 以下内容，仅在对应的页面才会有内容
-	Tag      *data.Tag       // 标签详细页面，非标签详细页，则为空
-	Tags     []*data.Tag     // 标签列表页面，否则为空
-	Posts    []*data.Post    // 文章列表，仅标签详情页和搜索页用到。
-	Post     *data.Post      // 文章详细内容，仅文章页面用到。
-	Archives []*data.Archive // 归档
+	Tag      *data.Tag      // 标签详细页面，非标签详细页，则为空
+	Tags     []*data.Tag    // 标签列表页面，否则为空
+	Posts    []*data.Post   // 文章列表，仅标签详情页和搜索页用到。
+	Post     *data.Post     // 文章详细内容，仅文章页面用到。
+	Archives *data.Archives // 归档
 }
 
 type site struct {
@@ -84,13 +84,9 @@ func newSite(d *data.Data) *site {
 	return s
 }
 
-func (s *site) page(t string) *page {
+func (b *builder) page(t string) *page {
 	return &page{
-		Site: s,
+		Site: b.site,
 		Type: t,
 	}
-}
-
-func (b *builder) page(t string) *page {
-	return b.site.page(t)
 }

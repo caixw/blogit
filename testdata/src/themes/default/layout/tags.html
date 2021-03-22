@@ -1,3 +1,12 @@
 {{define "tags"}}
+{{template "header" .}}
 
+<h1>{{.Title}}</h1>
+<ul>
+    {{range .Tags}}
+    <li><a href="{{.Permalink}}">{{.Title}}</a></li>
+    {{end}}
+</ul>
+
+{{template "footer" .}}
 {{end}}

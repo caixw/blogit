@@ -1,14 +1,14 @@
 {{define "footer" -}}
-                {{if or .PrevPage .NextPage -}}
+                {{if or .Prev .Next -}}
                 <div class="pages-nav">
-                    {{if .PrevPage -}}
-                        <a rel="prev" href="{{.PrevPage.URL}}" aria-label="前一页">
-                            &#171;&#160;{{.PrevPage.Text}}
+                    {{if .Prev -}}
+                        <a rel="prev" href="{{.Prev.URL}}" aria-label="前一页">
+                            &#171;&#160;{{.Prev.Text}}
                         </a>
                     {{- end}}
-                    {{if .NextPage -}}
-                        <a rel="next" href="{{.NextPage.URL}}" aria-label="后一页">
-                            {{.NextPage.Text}}&#160;&#187;
+                    {{if .Next -}}
+                        <a rel="next" href="{{.Next.URL}}" aria-label="后一页">
+                            {{.Next.Text}}&#160;&#187;
                         </a>
                     {{- end}}
                     <div class="clearfix" aria-hidden="true"></div>
@@ -21,7 +21,7 @@
         <footer id="footer">
             <div class="container">
                 <div>
-                    <span>&#169; 2016 - {{.Site.CurrYear}} by
+                    <span>&#169; 2020 - {{.Site.Builded|year}} by
                         <a href="{{.Site.URL}}" type="text/html">caixw</a>
                     </span>
                     <span aria-hidden="true">&#8901;</span>
@@ -37,7 +37,7 @@
 
                     <span class="separator" aria-hidden="true">&#8901;</span>
 
-                    <a type="text/html" href="https://github.com/caixw/blogs/issues/new?title={{.Canonical}}">
+                    <a type="text/html" href="https://github.com/caixw/blogs/issues/new?title={{.Permalink}}">
                         <i class="fa fa-check fa-2x" aria-hidden="true"></i>
                         <span class="text">纠正错误</span>
                     </a>

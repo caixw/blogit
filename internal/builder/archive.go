@@ -14,7 +14,7 @@ func (b *builder) buildArchive(d *data.Data) error {
 	p.Keywords = d.Archives.Keywords
 	p.Description = d.Archives.Description
 	p.Language = d.Language
-	p.Archives = d.Archives.Archives
+	p.Archives = d.Archives
 
 	return b.appendTemplateFile(vars.ArchiveFilename, p)
 }

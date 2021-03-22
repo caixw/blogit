@@ -1,2 +1,18 @@
 {{define "archive"}}
+{{template "header" .}}
+
+<h1>{{.Archives.Title}}</h1>
+
+{{range .Archives.Archives}}
+{{if .Posts}}
+<h2>{{.Title}}</h2>
+    <ul>
+    {{range .Posts}}
+    <li>{{.Title}}</li>
+    {{end}}
+    </ul>
+{{end}}
+{{end}}
+
+{{template "footer" .}}
 {{end}}

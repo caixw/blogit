@@ -6,8 +6,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{{.Title}}</title>
-        {{if .Site.Icon}}<link rel="icon" type="{{.Site.Icon.Type}}" href="{{.Site.Icon.URL}}" />{{end}}
         {{if .Permalink}}<link rel="canonical" href="{{.Permalink}}" />{{end}}
+        {{if .Site.Icon}}<link rel="icon" type="{{.Site.Icon.Type}}" href="{{.Site.Icon.URL}}" />{{end}}
         {{if .Site.RSS -}}
         <link rel="alternate" type="application/rss+xml" title="{{.Site.RSS.Text}}" href="{{.Site.RSS.URL}}" />
         {{- end}}
