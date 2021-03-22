@@ -13,17 +13,17 @@ import (
 type page struct {
 	Site *site
 
-	Title       string       // 标题
-	Permalink   string       // 当前页的唯一链接
-	Keywords    string       // meta.keywords 的值
-	Description string       // meta.description 的值
-	Prev        *loader.Link // 前一页
-	Next        *loader.Link // 下一页
-	Type        string       // 当前页面类型
+	Type        string // 当前页面类型
+	Title       string // 标题，html>head>title 的内容，会带上后缀。
+	Permalink   string // 当前页的唯一链接
+	Keywords    string
+	Description string
+	Prev        *loader.Link
+	Next        *loader.Link
 	Authors     []*loader.Author
-	License     *loader.Link // 当前页的版本信息，可以为空
-	Language    string       // 页面语言
-	JSONLD      string       // JSON-LD 数据
+	License     *loader.Link
+	Language    string
+	JSONLD      string // JSON-LD 数据
 
 	// 以下内容，仅在对应的页面才会有内容
 	Tag      *data.Tag      // 标签详细页面，非标签详细页，则为空
