@@ -9,7 +9,6 @@ import (
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/internal/loader"
-	"github.com/caixw/blogit/internal/vars"
 )
 
 // Index 首页内容
@@ -82,10 +81,6 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 
 	if p.Modified.IsZero() {
 		p.Modified = p.Created
-	}
-
-	if p.Template == "" {
-		p.Template = vars.DefaultTemplate
 	}
 
 	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 0 {
