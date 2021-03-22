@@ -19,7 +19,7 @@ func newTemplate(d *data.Data, src string) (*template.Template, error) {
 		"rfc3339": rfc3339,
 		"year":    yearFormat,
 		"themeURL": func(p string) string {
-			return data.BuildURL(d.URL, p)
+			return data.BuildURL(d.URL, vars.ThemesDir, p)
 		},
 	}
 
