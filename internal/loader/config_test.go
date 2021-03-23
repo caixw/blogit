@@ -28,19 +28,18 @@ func TestRSS_sanitize(t *testing.T) {
 	a := assert.New(t)
 
 	rss := &RSS{}
-	conf := &Config{
-		Title: "title",
-		RSS:   rss,
-	}
-	a.Error(rss.sanitize())
+	err := rss.sanitize()
+	a.Equal(err.Field, "title")
 
 	// Size 错误
+	rss.Title = "title"
 	rss.Size = 0
-	a.Error(rss.sanitize())
+	err = rss.sanitize()
+	a.Equal(err.Field, "size")
 	rss.Size = -1
-	a.Error(rss.sanitize())
+	err = rss.sanitize()
+	a.Equal(err.Field, "size")
 
 	rss.Size = 10
 	a.NotError(rss.sanitize())
-	a.Equal(rss.Title, conf.Title)
 }
