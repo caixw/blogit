@@ -3,7 +3,6 @@
 package loader
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/issue9/validation/is"
@@ -21,7 +20,7 @@ type Config struct {
 	Language    string    `yaml:"language,omitempty"`
 	Uptime      time.Time `yaml:"uptime"`
 	Icon        *Icon     `yaml:"icon,omitempty"`
-	Authors     []*Author `yaml:"authors"`
+	Author      *Author   `yaml:"author"` // 网站作者，在文章没有指定作者时，也采用此值。
 	License     *Link     `yaml:"license"`
 	Theme       string    `yaml:"theme"`
 	Keywords    string    `yaml:"keywords,omitempty"`    // 所有页面默认情况下的 keywords
@@ -76,14 +75,12 @@ func (conf *Config) sanitize() *FieldError {
 	}
 
 	// Authors
-	if len(conf.Authors) == 0 {
+	if conf.Author == nil {
 		return &FieldError{Message: "不能为空", Field: "authors"}
 	}
-	for index, author := range conf.Authors {
-		if err := author.sanitize(); err != nil {
-			err.Field = "authors[" + strconv.Itoa(index) + "]." + err.Field
-			return err
-		}
+	if err := conf.Author.sanitize(); err != nil {
+		err.Field = "author." + err.Field
+		return err
 	}
 
 	if len(conf.Title) == 0 {
@@ -115,7 +112,7 @@ func (conf *Config) sanitize() *FieldError {
 
 	// rss
 	if conf.RSS != nil {
-		if err := conf.RSS.sanitize(conf); err != nil {
+		if err := conf.RSS.sanitize(); err != nil {
 			err.Field = "rss." + err.Field
 			return err
 		}
@@ -123,7 +120,7 @@ func (conf *Config) sanitize() *FieldError {
 
 	// atom
 	if conf.Atom != nil {
-		if err := conf.Atom.sanitize(conf); err != nil {
+		if err := conf.Atom.sanitize(); err != nil {
 			err.Field = "atom." + err.Field
 			return err
 		}
@@ -140,13 +137,13 @@ func (conf *Config) sanitize() *FieldError {
 	return nil
 }
 
-func (rss *RSS) sanitize(conf *Config) *FieldError {
-	if rss.Size <= 0 {
-		return &FieldError{Message: "必须大于 0", Field: "size", Value: rss.Size}
+func (rss *RSS) sanitize() *FieldError {
+	if rss.Title == "" {
+		return &FieldError{Message: "不能为空", Field: "title"}
 	}
 
-	if len(rss.Title) == 0 {
-		rss.Title = conf.Title
+	if rss.Size <= 0 {
+		return &FieldError{Message: "必须大于 0", Field: "size", Value: rss.Size}
 	}
 
 	return nil

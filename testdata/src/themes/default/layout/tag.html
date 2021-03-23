@@ -1,15 +1,15 @@
-{{define "tag"}}
+{{- define "tag" -}}
 {{template "header" .}}
 
 <h1>{{.Tag.Title}}</h2>
 <article>
-    {{.Tag.Content}}
+    {{.Tag.Content|html}}
 </article>
 
 {{if .Tag.Posts}}
-<ul>
+<ul class="posts">
     {{range .Tag.Posts}}
-    <li><a href=".Permalink">{{.Title}}</a></li>
+    <li><a href="{{.Permalink}}">{{.Title}}</a><time>{{date .Modified "2006-01-02"}}</time></li>
     {{end}}
 </ul>
 {{end}}

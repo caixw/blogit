@@ -1,9 +1,35 @@
 {{define "post"}}
 {{template "header" .}}
 
+<article class="post">
 <h1>{{.Post.Title}}</h1>
+<div class="meta">
+    <span class="item">
+        <span class="value">作者:</span>
+        {{- range .Post.Authors -}}
+            {{if .URL}}
+            <a class="value" href="{{.URL}}">{{.Name}}</a>
+            {{else}}
+            <span class="value">{{.Name}}</span>
+            {{end}}
+        {{- end -}}
+    </span>
+
+    <div class="item">
+        <span class="value">标签:</span>
+        {{- range .Post.Tags -}}
+        <a class="value" href="{{.Permalink}}">{{.Title}}</a>
+        {{- end -}}
+    </div>
+
+    <div class="item" title="修改时间:{{.Post.Modified|rfc3339}}&#10;添加时间:{{.Post.Created|rfc3339}}">
+        <span class="value">修改时间:</span>
+        <time class="value">{{date .Post.Modified "2006-01-02"}}</time>
+    </div>
+</div>
 <article>
 {{.Post.Content|html}}
+</article>
 </article>
 
 {{template "footer" .}}

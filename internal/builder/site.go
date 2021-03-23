@@ -26,11 +26,8 @@ type page struct {
 	JSONLD      string // JSON-LD 数据
 
 	// 以下内容，仅在对应的页面才会有内容
-	Tag      *data.Tag      // 标签详细页面，非标签详细页，则为空
-	Tags     []*data.Tag    // 标签列表页面，否则为空
-	Posts    []*data.Post   // 文章列表，仅标签详情页和搜索页用到。
-	Post     *data.Post     // 文章详细内容，仅文章页面用到。
-	Archives *data.Archives // 归档
+	Tag  *data.Tag  // 标签详细页面，非标签详细页，则为空
+	Post *data.Post // 文章详细内容，仅文章页面用到。
 }
 
 type site struct {
@@ -43,9 +40,14 @@ type site struct {
 	Subtitle string       // 网站副标题
 	URL      string       // 网站地址，若是一个子目录，则需要包含该子目录
 	Icon     *loader.Icon // 网站图标
+	Author   *loader.Author
 	RSS      *loader.Link // RSS 指针方便模板判断其值是否为空
 	Atom     *loader.Link
 	Sitemap  *loader.Link
+
+	Tags     *data.Tags
+	Index    *data.Index
+	Archives *data.Archives
 
 	Uptime   time.Time
 	Created  time.Time
@@ -64,6 +66,11 @@ func newSite(d *data.Data) *site {
 		Subtitle: d.Subtitle,
 		URL:      d.URL,
 		Icon:     d.Icon,
+		Author:   d.Author,
+
+		Tags:     d.Tags,
+		Index:    d.Index,
+		Archives: d.Archives,
 
 		Uptime:   d.Uptime,
 		Created:  d.Created,
@@ -78,7 +85,7 @@ func newSite(d *data.Data) *site {
 		s.Atom = &loader.Link{URL: d.Atom.Permalink, Text: d.Atom.Title}
 	}
 	if d.Sitemap != nil {
-		s.Sitemap = &loader.Link{URL: d.Sitemap.Permalink, Text: d.Title}
+		s.Sitemap = &loader.Link{URL: d.Sitemap.Permalink, Text: d.Sitemap.Title}
 	}
 
 	return s

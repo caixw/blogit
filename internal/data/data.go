@@ -22,7 +22,7 @@ type (
 		TitleSuffix string // 每篇文章标题的后缀
 		Icon        *loader.Icon
 		Language    string
-		Authors     []*loader.Author
+		Author      *loader.Author
 		License     *loader.Link
 		Theme       *loader.Theme
 
@@ -142,7 +142,7 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		TitleSuffix: suffix,
 		Icon:        conf.Icon,
 		Language:    conf.Language,
-		Authors:     conf.Authors,
+		Author:      conf.Author,
 		License:     conf.License,
 		Theme:       theme,
 

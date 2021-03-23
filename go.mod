@@ -3,6 +3,7 @@ module github.com/caixw/blogit
 go 1.14
 
 require (
+	github.com/alecthomas/chroma v0.8.2
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/issue9/assert v1.4.1
 	github.com/issue9/cmdopt v0.7.0

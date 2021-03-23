@@ -1,12 +1,12 @@
 {{define "index"}}
 {{template "header" .}}
 
-<ul>
-    {{range .Posts}}
-        <li>
-            <a href="{{.Permalink}}">{{.Title}}</a>
-        </li>
-    {{end}}
+<h1>{{.Site.Title}}</h1>
+
+<ul class="posts">
+{{range .Site.Index.Posts}}
+    <li><a href="{{.Permalink}}">{{.Title}}</a><time>{{date .Modified "2006-01-02"}}</time></li>
+{{end}}
 </ul>
 
 {{template "footer" .}}

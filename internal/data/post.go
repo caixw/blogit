@@ -68,7 +68,7 @@ func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) 
 
 func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post, error) {
 	if p.Authors == nil {
-		p.Authors = conf.Authors
+		p.Authors = []*loader.Author{conf.Author}
 	}
 
 	if p.License == nil {

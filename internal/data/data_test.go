@@ -22,7 +22,7 @@ func TestLoad(t *testing.T) {
 	a.NotNil(data.Index.Posts[1].Authors)
 	a.NotNil(data.Index.Posts[1].License)
 	a.NotNil(data.License)
-	a.NotEmpty(data.Authors)
+	a.NotNil(data.Author)
 	a.Equal(data.URL, "https://example.com")
 
 	a.True(data.Builded.After(time.Time{}))

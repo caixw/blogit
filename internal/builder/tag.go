@@ -42,6 +42,5 @@ func (b *builder) buildTags(d *data.Data) error {
 	p.Keywords = d.Tags.Keywords
 	p.Description = d.Tags.Description
 	p.Language = d.Language
-	p.Tags = d.Tags.Tags
 	return b.appendTemplateFile(vars.TagsFilename, p)
 }

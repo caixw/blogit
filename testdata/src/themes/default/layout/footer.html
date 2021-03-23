@@ -1,49 +1,40 @@
 {{define "footer" -}}
-                {{if or .Prev .Next -}}
-                <div class="pages-nav">
-                    {{if .Prev -}}
-                        <a rel="prev" href="{{.Prev.URL}}" aria-label="前一页">
-                            &#171;&#160;{{.Prev.Text}}
-                        </a>
-                    {{- end}}
-                    {{if .Next -}}
-                        <a rel="next" href="{{.Next.URL}}" aria-label="后一页">
-                            {{.Next.Text}}&#160;&#187;
-                        </a>
-                    {{- end}}
-                    <div class="clearfix" aria-hidden="true"></div>
-                </div>
+            {{if or .Prev .Next -}}
+            <div class="pages-nav">
+                {{if .Prev -}}
+                    <span class="prev">
+                        <a rel="prev" href="{{.Prev.URL}}" aria-label="前一页">&#171;&#160;{{.Prev.Text}}</a>
+                    </span>
                 {{- end}}
+                {{if .Next -}}
+                    <span class="next">
+                        <a rel="next" href="{{.Next.URL}}" aria-label="后一页">{{.Next.Text}}&#160;&#187;</a>
+                    </span>
+                {{- end}}
+            </div>
+            {{- end}}
 
-            </div> <!-- end .container -->
-        </main> <!-- end #content -->
+        </main> <!-- end #main -->
 
         <footer id="footer">
-            <div class="container">
-                <div>
-                    <span>&#169; 2020 - {{.Site.Builded|year}} by
-                        <a href="{{.Site.URL}}" type="text/html">caixw</a>
-                    </span>
-                    <span aria-hidden="true">&#8901;</span>
+            <div class="line">
+                <a class="item" href="{{.Site.URL}}">首页</a>
+                <a class="item" href="{{.Site.Tags.Permalink}}">{{.Site.Tags.Title}}</a>
+                {{if .Site.Archives}}<a class="item" href="{{.Site.Archives.Permalink}}">{{.Site.Archives.Title}}</a>{{end}}
+                {{if .Site.RSS}}<a class="item" href="{{.Site.RSS.URL}}">{{.Site.RSS.Text}}</a>{{end}}
+                {{if .Site.Atom}}<a class="item" href="{{.Site.Atom.URL}}">{{.Site.Atom.Text}}</a>{{end}}
+                {{if .Site.Sitemap}}<a class="item" href="{{.Site.Sitemap.URL}}">{{.Site.Sitemap.Text}}</a>{{end}}
+            </div>
+
+            <div class="line">
+                <span class="item">&#169; 2020 - {{date .Site.Builded "2006"}} by
+                    <a href="{{.Site.Author.URL}}" type="text/html">{{.Site.Author.Name}}</a>
+                </span>
+                <span class="item">
                     Powered by <a href="{{.Site.AppURL}}" type="text/html">{{.Site.AppName}}</a>
-                    &#160;
-                </div>
-
-                <div id="sidebar-nav">
-                    <a id="top" href="#">
-                        <i class="fa fa-chevron-up fa-2x" aria-hidden="true"></i>
-                        <span class="text">返回顶部</span>
-                    </a>
-
-                    <span class="separator" aria-hidden="true">&#8901;</span>
-
-                    <a type="text/html" href="https://github.com/caixw/blogs/issues/new?title={{.Permalink}}">
-                        <i class="fa fa-check fa-2x" aria-hidden="true"></i>
-                        <span class="text">纠正错误</span>
-                    </a>
-                </div>
+                </span>
             </div>
         </footer>
     </body>
 </html>
-{{end}}
+{{- end -}}

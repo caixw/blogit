@@ -1,4 +1,4 @@
-{{define "header" -}}
+{{- define "header" -}}
 <!DOCTYPE html>
 <html lang="{{.Language}}">
     <head>
@@ -21,17 +21,16 @@
         {{if .Next}}<link rel="next" href="{{.Next.URL}}" />{{end}}
         {{if .Prev}}<link rel="prev" href="{{.Prev.URL}}" />{{end}}
 
-        <link rel="stylesheet" href="{{"default/style.css"|themeURL}}" />
+        <link rel="stylesheet" type="text/css" href="{{"default/style.css"|themeURL}}" />
 
-        {{- if .JSONLD}}
+        {{- if .JSONLD -}}
         <script type="application/ld+json">
         {{.JSONLD}}
         </script>
-        {{end -}}
+        {{- end -}}
     </head>
 
     <body>
 
-    <main id="content">
-        <div class="container">
-{{- end}}
+    <main id="main">
+{{- end -}}

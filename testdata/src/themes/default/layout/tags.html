@@ -1,12 +1,12 @@
-{{define "tags"}}
+{{- define "tags" -}}
 {{template "header" .}}
 
-<h1>{{.Title}}</h1>
-<ul>
-    {{range .Tags}}
+<h1>{{.Site.Tags.Title}}</h1>
+<ul class="tags">
+    {{- range .Site.Tags.Tags -}}
     <li><a href="{{.Permalink}}">{{.Title}}</a></li>
-    {{end}}
+    {{- end -}}
 </ul>
 
 {{template "footer" .}}
-{{end}}
+{{- end -}}

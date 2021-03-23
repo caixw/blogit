@@ -42,7 +42,6 @@ func (b *builder) buildPosts(d *data.Data) error {
 	page.Keywords = d.Index.Keywords
 	page.Description = d.Index.Description
 	page.Language = d.Language
-	page.Posts = d.Index.Posts
 	page.Title = d.Index.Title
 
 	return b.appendTemplateFile(vars.IndexFilename, page)

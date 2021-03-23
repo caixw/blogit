@@ -12,6 +12,7 @@ import (
 	"mime"
 	"path"
 
+	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/issue9/validation/is"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting"
@@ -25,7 +26,12 @@ var markdown = goldmark.New(goldmark.WithExtensions(
 	extension.Strikethrough,
 	extension.Footnote,
 	meta.Meta,
-	highlighting.Highlighting,
+	highlighting.NewHighlighting(
+		highlighting.WithStyle("monokai"),
+		highlighting.WithFormatOptions(
+			html.WithLineNumbers(true),
+		),
+	),
 ))
 
 // 排序方式

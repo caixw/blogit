@@ -14,8 +14,8 @@ icon:
 
 
 # 默认的作者信息
-authors:
-  - name: caixw
+author:
+    name: caixw
     url: https://caixw.io
 
 # 默认的版权信息
@@ -32,14 +32,17 @@ archive:
 
 # atom 的配置，为空表示没有
 atom:
+  title: Atom
   size: 20
 
 # rss 的配置，为空表示没有
 rss:
+  title: RSS
   size: 20
 
 # sitemap 的配置，为空表示没有
 sitemap:
+  title: Sitemap
   priority: 0.5
   changefreq: monthly
   enableTag: true

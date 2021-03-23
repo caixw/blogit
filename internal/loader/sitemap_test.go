@@ -14,6 +14,7 @@ func TestSitemap_sanitize(t *testing.T) {
 	s := &Sitemap{}
 	a.Error(s.sanitize())
 
+	s.Title = "sitemap"
 	s.Priority = -1.0
 	a.Error(s.sanitize())
 	s.Priority = 1.1

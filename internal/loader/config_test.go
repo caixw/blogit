@@ -14,7 +14,7 @@ func TestLoadConfig(t *testing.T) {
 	conf, err := LoadConfig("../../testdata/src/conf.yaml")
 	a.NotError(err).NotNil(conf)
 
-	a.Equal(conf.Authors[0].Name, "caixw")
+	a.Equal(conf.Author.Name, "caixw")
 	a.Equal(conf.Language, "cmn-Hans")
 
 	conf, err = LoadConfig("../../testdata/src/not-exists.yaml")
@@ -32,15 +32,15 @@ func TestRSS_sanitize(t *testing.T) {
 		Title: "title",
 		RSS:   rss,
 	}
-	a.Error(rss.sanitize(conf))
+	a.Error(rss.sanitize())
 
 	// Size 错误
 	rss.Size = 0
-	a.Error(rss.sanitize(conf))
+	a.Error(rss.sanitize())
 	rss.Size = -1
-	a.Error(rss.sanitize(conf))
+	a.Error(rss.sanitize())
 
 	rss.Size = 10
-	a.NotError(rss.sanitize(conf))
+	a.NotError(rss.sanitize())
 	a.Equal(rss.Title, conf.Title)
 }

@@ -6,6 +6,8 @@ import "github.com/issue9/sliceutil"
 
 // Sitemap sitemap 相关的配置
 type Sitemap struct {
+	Title string `yaml:"title"`
+
 	Priority   float64 `yaml:"priority"`            // 默认的优先级
 	Changefreq string  `yaml:"changefreq"`          // 默认的更新频率
 	EnableTag  bool    `yaml:"enableTag,omitempty"` // 是否将标签相关的页面写入 sitemap
@@ -17,6 +19,8 @@ type Sitemap struct {
 
 func (s *Sitemap) sanitize() *FieldError {
 	switch {
+	case s.Title == "":
+		return &FieldError{Message: "不能为空", Field: "title"}
 	case s.Priority > 1 || s.Priority < 0:
 		return &FieldError{Message: "介于[0,1]之间的浮点数", Field: "priority", Value: s.Priority}
 	case s.PostPriority > 1 || s.PostPriority < 0:
