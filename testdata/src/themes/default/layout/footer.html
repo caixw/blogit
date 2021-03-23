@@ -27,11 +27,13 @@
             </div>
 
             <div class="line">
-                <span class="item">&#169; 2020 - {{date .Site.Builded "2006"}} by
+                <span class="item">&#169; 2020-{{date .Site.Builded "2006"}} by
                     <a href="{{.Site.Author.URL}}" type="text/html">{{.Site.Author.Name}}</a>
                 </span>
+                <span class="item">主题采用 <a href="{{.Site.Theme.URL}}">{{.Site.Theme.ID}}</a></span>
                 <span class="item">
-                    Powered by <a href="{{.Site.AppURL}}" type="text/html">{{.Site.AppName}}</a>
+                    由 <a href="{{.Site.AppURL}}" type="text/html">{{.Site.AppName}}</a> 构建于
+                    <time title="{{.Site.Builded|rfc3339}}">{{date .Site.Builded "2006-01-02"}}</time>
                 </span>
             </div>
         </footer>

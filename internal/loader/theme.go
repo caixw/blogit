@@ -15,6 +15,7 @@ import (
 // Theme 主题
 type Theme struct {
 	ID          string    `yaml:"-"`
+	URL         string    `yaml:"url"`
 	Description string    `yaml:"description,omitempty"`
 	Authors     []*Author `yaml:"authors,omitempty"`
 	Screenshots []string  `yaml:"screenshots,omitempty"`
