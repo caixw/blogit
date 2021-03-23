@@ -3,6 +3,7 @@
 package loader
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/issue9/validation/is"
@@ -30,6 +31,7 @@ type Config struct {
 	RSS     *RSS     `yaml:"rss,omitempty"`
 	Atom    *RSS     `yaml:"atom,omitempty"`
 	Sitemap *Sitemap `yaml:"sitemap,omitempty"`
+	Robots  []*Agent `yaml:"robots,omitempty"` // 不为空，表示托管 robots.txt 的生成
 }
 
 // RSS RSS 和 Atom 相关的配置项
@@ -131,6 +133,15 @@ func (conf *Config) sanitize() *FieldError {
 		if err := conf.Sitemap.sanitize(); err != nil {
 			err.Field = "sitemap." + err.Field
 			return err
+		}
+	}
+
+	if conf.Robots != nil {
+		for index, agent := range conf.Robots {
+			if err := agent.sanitize(); err != nil {
+				err.Field = "robots.[" + strconv.Itoa(index) + "]." + err.Field
+				return err
+			}
 		}
 	}
 

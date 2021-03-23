@@ -29,6 +29,7 @@ type (
 		RSS     *RSS
 		Atom    *RSS
 		Sitemap *Sitemap
+		Robots  *Robots
 
 		Uptime   time.Time
 		Created  time.Time
@@ -165,6 +166,9 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 	if conf.Sitemap != nil {
 		data.Sitemap = newSitemap(conf, theme)
 	}
+	if conf.Robots != nil {
+		data.Robots = newRobots(conf, data.Sitemap)
+	}
 
 	return data, nil
 }
@@ -193,6 +197,7 @@ func buildThemeURL(baseURL, themeID string, p ...string) string {
 	return BuildURL(baseURL, append(pp, p...)...)
 }
 
+// 如果 slug 不再扩展名，再会加上默认的扩展名 .html
 func buildPath(slug string) string {
 	if slug == "" {
 		panic("slug 不能为空")
@@ -201,5 +206,9 @@ func buildPath(slug string) string {
 	if slug[0] == '/' || slug[0] == os.PathSeparator {
 		slug = slug[1:]
 	}
-	return slug + ".html"
+
+	if filepath.Ext(slug) != "" {
+		return slug
+	}
+	return slug + vars.Ext
 }

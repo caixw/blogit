@@ -29,4 +29,7 @@ const (
 	TagTemplate     = "tag"
 	TagsTemplate    = "tags"
 	ArchiveTemplate = "archive"
+
+	// 文件默认后缀名
+	Ext = ".html"
 )

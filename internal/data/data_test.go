@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/caixw/blogit/internal/vars"
 	"github.com/issue9/assert"
 )
 
@@ -105,7 +106,7 @@ func TestBuildPath(t *testing.T) {
 
 	a.Panic(func() { buildPath("") })
 
-	a.Equal(buildPath("slug"), "slug.html")
-	a.Equal(buildPath("/slug"), "slug.html")
-	a.Equal(buildPath("/slug.xml"), "slug.xml.html")
+	a.Equal(buildPath("slug"), "slug"+vars.Ext)
+	a.Equal(buildPath("/slug"), "slug"+vars.Ext)
+	a.Equal(buildPath("/slug.xml"), "slug.xml")
 }

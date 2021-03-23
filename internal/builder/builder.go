@@ -101,6 +101,10 @@ func newBuilder(dir, base string) (*builder, error) {
 		return nil, err
 	}
 
+	if err := b.buildRobots(d); err != nil {
+		return nil, err
+	}
+
 	return b, nil
 }
 
