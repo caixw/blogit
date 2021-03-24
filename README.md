@@ -18,6 +18,14 @@ cd blogit
 ./build.sh
 ```
 
+## docker
+
+目前 docker 同时托管于 [docker.io](https://hub.docker.com/r/caixw/blogit) 和 [ghcr.io](https://ghcr.io/caixw/blogit)，可通过以下方式获取相应在的容器：
+
+`docker pull docker.io/caixw/blogit:latest`
+
+`docker pull ghcr.io/caixw/blogit:latest`
+
 ## 版权
 
 本项目采用 [MIT](https://opensource.org/licenses/MIT) 开源授权许可证，完整的授权说明可在 [LICENSE](LICENSE) 文件中找到。
