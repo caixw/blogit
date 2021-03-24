@@ -8,18 +8,20 @@ inputs:
     description: blogit 的版本号，可以使用 latest 指定最新版本
     default: latest
 
-  owner:
+  dest:
     required: true
-    description: 输出仓库的所有者
+    description: 编译后的输出目录
+    default: ./__dest__
 
-  repository:
+  src:
     required: true
-    description: 输出的仓库名
+    description: 源码目录
+    default: ./
 
 runs:
   using: docker
   image: docker://caixw/blogit:${{ input.version }}
   args:
   - build
-  - -src=.
-  - -dest=.
+  - -src=${{ input.src }}
+  - -dest=${{ input.dest }}
