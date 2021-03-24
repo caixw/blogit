@@ -4,7 +4,7 @@
 [![Go version](https://img.shields.io/github/go-mod/go-version/caixw/blogit)](https://golang.org)
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/caixw/blogit)](https://pkg.go.dev/github.com/caixw/blogit)
 
-用于将 md 文件转换成 xml 的静态博客工具。
+静态博客生成工具
 
 ## 安装
 
