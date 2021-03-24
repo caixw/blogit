@@ -7,7 +7,8 @@ language: cmn-Hans
 theme: default
 
 robots:
-- agent: '*'
+- agent:
+  - '*'
   disallow:
   - /themes/
   allow:

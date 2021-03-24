@@ -4,13 +4,13 @@ package loader
 
 // Agent 表示 robots.txt 每个代理项的内容
 type Agent struct {
-	Agent    string   `yaml:"agent"`
+	Agent    []string `yaml:"agent"`
 	Disallow []string `yaml:"disallow,omitempty"`
 	Allow    []string `yaml:"allow,omitempty"`
 }
 
 func (a *Agent) sanitize() *FieldError {
-	if a.Agent == "" {
+	if len(a.Agent) == 0 {
 		return &FieldError{Message: "不能为空", Field: "agent"}
 	}
 

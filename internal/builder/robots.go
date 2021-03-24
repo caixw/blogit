@@ -6,27 +6,33 @@ import (
 	"github.com/issue9/errwrap"
 
 	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 func (b *builder) buildRobots(d *data.Data) error {
 	buf := &errwrap.Buffer{}
 
+	buf.Printf("# 当前文件由 %s 自动生成，请勿手动修改", vars.URL)
+	buf.WByte('\n').WByte('\n')
+
 	for _, agent := range d.Robots.Agents {
-		buf.Printf("User-agent: %s\n", agent.Agent)
+		for _, a := range agent.Agent {
+			buf.Println("User-agent:", a)
+		}
 
 		for _, disallow := range agent.Disallow {
-			buf.Printf("Disallow: %s\n", disallow)
+			buf.Println("Disallow:", disallow)
 		}
 
 		for _, allow := range agent.Allow {
-			buf.Printf("Disallow: %s\n", allow)
+			buf.Println("Disallow:", allow)
 		}
 
 		buf.WByte('\n')
 	}
 
-	if d.Robots.Sitemap != "" {
-		buf.Println("Sitemap:", d.Robots.Sitemap)
+	for _, sitemap := range d.Robots.Sitemaps {
+		buf.Println("Sitemap:", sitemap)
 	}
 
 	if buf.Err != nil {
