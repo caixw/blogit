@@ -1,0 +1,27 @@
+name: blogit
+description: 静态博客生成工具
+author: caixw <https://caixw.io>
+
+inputs:
+  version:
+    required: true
+    description: blogit 的版本号，可以使用 latest 指定最新版本
+    default: latest
+
+  dest:
+    required: true
+    description: 编译后的输出目录
+    default: ./__dest__
+
+  src:
+    required: true
+    description: 源码目录
+    default: ./
+
+runs:
+  using: docker
+  image: docker://caixw/blogit:${{ input.version }}
+  args:
+  - build
+  - -src=${{ input.src }}
+  - -dest=${{ input.dest }}
