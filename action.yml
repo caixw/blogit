@@ -2,6 +2,10 @@ name: blogit
 description: 静态博客生成工具
 author: caixw <https://caixw.io>
 
+branding:
+  icon: book
+  color: green
+
 inputs:
   version:
     required: true
