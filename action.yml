@@ -1,5 +1,5 @@
-name: blogit
-description: 静态博客生成工具
+name: blogit-build
+description: 生成静态博客
 author: caixw <https://caixw.io>
 
 branding:
