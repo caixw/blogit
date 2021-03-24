@@ -32,6 +32,6 @@ func build(w io.Writer) error {
 		return nil
 	}
 
-	succ.printf("完成编译，用时：%v\n", time.Now().Sub(start))
+	succ.printf("完成编译，用时：%v\n", time.Since(start))
 	return nil
 }
