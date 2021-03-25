@@ -21,7 +21,7 @@
 <meta name="generator" content="https://caixw.io" />
 <link rel="stylesheet" type="text/css" href="/themes/default/style.css" />
 <style>
-/* 颜色等值由引和诉 style.css 决定。当前 style 标签中只规定了表格的相关设置。 */
+/* 颜色等值由引用的 style.css 决定。当前 style 标签中只规定了表格的相关设置。 */
 table {
     width: 100%;
     text-align: left;
