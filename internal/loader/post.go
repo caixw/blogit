@@ -165,10 +165,6 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 	if p.Template == "" {
 		p.Template = vars.DefaultTemplate
 	}
-	tps := []string{vars.IndexTemplate, vars.TagTemplate, vars.TagsTemplate, vars.ArchiveTemplate}
-	if sliceutil.Count(tps, func(i int) bool { return tps[i] == p.Template }) > 0 {
-		return &FieldError{Message: "与其它类型模板名称相同", Field: "template", File: p.Slug + ".md", Value: p.Template}
-	}
 
 	for i, a := range p.Authors {
 		if err := a.sanitize(); err != nil {
