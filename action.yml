@@ -22,8 +22,8 @@ inputs:
 
 runs:
   using: docker
-  image: docker://caixw/blogit:${{ input.version }}
+  image: docker://caixw/blogit:${{ inputs.version }}
   args:
   - build
-  - -src=${{ input.src }}
-  - -dest=${{ input.dest }}
+  - -src=${{ inputs.src }}
+  - -dest=${{ inputs.dest }}
