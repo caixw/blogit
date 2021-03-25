@@ -18,7 +18,4 @@ inputs:
 runs:
   using: docker
   image: docker://caixw/blogit:latest
-  args:
-  - build
-  - -src=${{ inputs.src }}
-  - -dest=${{ inputs.dest }}
+  args: ['build', '-src=${{ inputs.src }}', '-dest=${{ inputs.dest }}']
