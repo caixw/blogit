@@ -6,4 +6,4 @@ MAINTAINER caixw <https://caixw.io>
 
 COPY ./blogit /
 
-ENTRYPOINT ['/blogit']
+ENTRYPOINT ["/blogit"]
