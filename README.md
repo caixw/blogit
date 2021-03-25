@@ -66,7 +66,6 @@ jobs:
 
 | 名称    | 类型   | 必填   | 默认值     | 描述
 |---------|--------|--------|------------|-------
-| version | string | true   | latest     | blogit docker 的版本
 | src     | string | true   | src        | 源文件的路径
 | dest    | string | true   | dest       | 编译后的路径
 

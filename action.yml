@@ -7,11 +7,6 @@ branding:
   color: green
 
 inputs:
-  version:
-    required: true
-    description: blogit 的版本号，可以使用 latest 指定最新版本
-    default: latest
-
   dest:
     required: true
     description: 编译后的输出目录
@@ -22,7 +17,7 @@ inputs:
 
 runs:
   using: docker
-  image: docker://caixw/blogit:${{ inputs.version }}
+  image: docker://caixw/blogit:latest
   args:
   - build
   - -src=${{ inputs.src }}
