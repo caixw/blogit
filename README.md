@@ -23,6 +23,53 @@ cd blogit
 `testdata/src/` 下包含了一个完整的数据源，你可以直接复制该目录下的内容稍作修改，
 即可以当作自己的博客数据源。
 
+## github action
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout source
+      uses: actions/checkout@v2
+      with:
+        repository: owner/src
+        path: src/
+
+    - name: checkout dest
+      uses: actions/checkout@v2
+      with:
+        repository: owner/dest
+        path: dest/
+
+    - name: build static site
+      uses: caixw/blogit@master
+      with:
+        src: src
+        dest: dest
+
+    - name: commit files
+      run: |
+        cd dest/
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git commit -m "build blogit" -a
+
+    - name: push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
+```
+
+### 参数
+
+| 名称    | 类型   | 必填   | 默认值     | 描述
+|---------|--------|--------|------------|-------
+| version | string | true   | latest     | blogit docker 的版本
+| src     | string | true   | src        | 源文件的路径
+| dest    | string | true   | dest       | 编译后的路径
+
 ## docker
 
 目前 docker 同时托管于 [docker.io](https://hub.docker.com/r/caixw/blogit) 和 [ghcr.io](https://ghcr.io/caixw/blogit)，可通过以下方式获取相应在的容器：
