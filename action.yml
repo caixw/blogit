@@ -15,12 +15,10 @@ inputs:
   dest:
     required: true
     description: 编译后的输出目录
-    default: ./__dest__
 
   src:
     required: true
     description: 源码目录
-    default: ./
 
 runs:
   using: docker
