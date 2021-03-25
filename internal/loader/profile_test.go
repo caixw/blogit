@@ -15,17 +15,26 @@ func TestProfile_sanitize(t *testing.T) {
 	err := p.sanitize()
 	a.Equal(err.Field, "title")
 
-	p.Title = "### title"
+	p.Title = "# title"
 	err = p.sanitize()
 	a.Equal(err.Field, "size")
 
 	p.Size = 5
+	p.Footer = "#### \tfooter"
 	err = p.sanitize()
 	a.NotError(err)
 
+	a.Equal(p.Title, "### title").Equal(p.Footer, "##### footer")
+
 	// p.Alternate !=""
 
-	p.Alternate = "path/to/file"
+	p = &Profile{
+		Alternate: "path/to/file",
+		Title:     "title",
+		Size:      5,
+		Footer:    "footer",
+	}
+
 	err = p.sanitize()
 	a.Equal(err.Field, "title")
 
@@ -34,6 +43,10 @@ func TestProfile_sanitize(t *testing.T) {
 	a.Equal(err.Field, "size")
 
 	p.Size = 0
+	err = p.sanitize()
+	a.Equal(err.Field, "footer")
+
+	p.Footer = ""
 	err = p.sanitize()
 	a.NotError(err)
 }
