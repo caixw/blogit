@@ -7,8 +7,28 @@ type Profile struct {
 	Alternate string `yaml:"alternate"` // 采用此文件的内容代替
 
 	// 当 alternate 为空，以下值才生效
-	Modified int    `yaml:"modified"`         // 显示最后修改的 n 条记录
-	Created  int    `yaml:"created"`          // 显示最后添加的 n 条记录
-	Header   string `yaml:"header,omitempty"` // 页眉
-	Footer   string `yaml:"footer,omitempty"` // 页脚
+	Title string `yaml:"title"`
+	Size  uint   `yaml:"size"` // 显示的条数
+}
+
+func (p *Profile) sanitize() *FieldError {
+	if p.Alternate != "" {
+		switch {
+		case p.Title != "":
+			return &FieldError{Field: "title", Message: "只能为空"}
+		case p.Size != 0:
+			return &FieldError{Field: "size", Message: "只能为空"}
+		}
+		return nil
+	}
+
+	if p.Title == "" {
+		return &FieldError{Field: "title", Message: "不能为空"}
+	}
+
+	if p.Size <= 0 {
+		return &FieldError{Field: "size", Message: "必须大于 0"}
+	}
+
+	return nil
 }
