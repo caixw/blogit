@@ -136,8 +136,8 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 		return &FieldError{Field: "title", Message: "不能为空"}
 	}
 
-	dir = filepath.Clean(filepath.ToSlash(dir))
-	path = filepath.Clean(filepath.ToSlash(path))
+	dir = filepath.ToSlash(filepath.Clean(dir))
+	path = filepath.ToSlash(filepath.Clean(path)) // Clean 同时会将分隔符转换成系统对应的字符，所以先 Clean 再 ToSlash
 
 	slug := strings.TrimPrefix(path, dir)
 	if len(slug) > 3 && strings.ToLower(slug[len(slug)-3:]) == ".md" {
@@ -148,7 +148,7 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 		return &FieldError{Field: "slug", Message: "不能包含空格", Value: slug}
 	}
 	if !strings.HasPrefix(slug, vars.PostsDir+"/") {
-		return &FieldError{Field: "slug", Message: fmt.Sprintf("必位于 %s 目录之下", vars.PostsDir), Value: slug}
+		return &FieldError{Field: "slug", Message: fmt.Sprintf("文章必须位于 %s 目录之下", vars.PostsDir), Value: slug}
 	}
 	p.Slug = slug
 
