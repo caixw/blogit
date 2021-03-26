@@ -29,24 +29,24 @@ func Build(src, dest, base string) error {
 // Serve 运行服务
 //
 // 如果 l 不为 nil，则会在此通道上输出访问记录；
-func Serve(src, addr, path string, l *log.Logger) error {
+func Serve(dest, addr, path string, l *log.Logger) error {
 	if path == "" || path[0] != '/' {
 		path = "/" + path
 	}
 
-	http.Handle(path, newHandler(path, src, l))
+	http.Handle(path, newHandler(path, dest, l))
 	return http.ListenAndServe(addr, nil)
 }
 
 // ServeTLS 运行服务
 //
 // 如果 l 不为 nil，则会在此通道上输出访问记录；
-func ServeTLS(src, addr, path, cert, key string, l *log.Logger) error {
+func ServeTLS(dest, addr, path, cert, key string, l *log.Logger) error {
 	if path == "" || path[0] != '/' {
 		path = "/" + path
 	}
 
-	http.Handle(path, newHandler(path, src, l))
+	http.Handle(path, newHandler(path, dest, l))
 	return http.ListenAndServeTLS(addr, cert, key, nil)
 }
 

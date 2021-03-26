@@ -136,8 +136,8 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 		return &FieldError{Field: "title", Message: "不能为空"}
 	}
 
-	dir = filepath.ToSlash(dir)
-	path = filepath.ToSlash(path)
+	dir = filepath.Clean(filepath.ToSlash(dir))
+	path = filepath.Clean(filepath.ToSlash(path))
 
 	slug := strings.TrimPrefix(path, dir)
 	if len(slug) > 3 && strings.ToLower(slug[len(slug)-3:]) == ".md" {
