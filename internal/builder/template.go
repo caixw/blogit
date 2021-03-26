@@ -16,6 +16,7 @@ func newTemplate(d *data.Data, src string) (*template.Template, error) {
 	templateFuncs := template.FuncMap{
 		"strip":   stripTags,
 		"html":    func(html string) interface{} { return template.HTML(html) },
+		"js":      func(js string) interface{} { return template.JS(js) },
 		"rfc3339": func(t time.Time) string { return t.Format(time.RFC3339) },
 		"date":    func(t time.Time, format string) string { return t.Format(format) },
 		"themeURL": func(p string) string {

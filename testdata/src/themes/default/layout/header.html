@@ -25,7 +25,7 @@
 
         {{- if .JSONLD -}}
         <script type="application/ld+json">
-        {{.JSONLD}}
+        {{.JSONLD|js}}
         </script>
         {{- end -}}
     </head>
