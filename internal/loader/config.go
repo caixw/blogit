@@ -31,7 +31,8 @@ type Config struct {
 	RSS     *RSS     `yaml:"rss,omitempty"`
 	Atom    *RSS     `yaml:"atom,omitempty"`
 	Sitemap *Sitemap `yaml:"sitemap,omitempty"`
-	Robots  []*Agent `yaml:"robots,omitempty"` // 不为空，表示托管 robots.txt 的生成
+	Robots  []*Agent `yaml:"robots,omitempty"`  // 不为空，表示托管 robots.txt 的生成
+	Profile *Profile `yaml:"profile,omitempty"` // 不为空，表示托管 README.md 的生成
 }
 
 // RSS RSS 和 Atom 相关的配置项
@@ -136,12 +137,21 @@ func (conf *Config) sanitize() *FieldError {
 		}
 	}
 
+	// robots.txt
 	if conf.Robots != nil {
 		for index, agent := range conf.Robots {
 			if err := agent.sanitize(); err != nil {
 				err.Field = "robots.[" + strconv.Itoa(index) + "]." + err.Field
 				return err
 			}
+		}
+	}
+
+	// profile
+	if conf.Profile != nil {
+		if err := conf.sanitize(); err != nil {
+			err.Field = "profile." + err.Field
+			return err
 		}
 	}
 
