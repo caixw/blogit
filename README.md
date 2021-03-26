@@ -41,6 +41,8 @@ jobs:
       with:
         repository: owner/dest
         path: dest/
+        persist-credentials: false # github-push-action@master 需要这个
+        fetch-depth: 0 # # github-push-action@master 需要这个
 
     - name: build static site
       uses: caixw/blogit@master
@@ -49,18 +51,23 @@ jobs:
         dest: dest
 
     - name: commit files
-      run: |
-        cd dest/
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git commit -m "build blogit" -a
+      uses: EndBug/add-and-commit@v7
+      with:
+        author_name: github-actions
+        author_email: 41898282+github-actions[bot]@users.noreply.github.com
+        cwd: dest/
+        push: false
+        message: 'docs: add changes'
 
     - name: push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        directory: dest/
+        github_token: ${{ secrets.GITHUB_TOKEN }} # 确保有相应的权限
         branch: ${{ github.ref }}
 ```
+
+`secrets.GITHUB_TOKEN` 关联的 [PAT](https://docs.github.com/cn/github/authenticating-to-github/creating-a-personal-access-token) 需要有写入 `owner/dest` 指向的仓库的权限。
 
 ### 参数
 
