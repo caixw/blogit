@@ -18,7 +18,7 @@ var (
 
 // initBuild 注册 build 子命令
 func initBuild(opt *cmdopt.CmdOpt) {
-	fs := opt.New("build", "编译内容", build)
+	fs := opt.New("build", "编译内容\n", build)
 	fs.StringVar(&buildSrc, "src", "./", "指定源码目录")
 	fs.StringVar(&buildDest, "dest", "./dest", "指定输出目录")
 }

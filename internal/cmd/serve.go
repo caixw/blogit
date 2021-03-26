@@ -18,7 +18,7 @@ var (
 
 // initServe 注册 serve 子命令
 func initServe(opt *cmdopt.CmdOpt) {
-	fs := opt.New("serve", "以 HTTP 服务运行", serve)
+	fs := opt.New("serve", "以 HTTP 服务运行\n", serve)
 	fs.StringVar(&serveSrc, "src", "./", "指定源码目录")
 	fs.StringVar(&serveAddr, "addr", ":8080", "服务端口")
 	fs.StringVar(&servePath, "path", "/", "根路径")

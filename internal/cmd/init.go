@@ -21,7 +21,7 @@ var initFS *flag.FlagSet
 
 // initInit 注册 init 子命令
 func initInit(opt *cmdopt.CmdOpt) {
-	initFS = opt.New("init", "初始化新的博客内容", initF)
+	initFS = opt.New("init", "初始化新的博客内容\n", initF)
 }
 
 func initF(w io.Writer) error {

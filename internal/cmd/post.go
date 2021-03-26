@@ -32,7 +32,7 @@ var postFS *flag.FlagSet
 
 // initPost 注册 post 子命令
 func initPost(opt *cmdopt.CmdOpt) {
-	postFS = opt.New("post", "创建新文章", post)
+	postFS = opt.New("post", "创建新文章\n", post)
 }
 
 func post(w io.Writer) error {
