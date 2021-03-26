@@ -36,7 +36,7 @@ type Watcher struct {
 // Watch 热编译
 //
 // src 源码目录，该目录下的内容一量修改，就会重新编译；
-// base 网站的根地址，会替换配置文件中的 URL，一般为 localhost。
+// base 网站的根地址，会替换配置文件中的 URL，一般为 http://localhost。
 func Watch(src, base string, info, erro, succ *log.Logger) error {
 	u, err := url.Parse(base)
 	if err != nil {
@@ -79,7 +79,7 @@ func Watch(src, base string, info, erro, succ *log.Logger) error {
 	}
 
 	if err := w.Build(); err != nil {
-		return err
+		w.erro(err)
 	}
 
 	return w.Watch()
