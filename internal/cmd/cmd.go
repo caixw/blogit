@@ -80,7 +80,7 @@ func Exec() error {
 	initInit(opt)
 	initPost(opt)
 	initVersion(opt)
-	opt.Help("help", "显示当前内容")
+	opt.Help("help", "显示当前内容\n")
 
 	return opt.Exec(os.Args[1:])
 }

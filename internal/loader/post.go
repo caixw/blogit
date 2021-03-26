@@ -148,7 +148,7 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 		return &FieldError{Field: "slug", Message: "不能包含空格", Value: slug}
 	}
 	if !strings.HasPrefix(slug, vars.PostsDir+"/") {
-		return &FieldError{Field: "slug", Message: fmt.Sprintf("必须位置于 %s 目录之下", vars.PostsDir), Value: slug}
+		return &FieldError{Field: "slug", Message: fmt.Sprintf("必位于 %s 目录之下", vars.PostsDir), Value: slug}
 	}
 	p.Slug = slug
 
