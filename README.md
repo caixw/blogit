@@ -18,10 +18,17 @@ cd blogit
 ./build.sh
 ```
 
+### docker
+
+目前 docker 同时托管于 [docker.io](https://hub.docker.com/r/caixw/blogit) 和 [ghcr.io](https://ghcr.io/caixw/blogit)，可通过以下方式获取相应在的容器：
+
+`docker pull docker.io/caixw/blogit:latest`
+
+`docker pull ghcr.io/caixw/blogit:latest`
+
 ## 使用
 
-`testdata/src/` 下包含了一个完整的数据源，你可以直接复制该目录下的内容稍作修改，
-即可以当作自己的博客数据源。
+`testdata/src/` 下包含了一个完整的数据源，你可以直接复制该目录下的内容稍作修改，即可以当作自己的博客数据源。
 
 ## github action
 
@@ -75,14 +82,6 @@ jobs:
 |---------|--------|--------|------------|-------
 | src     | string | true   | src        | 源文件的路径
 | dest    | string | true   | dest       | 编译后的路径
-
-## docker
-
-目前 docker 同时托管于 [docker.io](https://hub.docker.com/r/caixw/blogit) 和 [ghcr.io](https://ghcr.io/caixw/blogit)，可通过以下方式获取相应在的容器：
-
-`docker pull docker.io/caixw/blogit:latest`
-
-`docker pull ghcr.io/caixw/blogit:latest`
 
 ## 版权
 
