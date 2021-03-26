@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/caixw/blogit/internal/data"
-	"github.com/caixw/blogit/internal/vars"
 )
 
 const (
@@ -51,11 +50,6 @@ func (b *builder) buildAtom(d *data.Data) error {
 		return nil
 	}
 
-	size := d.RSS.Size
-	if len(d.Index.Posts) < size {
-		size = len(d.Index.Posts)
-	}
-
 	a := &atom{
 		XMLNS:    atomNamespace,
 		Title:    atomContent{Content: d.Atom.Title},
@@ -66,11 +60,10 @@ func (b *builder) buildAtom(d *data.Data) error {
 			{Href: d.URL},
 			{Href: d.Atom.Permalink, Rel: "self"},
 		},
-		Entries: make([]*entry, 0, size),
+		Entries: make([]*entry, 0, len(d.Atom.Posts)),
 	}
 
-	for i := 0; i < size; i++ {
-		p := d.Index.Posts[i]
+	for _, p := range d.Atom.Posts {
 		a.Entries = append(a.Entries, &entry{
 			Title:   atomContent{Content: p.Title},
 			ID:      p.Permalink,
@@ -82,5 +75,5 @@ func (b *builder) buildAtom(d *data.Data) error {
 		})
 	}
 
-	return b.appendXMLFile(d, vars.AtomXML, d.Atom.XSL, a)
+	return b.appendXMLFile(d, d.Atom.Path, d.Atom.XSLPermalink, a)
 }

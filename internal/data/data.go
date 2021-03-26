@@ -42,46 +42,6 @@ type (
 	}
 )
 
-// RSS Atom 和 RSS 的相关配置项
-type RSS struct {
-	*loader.RSS
-	Permalink string
-	XSL       string
-}
-
-// Sitemap 的相关配置项
-type Sitemap struct {
-	*loader.Sitemap
-	Permalink string
-	XSL       string
-}
-
-func newRSS(conf *loader.Config, rss *loader.RSS, path, xsl string) *RSS {
-	r := &RSS{
-		RSS:       rss,
-		Permalink: BuildURL(conf.URL, path),
-	}
-
-	if xsl != "" {
-		r.XSL = buildThemeURL(conf.URL, conf.Theme, xsl)
-	}
-
-	return r
-}
-
-func newSitemap(conf *loader.Config, theme *loader.Theme) *Sitemap {
-	sm := &Sitemap{
-		Sitemap:   conf.Sitemap,
-		Permalink: BuildURL(conf.URL, vars.SitemapXML),
-	}
-
-	if theme.Sitemap != "" {
-		sm.XSL = buildThemeURL(conf.URL, conf.Theme, theme.Sitemap)
-	}
-
-	return sm
-}
-
 // Load 加载并处理数据
 func Load(dir, baseURL string) (*Data, error) {
 	conf, err := loader.LoadConfig(filepath.Join(dir, vars.ConfYAML))
@@ -158,10 +118,10 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 	}
 
 	if conf.RSS != nil {
-		data.RSS = newRSS(conf, conf.RSS, vars.RssXML, theme.RSS)
+		data.RSS = newRSS(conf, conf.RSS, vars.RssXML, theme.RSS, index.Posts)
 	}
 	if conf.Atom != nil {
-		data.Atom = newRSS(conf, conf.Atom, vars.AtomXML, theme.Atom)
+		data.Atom = newRSS(conf, conf.Atom, vars.AtomXML, theme.Atom, index.Posts)
 	}
 	if conf.Sitemap != nil {
 		data.Sitemap = newSitemap(conf, theme)

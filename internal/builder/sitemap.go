@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/caixw/blogit/internal/data"
-	"github.com/caixw/blogit/internal/vars"
 )
 
 const sitempaNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -48,7 +47,7 @@ func (b *builder) buildSitemap(d *data.Data) error {
 		s.append(p.Permalink, p.Modified, conf.PostChangefreq, conf.PostPriority)
 	}
 
-	return b.appendXMLFile(d, vars.SitemapXML, d.Sitemap.XSL, s)
+	return b.appendXMLFile(d, conf.Path, conf.XSLPermalink, s)
 }
 
 func (us *urlset) append(loc string, lastmod time.Time, changefreq string, priority float64) {

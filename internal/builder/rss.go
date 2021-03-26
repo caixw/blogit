@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/caixw/blogit/internal/data"
-	"github.com/caixw/blogit/internal/vars"
 )
 
 const (
@@ -42,11 +41,6 @@ func (b *builder) buildRSS(d *data.Data) error {
 		return nil
 	}
 
-	size := d.RSS.Size
-	if len(d.Index.Posts) < size {
-		size = len(d.Index.Posts)
-	}
-
 	r := &rss{
 		Version: rssVersion,
 		Channel: &channel{
@@ -55,12 +49,11 @@ func (b *builder) buildRSS(d *data.Data) error {
 			Description:   d.Subtitle,
 			PubDate:       d.Uptime.Format(rssDateFormat),
 			LastBuildDate: d.Modified.Format(rssDateFormat),
-			Items:         make([]*item, 0, size),
+			Items:         make([]*item, 0, len(d.RSS.Posts)),
 		},
 	}
 
-	for i := 0; i < size; i++ {
-		p := d.Index.Posts[i]
+	for _, p := range d.RSS.Posts {
 		r.Channel.Items = append(r.Channel.Items, &item{
 			Title:       p.Title,
 			Link:        p.Permalink,
@@ -69,5 +62,5 @@ func (b *builder) buildRSS(d *data.Data) error {
 		})
 	}
 
-	return b.appendXMLFile(d, vars.RssXML, d.RSS.XSL, r)
+	return b.appendXMLFile(d, d.RSS.Path, d.RSS.XSLPermalink, r)
 }
