@@ -30,6 +30,7 @@ type (
 		Atom    *RSS
 		Sitemap *Sitemap
 		Robots  *Robots
+		Profile *Profile
 
 		Uptime   time.Time
 		Created  time.Time
@@ -128,6 +129,9 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 	}
 	if conf.Robots != nil {
 		data.Robots = newRobots(conf, data.Sitemap)
+	}
+	if conf.Profile != nil {
+		data.Profile = newProfile(conf, index.Posts)
 	}
 
 	return data, nil

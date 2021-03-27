@@ -105,6 +105,10 @@ func newBuilder(dir, base string) (*builder, error) {
 		return nil, err
 	}
 
+	if err := b.buildProfile(d); err != nil {
+		return nil, err
+	}
+
 	return b, nil
 }
 
