@@ -104,6 +104,7 @@ func (w *Watcher) Watch() error {
 		return err
 	}
 
+	w.info("启动服务：", w.baseURL)
 	for {
 		select {
 		case event := <-watcher.Events:
