@@ -12,27 +12,34 @@ import (
 	"mime"
 	"path"
 
-	"github.com/alecthomas/chroma/formatters/html"
+	fh "github.com/alecthomas/chroma/formatters/html"
 	"github.com/issue9/validation/is"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/extension"
+	rh "github.com/yuin/goldmark/renderer/html"
 	"gopkg.in/yaml.v2"
 )
 
-var markdown = goldmark.New(goldmark.WithExtensions(
-	extension.GFM,
-	extension.Strikethrough,
-	extension.Footnote,
-	meta.Meta,
-	highlighting.NewHighlighting(
-		highlighting.WithStyle("monokai"),
-		highlighting.WithFormatOptions(
-			html.WithLineNumbers(true),
+var markdown = goldmark.New(
+	goldmark.WithExtensions(
+		extension.GFM,
+		extension.Strikethrough,
+		extension.Footnote,
+		meta.Meta,
+		highlighting.NewHighlighting(
+			highlighting.WithStyle("monokai"),
+			highlighting.WithFormatOptions(
+				fh.WithLineNumbers(true),
+			),
 		),
 	),
-))
+
+	goldmark.WithRendererOptions(
+		rh.WithUnsafe(),
+	),
+)
 
 // 排序方式
 const (
