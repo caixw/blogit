@@ -126,12 +126,11 @@ func isIgnore(src string) bool {
 }
 
 // Build 编译内容
-func Build(src, dest, base string) error {
+func Build(src, dest string) error {
 	b := &Builder{}
-	if err := b.Build(src, base); err != nil {
+	if err := b.Build(src, ""); err != nil {
 		return err
 	}
-
 	return b.Dump(dest)
 }
 

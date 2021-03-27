@@ -20,10 +20,8 @@ func Version() string {
 //
 // dir 表示源码目录；
 // dest 表示输出的目录；
-// base 表示网站的基地址，如果此值不为空，会替代 conf.yaml 中的 url 变量，
-// 在预览模式下，此参数会很有用。
-func Build(src, dest, base string) error {
-	return builder.Build(src, dest, base)
+func Build(src, dest string) error {
+	return builder.Build(src, dest)
 }
 
 // Serve 运行服务

@@ -3,6 +3,7 @@
 package blogit
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/url"
@@ -14,22 +15,23 @@ import (
 	"github.com/fsnotify/fsnotify"
 
 	"github.com/caixw/blogit/internal/builder"
+	"github.com/caixw/blogit/internal/utils"
 	"github.com/caixw/blogit/internal/vars"
 )
 
 // Watcher 热编译功能
 type Watcher struct {
-	// 项目的源码目录
-	Dir string
-
-	BaseURL string
+	dir     string // 项目的源码目录
+	baseURL string
 	addr    string
 	path    string
+	cert    string
+	key     string
 
 	// 不同类型日志的输出通道
-	Info *log.Logger
-	Erro *log.Logger
-	Succ *log.Logger
+	infoLog *log.Logger
+	erroLog *log.Logger
+	succLog *log.Logger
 
 	builder *builder.Builder
 	builded time.Time
@@ -38,55 +40,62 @@ type Watcher struct {
 // Watch 热编译
 //
 // src 源码目录，该目录下的内容一量修改，就会重新编译；
-// base 网站的根地址，会替换配置文件中的 URL，一般为 http://localhost，同时也会作为服务的监听地址。
-func Watch(src, base string, info, erro, succ *log.Logger) error {
+// base 网站的根地址，会替换配置文件中的 URL，
+// 一般为 http://localhost，同时也会作为服务的监听地址。
+// 如果是以 https:// 开头的，那么需要提供 cert 和 key 两个参数；
+// cert 和 key 表示 https 模式下对应的证书；
+// info, erro, succ 为各类型的日志输出通道，可以为空，表示该类型的信息将会被忽略。
+func Watch(src, base, cert, key string, info, erro, succ *log.Logger) (*Watcher, error) {
 	u, err := url.Parse(base)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	addr := u.Port()
+	scheme := strings.ToLower(u.Scheme)
 	if addr == "" {
-		if scheme := strings.ToLower(u.Scheme); scheme == "https" {
+		if scheme == "https" {
 			addr = ":443"
 		} else if scheme == "http" {
 			addr = ":http"
 		} else {
-			return fmt.Errorf("不支持协议：%s", scheme)
+			return nil, fmt.Errorf("不支持协议：%s", scheme)
 		}
 	} else {
 		addr = ":" + addr
 	}
 
-	w := &Watcher{
-		Dir: src,
-
-		BaseURL: base,
-		addr:    addr,
-		path:    u.Path,
-
-		Info: info,
-		Erro: erro,
-		Succ: succ,
-
-		builder: &builder.Builder{},
-
-		builded: time.Now(),
+	if scheme == "https" && (!utils.FileExists(cert) || !utils.FileExists(key)) {
+		return nil, errors.New("HTTPS 模式但是证书不存在")
 	}
 
-	return w.Watch()
+	return &Watcher{
+		dir:     src,
+		baseURL: base,
+		addr:    addr,
+		path:    u.Path,
+		cert:    cert,
+		key:     key,
+
+		infoLog: info,
+		erroLog: erro,
+		succLog: succ,
+
+		builder: &builder.Builder{},
+		builded: time.Now(),
+	}, nil
 }
 
 // Watch 监视变化并进行编译
 func (w *Watcher) Watch() error {
 	go func() {
-		if err := serve(w.builder, w.Dir, w.addr, w.path, "", "", w.Info); err != nil {
+		if err := serve(w.builder, w.dir, w.addr, w.path, w.cert, w.key, w.infoLog); err != nil {
 			w.erro(err)
 			return
 		}
 	}()
 
-	if err := w.builder.Build(w.Dir, w.BaseURL); err != nil {
+	if err := w.builder.Build(w.dir, w.baseURL); err != nil {
 		w.erro(err)
 	}
 
@@ -111,7 +120,7 @@ func (w *Watcher) Watch() error {
 			w.info("触发事件：", event, "，开始重新编译！")
 
 			go func() {
-				if err = w.builder.Build(w.Dir, w.BaseURL); err != nil {
+				if err = w.builder.Build(w.dir, w.baseURL); err != nil {
 					w.erro(err)
 					return
 				}
@@ -127,13 +136,12 @@ func (w *Watcher) Watch() error {
 
 func (w *Watcher) getWatcher() (*fsnotify.Watcher, error) {
 	paths := make([]string, 0, 10)
-	err := filepath.Walk(w.Dir, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(w.dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
 		name := info.Name()
-
 		if name != "." && name[0] == '.' { // 忽略隐藏文件
 			return filepath.SkipDir
 		}
@@ -163,19 +171,19 @@ func (w *Watcher) getWatcher() (*fsnotify.Watcher, error) {
 }
 
 func (w *Watcher) info(v ...interface{}) {
-	if w.Info != nil {
-		w.Info.Println(v...)
+	if w.infoLog != nil {
+		w.infoLog.Println(v...)
 	}
 }
 
 func (w *Watcher) erro(v ...interface{}) {
-	if w.Erro != nil {
-		w.Erro.Println(v...)
+	if w.erroLog != nil {
+		w.erroLog.Println(v...)
 	}
 }
 
 func (w *Watcher) succ(v ...interface{}) {
-	if w.Succ != nil {
-		w.Succ.Println(v...)
+	if w.succLog != nil {
+		w.succLog.Println(v...)
 	}
 }
