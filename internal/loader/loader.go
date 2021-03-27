@@ -18,7 +18,8 @@ import (
 	highlighting "github.com/yuin/goldmark-highlighting"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/extension"
-	rh "github.com/yuin/goldmark/renderer/html"
+	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer/html"
 	"gopkg.in/yaml.v2"
 )
 
@@ -36,8 +37,12 @@ var markdown = goldmark.New(
 		),
 	),
 
+	goldmark.WithParserOptions(
+		parser.WithAutoHeadingID(),
+	),
+
 	goldmark.WithRendererOptions(
-		rh.WithUnsafe(),
+		html.WithUnsafe(),
 	),
 )
 
