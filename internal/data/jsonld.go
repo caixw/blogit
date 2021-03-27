@@ -9,10 +9,15 @@ import (
 	"github.com/caixw/blogit/internal/loader"
 )
 
-type ldBlog struct {
+type ldBlogPosting struct {
+	ldCreativeWork
+}
+
+type ldCreativeWork struct {
 	Context  string      `json:"@context"`
 	Type     string      `json:"@type"`
-	Name     string      `json:"name"`
+	Headline string      `json:"headline,omitempty"`
+	Name     string      `json:"name,omitempty"`
 	Authors  []*ldPerson `json:"author,omitempty"`
 	Created  time.Time   `json:"dateCreated,omitempty"`
 	Modified time.Time   `json:"dateModified,omitempty"`
@@ -28,16 +33,18 @@ type ldPerson struct {
 	URL   string `json:"url,omitempty"`
 }
 
-func newLDBlog(p *loader.Post) *ldBlog {
-	blog := &ldBlog{
-		Context:  "https://schema.org/",
-		Type:     "Blog",
-		Name:     p.Title,
-		Created:  p.Created,
-		Modified: p.Modified,
-		License:  p.License.URL,
-		Keywords: p.Keywords,
-		Language: p.Language,
+func newLDBlogPosting(p *loader.Post) *ldBlogPosting {
+	blog := &ldBlogPosting{
+		ldCreativeWork: ldCreativeWork{
+			Context:  "https://schema.org/",
+			Type:     "BlogPosting",
+			Headline: p.Title,
+			Created:  p.Created,
+			Modified: p.Modified,
+			License:  p.License.URL,
+			Keywords: p.Keywords,
+			Language: p.Language,
+		},
 	}
 
 	for _, a := range p.Authors {
@@ -53,7 +60,7 @@ func newLDBlog(p *loader.Post) *ldBlog {
 }
 
 func buildPostLD(p *loader.Post) (string, error) {
-	data, err := json.Marshal(newLDBlog(p))
+	data, err := json.Marshal(newLDBlogPosting(p))
 	if err != nil {
 		return "", err
 	}
