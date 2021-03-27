@@ -25,7 +25,7 @@ type Profile struct {
 	// Title 和 Footer 的前缀 # 是固定的，不需要用户给字，即使用户给了，也会被删除。
 	Title  string `yaml:"title"`
 	Footer string `yaml:"footer"` // 页脚
-	Size   uint   `yaml:"size"`   // 显示最近添加的文章条数
+	Size   int    `yaml:"size"`   // 显示最近添加的文章条数
 }
 
 func (p *Profile) sanitize() *FieldError {

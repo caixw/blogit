@@ -149,7 +149,7 @@ func (conf *Config) sanitize() *FieldError {
 
 	// profile
 	if conf.Profile != nil {
-		if err := conf.sanitize(); err != nil {
+		if err := conf.Profile.sanitize(); err != nil {
 			err.Field = "profile." + err.Field
 			return err
 		}

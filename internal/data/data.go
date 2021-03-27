@@ -131,7 +131,7 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		data.Robots = newRobots(conf, data.Sitemap)
 	}
 	if conf.Profile != nil {
-		data.Profile = newProfile(conf)
+		data.Profile = newProfile(conf, index.Posts)
 	}
 
 	return data, nil

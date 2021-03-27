@@ -10,6 +10,10 @@ import (
 )
 
 func (b *builder) buildRobots(d *data.Data) error {
+	if d.Robots == nil {
+		return nil
+	}
+
 	buf := &errwrap.Buffer{}
 
 	buf.Printf("# 当前文件由 %s 自动生成，请勿手动修改", vars.URL)
