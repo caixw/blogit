@@ -12,7 +12,6 @@ require (
 	github.com/issue9/term/v2 v2.1.4
 	github.com/issue9/validation v0.3.0
 	github.com/issue9/version v1.0.4
-	github.com/otiai10/copy v1.5.0
 	github.com/yuin/goldmark v1.3.3
 	github.com/yuin/goldmark-highlighting v0.0.0-20200307114337-60d527fdb691
 	github.com/yuin/goldmark-meta v1.0.0

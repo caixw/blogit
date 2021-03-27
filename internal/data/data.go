@@ -44,6 +44,8 @@ type (
 )
 
 // Load 加载并处理数据
+//
+// 如果 baseURL 不为空，则会替换配置文件中的 URL 字段。
 func Load(dir, baseURL string) (*Data, error) {
 	conf, err := loader.LoadConfig(filepath.Join(dir, vars.ConfYAML))
 	if err != nil {

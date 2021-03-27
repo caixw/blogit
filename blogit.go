@@ -29,33 +29,39 @@ func Build(src, dest, base string) error {
 // Serve 运行服务
 //
 // 如果 l 不为 nil，则会在此通道上输出访问记录；
-func Serve(dest, addr, path string, l *log.Logger) error {
-	if path == "" || path[0] != '/' {
-		path = "/" + path
-	}
-
-	http.Handle(path, newHandler(path, dest, l))
-	return http.ListenAndServe(addr, nil)
+func Serve(src, addr, path string, l *log.Logger) error {
+	return ServeTLS(src, addr, path, "", "", l)
 }
 
 // ServeTLS 运行服务
 //
 // 如果 l 不为 nil，则会在此通道上输出访问记录；
-func ServeTLS(dest, addr, path, cert, key string, l *log.Logger) error {
+func ServeTLS(src, addr, path, cert, key string, l *log.Logger) error {
+	b := &builder.Builder{}
+	if err := b.Build(src, ""); err != nil {
+		return err
+	}
+	return serve(b, src, addr, path, cert, key, l)
+}
+
+func serve(b *builder.Builder, src, addr, path, cert, key string, l *log.Logger) error {
 	if path == "" || path[0] != '/' {
 		path = "/" + path
 	}
 
-	http.Handle(path, newHandler(path, dest, l))
-	return http.ListenAndServeTLS(addr, cert, key, nil)
-}
+	var h http.Handler = b
 
-func newHandler(prefix, dir string, l *log.Logger) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if l != nil {
+	if l != nil {
+		h = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			l.Printf("访问 %s\n", r.URL.String())
-		}
+			b.ServeHTTP(w, r)
+		})
+	}
 
-		http.StripPrefix(prefix, http.FileServer(http.Dir(dir))).ServeHTTP(w, r)
-	})
+	http.Handle(path, http.StripPrefix(path, h))
+
+	if cert != "" {
+		return http.ListenAndServeTLS(addr, cert, key, nil)
+	}
+	return http.ListenAndServe(addr, nil)
 }

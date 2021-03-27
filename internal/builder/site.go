@@ -91,7 +91,7 @@ func newSite(d *data.Data) *site {
 	return s
 }
 
-func (b *builder) page(t string) *page {
+func (b *Builder) page(t string) *page {
 	return &page{
 		Site: b.site,
 		Type: t,

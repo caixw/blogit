@@ -36,7 +36,7 @@ type item struct {
 	PubDate     string `xml:"pubDate,omitempty"`
 }
 
-func (b *builder) buildRSS(d *data.Data) error {
+func (b *Builder) buildRSS(d *data.Data) error {
 	if d.RSS == nil {
 		return nil
 	}

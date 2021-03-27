@@ -8,7 +8,7 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
-func (b *builder) buildTags(d *data.Data) error {
+func (b *Builder) buildTags(d *data.Data) error {
 	for _, t := range d.Tags.Tags {
 		p := b.page(vars.TagTemplate)
 		p.Title = t.Title + d.TitleSuffix

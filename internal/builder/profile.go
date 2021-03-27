@@ -9,7 +9,7 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
-func (b *builder) buildProfile(d *data.Data) error {
+func (b *Builder) buildProfile(d *data.Data) error {
 	if d.Profile == nil {
 		return nil
 	}
@@ -33,6 +33,6 @@ func (b *builder) buildProfile(d *data.Data) error {
 		return buf.Err
 	}
 
-	b.files[p.Path] = buf.Bytes()
+	b.appendFile(p.Path, "", buf.Bytes())
 	return nil
 }

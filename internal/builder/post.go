@@ -8,7 +8,7 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
-func (b *builder) buildPosts(d *data.Data) error {
+func (b *Builder) buildPosts(d *data.Data) error {
 	for _, p := range d.Index.Posts {
 		page := b.page(p.Template)
 		page.Title = p.Title + d.TitleSuffix

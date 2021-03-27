@@ -7,7 +7,7 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
-func (b *builder) buildArchive(d *data.Data) error {
+func (b *Builder) buildArchive(d *data.Data) error {
 	p := b.page(vars.ArchiveTemplate)
 	p.Title = d.Archives.Title + d.TitleSuffix
 	p.Permalink = d.Archives.Permalink

@@ -11,8 +11,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/caixw/blogit/internal/vars"
 	"github.com/fsnotify/fsnotify"
+
+	"github.com/caixw/blogit/internal/builder"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 // Watcher 热编译功能
@@ -20,32 +22,28 @@ type Watcher struct {
 	// 项目的源码目录
 	Dir string
 
+	BaseURL string
+	addr    string
+	path    string
+
 	// 不同类型日志的输出通道
 	Info *log.Logger
 	Erro *log.Logger
 	Succ *log.Logger
 
-	// 运行 HTTP 服务的函数体
-	Serve func() error
-
-	// 执行编译的函数体
-	Build func() error
-
+	builder *builder.Builder
 	builded time.Time
 }
 
 // Watch 热编译
 //
 // src 源码目录，该目录下的内容一量修改，就会重新编译；
-// base 网站的根地址，会替换配置文件中的 URL，一般为 http://localhost。
+// base 网站的根地址，会替换配置文件中的 URL，一般为 http://localhost，同时也会作为服务的监听地址。
 func Watch(src, base string, info, erro, succ *log.Logger) error {
 	u, err := url.Parse(base)
 	if err != nil {
 		return err
 	}
-
-	// 预览文件输出至一个临时目录
-	dest := filepath.Join(os.TempDir(), "blogit")
 
 	addr := u.Port()
 	if addr == "" {
@@ -59,28 +57,21 @@ func Watch(src, base string, info, erro, succ *log.Logger) error {
 	} else {
 		addr = ":" + addr
 	}
-	path := u.Path
 
 	w := &Watcher{
 		Dir: src,
+
+		BaseURL: base,
+		addr:    addr,
+		path:    u.Path,
 
 		Info: info,
 		Erro: erro,
 		Succ: succ,
 
-		Serve: func() error {
-			return Serve(dest, addr, path, info)
-		},
-
-		Build: func() error {
-			return Build(src, dest, base)
-		},
+		builder: &builder.Builder{},
 
 		builded: time.Now(),
-	}
-
-	if err := w.Build(); err != nil {
-		w.erro(err)
 	}
 
 	return w.Watch()
@@ -89,11 +80,15 @@ func Watch(src, base string, info, erro, succ *log.Logger) error {
 // Watch 监视变化并进行编译
 func (w *Watcher) Watch() error {
 	go func() {
-		if err := w.Serve(); err != nil {
+		if err := serve(w.builder, w.Dir, w.addr, w.path, "", "", w.Info); err != nil {
 			w.erro(err)
 			return
 		}
 	}()
+
+	if err := w.builder.Build(w.Dir, w.BaseURL); err != nil {
+		w.erro(err)
+	}
 
 	watcher, err := w.getWatcher()
 	if err != nil {
@@ -116,7 +111,7 @@ func (w *Watcher) Watch() error {
 			w.info("触发事件：", event, "，开始重新编译！")
 
 			go func() {
-				if err = w.Build(); err != nil {
+				if err = w.builder.Build(w.Dir, w.BaseURL); err != nil {
 					w.erro(err)
 					return
 				}

@@ -45,7 +45,7 @@ type atomContent struct {
 	Content string `xml:",chardata"`
 }
 
-func (b *builder) buildAtom(d *data.Data) error {
+func (b *Builder) buildAtom(d *data.Data) error {
 	if d.Atom == nil {
 		return nil
 	}

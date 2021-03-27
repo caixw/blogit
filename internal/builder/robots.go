@@ -9,7 +9,7 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
-func (b *builder) buildRobots(d *data.Data) error {
+func (b *Builder) buildRobots(d *data.Data) error {
 	if d.Robots == nil {
 		return nil
 	}
@@ -43,6 +43,6 @@ func (b *builder) buildRobots(d *data.Data) error {
 		return buf.Err
 	}
 
-	b.files[d.Robots.Path] = buf.Bytes()
+	b.appendFile(d.Robots.Path, "", buf.Bytes())
 	return nil
 }
