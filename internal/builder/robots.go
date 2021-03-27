@@ -25,7 +25,7 @@ func (b *builder) buildRobots(d *data.Data) error {
 		}
 
 		for _, allow := range agent.Allow {
-			buf.Println("Disallow:", allow)
+			buf.Println("Allow:", allow)
 		}
 
 		buf.WByte('\n')
