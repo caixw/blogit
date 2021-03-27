@@ -67,7 +67,7 @@ type Post struct {
 func LoadPosts(dir string) ([]*Post, error) {
 	paths := make([]string, 0, 10)
 	err := filepath.Walk(filepath.Join(dir, vars.PostsDir), func(path string, info os.FileInfo, err error) error {
-		if err == nil && !info.IsDir() && strings.ToLower(filepath.Ext(info.Name())) == ".md" {
+		if err == nil && !info.IsDir() && strings.ToLower(filepath.Ext(info.Name())) == vars.MarkdownExt {
 			paths = append(paths, path)
 		}
 		return err
@@ -140,8 +140,8 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 	path = filepath.ToSlash(filepath.Clean(path)) // Clean 同时会将分隔符转换成系统对应的字符，所以先 Clean 再 ToSlash
 
 	slug := strings.TrimPrefix(path, dir)
-	if len(slug) > 3 && strings.ToLower(slug[len(slug)-3:]) == ".md" {
-		slug = slug[:len(slug)-3]
+	if strings.HasSuffix(strings.ToLower(slug[len(slug)-3:]), vars.MarkdownExt) {
+		slug = slug[:len(slug)-len(vars.MarkdownExt)] // 不能用 strings.TrimSuffix，后缀名可能是大写的
 	}
 	slug = strings.Trim(slug, "./")
 	if strings.IndexFunc(slug, func(r rune) bool { return unicode.IsSpace(r) }) >= 0 {

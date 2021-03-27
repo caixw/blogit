@@ -30,6 +30,6 @@ const (
 	TagsTemplate    = "tags"
 	ArchiveTemplate = "archive"
 
-	// 文件默认后缀名
-	Ext = ".html"
+	Ext         = ".html" // 生成后的文件后缀名
+	MarkdownExt = ".md"
 )

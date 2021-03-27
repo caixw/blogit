@@ -49,8 +49,8 @@ func post(w io.Writer) error {
 	dir = filepath.Join(dir, vars.PostsDir)
 
 	path := postFS.Arg(0)
-	if strings.ToLower(filepath.Ext(path)) != ".md" {
-		path += ".md"
+	if strings.ToLower(filepath.Ext(path)) != vars.MarkdownExt {
+		path += vars.MarkdownExt
 	}
 	path = filepath.Clean(filepath.Join(dir, path))
 

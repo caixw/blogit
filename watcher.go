@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/caixw/blogit/internal/vars"
 	"github.com/fsnotify/fsnotify"
 )
 
@@ -143,7 +144,7 @@ func (w *Watcher) getWatcher() (*fsnotify.Watcher, error) {
 		}
 
 		ext := strings.ToLower(filepath.Ext(name))
-		if info.IsDir() || ext == ".md" || ext == ".yaml" || ext == ".yml" {
+		if info.IsDir() || ext == vars.MarkdownExt || ext == ".yaml" || ext == ".yml" {
 			paths = append(paths, path)
 		}
 		return nil

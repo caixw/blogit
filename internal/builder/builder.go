@@ -26,7 +26,7 @@ var copyOptions = copy.Options{
 		}
 
 		ext := strings.ToLower(filepath.Ext(src))
-		return ext == ".md" ||
+		return ext == vars.MarkdownExt ||
 			ext == ".yaml" ||
 			ext == ".yml" ||
 			ext == ".gitignore" ||

@@ -9,6 +9,7 @@ import (
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/internal/loader"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 // Index 首页内容
@@ -84,7 +85,12 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 	}
 
 	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 0 {
-		return nil, &loader.FieldError{Message: "模板不存在于 theme.yaml", Field: "template", File: p.Slug + ".md", Value: p.Template}
+		return nil, &loader.FieldError{
+			Message: "模板不存在于 theme.yaml",
+			Field:   "template",
+			File:    p.Slug + vars.MarkdownExt,
+			Value:   p.Template,
+		}
 	}
 
 	// NOTE: p.JSONLD 用到以上的一些变量，比如 p.License 等，所以需要放在最后初始化。
