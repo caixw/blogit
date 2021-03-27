@@ -3,6 +3,7 @@
 package loader
 
 import (
+	"bytes"
 	"strconv"
 
 	"github.com/issue9/sliceutil"
@@ -86,6 +87,13 @@ func (tag *Tag) sanitize(tags *Tags) *FieldError {
 	if len(tag.Content) == 0 {
 		return &FieldError{Message: "不能为空", Field: "content"}
 	}
+
+	// 将 markdown 转换成 html
+	buf := new(bytes.Buffer)
+	if err := markdown.Convert([]byte(tag.Content), buf); err != nil {
+		return &FieldError{Message: err.Error(), Field: "content", Value: tag.Content}
+	}
+	tag.Content = buf.String()
 
 	if tags != nil && tags.Tags != nil {
 		cnt := sliceutil.Count(tags.Tags, func(i int) bool {

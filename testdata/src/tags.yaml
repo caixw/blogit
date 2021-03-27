@@ -4,27 +4,22 @@ tags:
 - slug: default
   title: 默认
   content: >
-    <section>
-    <p>系统默认标签</p>
-    </section>
+    系统默认标签
 
 - slug: api
   title: API
   content: >
-    <section>
-    <p>API 是 Application Programming Interface（应用程序接口）的缩写。</p>
-    </section>
+    API 是 Application Programming Interface（应用程序接口）的缩写。
 
 - slug: firefox
   title: Firefox
   content: >
-    <section>
-    <p>Mozilla 出品的开源浏览器，跨平台，脱胎于原来的 Netscape 浏览器。</p>
-    </section>
+    Mozilla 出品的开源浏览器，跨平台，脱胎于原来的 Netscape 浏览器。
+
+
+    这是上多行的 md 文本。
 
 - slug: git
   title: Git
   content: >
-    <section>
-        <p>一种版本控制系统。</p>
-    </section>
+    一种版本控制系统。
