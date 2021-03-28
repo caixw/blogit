@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/psanford/memfs"
 )
@@ -14,18 +15,25 @@ import (
 // WritableFS 带有写入功能的文件系统
 type WritableFS interface {
 	fs.FS
+
+	// 将内容写入文件
+	//
+	// path 遵守 fs.FS.Open 中有关文件的处理规则。
+	// 整个函数处理逻辑应该与 os.WriteFile 相同。
 	WriteFile(path string, data []byte, perm fs.FileMode) error
 }
 
+// Memory 返回以内存作为保存对象的文件系统
 func Memory() WritableFS {
-	return &mem{FS: memfs.New()}
+	return &memoryFS{FS: memfs.New()}
 }
 
+// Dir 返回以普通目录作为保存对象的文件系统
 func Dir(dir string) WritableFS {
 	return dirFS(dir)
 }
 
-type mem struct {
+type memoryFS struct {
 	*memfs.FS
 }
 
@@ -40,17 +48,20 @@ func (dir dirFS) Open(name string) (fs.File, error) {
 
 func (dir dirFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
 	if !fs.ValidPath(name) {
-		return &fs.PathError{Op: "open", Path: name, Err: os.ErrInvalid}
+		return &fs.PathError{Op: "close", Path: name, Err: os.ErrInvalid}
 	}
-	return os.WriteFile(string(dir)+"/"+name, data, perm)
-}
 
-// WriteFile
-func (m *mem) WriteFile(name string, data []byte, perm fs.FileMode) error {
-	dir := path.Dir(name)
-	if err := m.FS.MkdirAll(dir, perm); err != nil {
+	path := string(dir) + "/" + filepath.Dir(name)
+	if err := os.MkdirAll(path, perm); err != nil {
 		return err
 	}
 
+	return os.WriteFile(string(dir)+"/"+name, data, perm)
+}
+
+func (m *memoryFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
+	if err := m.FS.MkdirAll(path.Dir(name), perm); err != nil {
+		return err
+	}
 	return m.FS.WriteFile(name, data, perm)
 }

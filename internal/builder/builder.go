@@ -20,8 +20,8 @@ import (
 
 	"github.com/issue9/errwrap"
 
+	"github.com/caixw/blogit/filesystem"
 	"github.com/caixw/blogit/internal/data"
-	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/loader"
 	"github.com/caixw/blogit/internal/vars"
 )
@@ -35,8 +35,8 @@ type Builder struct {
 }
 
 // Build 编译内容
-func Build(src, dest string) error {
-	return New(filesystem.Dir(dest), log.Default()).Build(src, "")
+func Build(src string, dest filesystem.WritableFS) error {
+	return New(dest, nil).Build(src, "")
 }
 
 // New 声明 Builder 实例
@@ -45,6 +45,7 @@ func Build(src, dest string) error {
 // 以及任何实现了 filesystem.WritableFS 接口都可以；
 // l 表示的是在把 Builder 当作 http.Handler 处理时，在出错时的日志输出通道。
 // 如果为空，则会采用 log.Default() 作为默认值。
+// 如果不准备其当作 http.Handler 使用，则此值是无用；
 func New(fs filesystem.WritableFS, l *log.Logger) *Builder {
 	if l == nil {
 		l = log.Default()
@@ -177,6 +178,7 @@ func (b *Builder) appendFile(p string, mod time.Time, data []byte) error {
 
 // ServeHTTP 作为 HTTP 服务接口使用
 func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// 为了自定义 index 的功能，没有采用 http.ServeFile 方法
 	const index = "index" + vars.Ext
 
 	p := r.URL.Path

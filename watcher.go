@@ -14,8 +14,8 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 
+	"github.com/caixw/blogit/filesystem"
 	"github.com/caixw/blogit/internal/builder"
-	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/vars"
 )
 

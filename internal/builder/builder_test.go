@@ -10,7 +10,7 @@ import (
 	"github.com/issue9/assert"
 	"github.com/issue9/assert/rest"
 
-	"github.com/caixw/blogit/internal/filesystem"
+	"github.com/caixw/blogit/filesystem"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -28,7 +28,7 @@ func TestBuild(t *testing.T) {
 
 	a.NotError(os.RemoveAll("../../testdata/dest/index.xml"))
 
-	err := Build("../../testdata/src", "../../testdata/dest")
+	err := Build("../../testdata/src", filesystem.Dir("../../testdata/dest"))
 	a.NotError(err)
 	a.FileExists("../../testdata/dest/index" + vars.Ext).
 		FileExists("../../testdata/dest/tags" + vars.Ext).
