@@ -15,21 +15,21 @@ const (
 )
 
 type rss struct {
-	XMLName struct{} `xml:"rss"`
-	Version string   `xml:"version,attr"`
-	Channel *channel `xml:"channel"`
+	XMLName struct{}    `xml:"rss"`
+	Version string      `xml:"version,attr"`
+	Channel *rssChannel `xml:"channel"`
 }
 
-type channel struct {
-	Title         string  `xml:"title"`
-	Link          string  `xml:"link"`
-	Description   string  `xml:"description"`
-	PubDate       string  `xml:"pubDate,omitempty"`
-	LastBuildDate string  `xml:"lastBuildDate,omitempty"`
-	Items         []*item `xml:"item,omitempty"`
+type rssChannel struct {
+	Title         string     `xml:"title"`
+	Link          string     `xml:"link"`
+	Description   string     `xml:"description"`
+	PubDate       string     `xml:"pubDate,omitempty"`
+	LastBuildDate string     `xml:"lastBuildDate,omitempty"`
+	Items         []*rssItem `xml:"item,omitempty"`
 }
 
-type item struct {
+type rssItem struct {
 	Title       string `xml:"title"`
 	Link        string `xml:"link"`
 	Description string `xml:"description"`
@@ -43,18 +43,18 @@ func (b *Builder) buildRSS(d *data.Data) error {
 
 	r := &rss{
 		Version: rssVersion,
-		Channel: &channel{
+		Channel: &rssChannel{
 			Title:         d.RSS.Title,
 			Link:          d.URL,
 			Description:   d.Subtitle,
 			PubDate:       d.Uptime.Format(rssDateFormat),
 			LastBuildDate: d.Modified.Format(rssDateFormat),
-			Items:         make([]*item, 0, len(d.RSS.Posts)),
+			Items:         make([]*rssItem, 0, len(d.RSS.Posts)),
 		},
 	}
 
 	for _, p := range d.RSS.Posts {
-		r.Channel.Items = append(r.Channel.Items, &item{
+		r.Channel.Items = append(r.Channel.Items, &rssItem{
 			Title:       p.Title,
 			Link:        p.Permalink,
 			Description: html.EscapeString(p.Summary),

@@ -15,17 +15,17 @@ const (
 )
 
 type atom struct {
-	XMLName  struct{}    `xml:"feed"`
-	XMLNS    string      `xml:"xmlns,attr"`
-	Title    atomContent `xml:"title"`
-	Subtitle atomContent `xml:"subtitle"`
-	ID       string      `xml:"id"`
-	Updated  string      `xml:"updated"`
-	Links    []*atomLink `xml:"link,omitempty"`
-	Entries  []*entry    `xml:"entry,omitempty"`
+	XMLName  struct{}     `xml:"feed"`
+	XMLNS    string       `xml:"xmlns,attr"`
+	Title    atomContent  `xml:"title"`
+	Subtitle atomContent  `xml:"subtitle"`
+	ID       string       `xml:"id"`
+	Updated  string       `xml:"updated"`
+	Links    []*atomLink  `xml:"link,omitempty"`
+	Entries  []*atomEntry `xml:"entry,omitempty"`
 }
 
-type entry struct {
+type atomEntry struct {
 	Title   atomContent  `xml:"title"`
 	ID      string       `xml:"id"`
 	Updated string       `xml:"updated"`
@@ -60,11 +60,11 @@ func (b *Builder) buildAtom(d *data.Data) error {
 			{Href: d.URL},
 			{Href: d.Atom.Permalink, Rel: "self"},
 		},
-		Entries: make([]*entry, 0, len(d.Atom.Posts)),
+		Entries: make([]*atomEntry, 0, len(d.Atom.Posts)),
 	}
 
 	for _, p := range d.Atom.Posts {
-		a.Entries = append(a.Entries, &entry{
+		a.Entries = append(a.Entries, &atomEntry{
 			Title:   atomContent{Content: p.Title},
 			ID:      p.Permalink,
 			Updated: p.Modified.Format(atomDateFormat),

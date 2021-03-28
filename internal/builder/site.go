@@ -13,7 +13,11 @@ import (
 type page struct {
 	Site *site
 
-	Type        string // 当前页面类型
+	// 当前页面类型，同时也是当前页的模板名称。
+	// 除了文章详情页以外，其它值是固定的，
+	// 文章详情页可以指定不同的模板，可以不同。
+	Type string
+
 	Title       string // 标题，html>head>title 的内容，会带上后缀。
 	Permalink   string // 当前页的唯一链接
 	Keywords    string
