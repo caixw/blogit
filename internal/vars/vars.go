@@ -17,9 +17,9 @@ const (
 	TagsDir   = "tags"
 	LayoutDir = "layout"
 
-	TagsFilename    = "tags.html"
-	IndexFilename   = "index.html"
-	ArchiveFilename = "archive.html"
+	TagsFilename    = "tags" + Ext
+	IndexFilename   = "index" + Ext
+	ArchiveFilename = "archive" + Ext
 	RssXML          = "rss.xml"
 	AtomXML         = "atom.xml"
 	SitemapXML      = "sitemap.xml"

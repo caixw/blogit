@@ -28,7 +28,10 @@ func TestBuild(t *testing.T) {
 
 	err := Build("../../testdata/src", "../../testdata/dest")
 	a.NotError(err)
-	a.FileExists("../../testdata/dest/index.html")
+	a.FileExists("../../testdata/dest/index" + vars.Ext).
+		FileExists("../../testdata/dest/tags" + vars.Ext).
+		FileExists("../../testdata/dest/tags/default" + vars.Ext).
+		FileExists("../../testdata/dest/posts/p1" + vars.Ext)
 }
 
 func TestBuilder_appendFile(t *testing.T) {
@@ -70,7 +73,7 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 
 	a.NotError(b.Build("../../testdata/src", "http://localhost:8080"))
 	srv.Get("/robots.txt").Do().Status(http.StatusOK)
-	srv.Get("/posts/p1.html").Do().Status(http.StatusOK)
+	srv.Get("/posts/p1" + vars.Ext).Do().Status(http.StatusOK)
 	srv.Get("/posts/not-exists.html").Do().Status(http.StatusNotFound)
 	srv.Get("/themes/default/style.css").Do().Status(http.StatusOK)
 

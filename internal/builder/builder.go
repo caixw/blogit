@@ -35,6 +35,15 @@ type Builder struct {
 	files []*file
 }
 
+// Build 编译内容
+func Build(src, dest string) error {
+	b := &Builder{}
+	if err := b.Build(src, ""); err != nil {
+		return err
+	}
+	return b.Dump(dest)
+}
+
 // Build 重新生成数据
 func (b *Builder) Build(src, base string) error {
 	paths := make([]string, 0, 100)
@@ -123,15 +132,6 @@ func isIgnore(src string) bool {
 		ext == ".yml" ||
 		ext == ".gitignore" ||
 		ext == ".git"
-}
-
-// Build 编译内容
-func Build(src, dest string) error {
-	b := &Builder{}
-	if err := b.Build(src, ""); err != nil {
-		return err
-	}
-	return b.Dump(dest)
 }
 
 // Dump 将内容输出到 dir 目录
