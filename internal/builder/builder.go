@@ -6,9 +6,11 @@ package builder
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"html/template"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path"
@@ -19,32 +21,35 @@ import (
 	"github.com/issue9/errwrap"
 
 	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/loader"
-	"github.com/caixw/blogit/internal/utils"
 	"github.com/caixw/blogit/internal/vars"
 )
 
-type file struct {
-	data []byte
-	buf  io.ReadSeeker
-	path string
-	mod  time.Time
-}
-
 // Builder 提供了一个可重复生成 HTML 内容的对象
 type Builder struct {
-	site  *site
-	tpl   *template.Template
-	files []*file
+	log  *log.Logger
+	fs   filesystem.WritableFS
+	site *site
+	tpl  *template.Template
 }
 
 // Build 编译内容
 func Build(src, dest string) error {
-	b := &Builder{}
-	if err := b.Build(src, ""); err != nil {
-		return err
+	return New(filesystem.Dir(dest), log.Default()).Build(src, "")
+}
+
+// New 声明 Builder 实例
+//
+// fs 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
+// 以及任何实现了 filesystem.WritableFS 接口都可以；
+// l 表示的是在把 Builder 当作 http.Handler 处理时，在出错时的日志输出通道。
+// 如果为空，则会采用 log.Default() 作为默认值。
+func New(fs filesystem.WritableFS, l *log.Logger) *Builder {
+	if l == nil {
+		l = log.Default()
 	}
-	return b.Dump(dest)
+	return &Builder{fs: fs, log: l}
 }
 
 // Build 重新生成数据
@@ -67,12 +72,6 @@ func (b *Builder) Build(src, base string) error {
 		return err
 	}
 
-	if b.files == nil {
-		b.files = make([]*file, 0, len(paths))
-	} else {
-		b.files = b.files[:0]
-	}
-
 	for _, p := range paths {
 		stat, err := os.Stat(p)
 		if err != nil {
@@ -83,7 +82,9 @@ func (b *Builder) Build(src, base string) error {
 		if err != nil {
 			return err
 		}
-		b.appendFile(loader.Slug(src, p), stat.ModTime(), data)
+		if err = b.appendFile(loader.Slug(src, p), stat.ModTime(), data); err != nil {
+			return err
+		}
 	}
 
 	return b.buildData(src, base)
@@ -136,30 +137,6 @@ func isIgnore(src string) bool {
 		ext == ".git"
 }
 
-// Dump 将内容输出到 dir 目录
-func (b *Builder) Dump(dir string) error {
-	if err := os.MkdirAll(filepath.Join(dir, vars.TagsDir), os.ModePerm); err != nil {
-		return err
-	}
-
-	for _, f := range b.files {
-		path := filepath.Join(dir, f.path)
-
-		base := filepath.Dir(path)
-		if !utils.FileExists(base) {
-			if err := os.MkdirAll(base, os.ModePerm); err != nil {
-				return err
-			}
-		}
-
-		err := ioutil.WriteFile(path, f.data, os.ModePerm)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 // path 表示输出的文件路径，相对于源目录；
 func (b *Builder) appendTemplateFile(path string, p *page) error {
 	buf := &bytes.Buffer{}
@@ -168,8 +145,7 @@ func (b *Builder) appendTemplateFile(path string, p *page) error {
 		return err
 	}
 
-	b.appendFile(path, time.Now(), buf.Bytes())
-	return nil
+	return b.appendFile(path, time.Now(), buf.Bytes())
 }
 
 // path 表示输出的文件路径，相对于源目录；
@@ -191,45 +167,58 @@ func (b *Builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) e
 		return buf.Err
 	}
 
-	b.appendFile(path, time.Now(), buf.Bytes())
-	return nil
+	return b.appendFile(path, time.Now(), buf.Bytes())
 }
 
 // 如果 path 以 / 开头，则会自动去除 /
-func (b *Builder) appendFile(p string, mod time.Time, data []byte) {
-	if p == "" {
-		panic("参数 path 不能为空")
-	}
-	if p[0] == '/' {
-		p = p[1:]
-	}
-
-	b.files = append(b.files, &file{
-		data: data,
-		path: p,
-		mod:  mod,
-		buf:  bytes.NewReader(data),
-	})
+func (b *Builder) appendFile(p string, mod time.Time, data []byte) error {
+	return b.fs.WriteFile(p, data, os.ModePerm)
 }
 
 // ServeHTTP 作为 HTTP 服务接口使用
 func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	const index = "index" + vars.Ext
+
 	p := r.URL.Path
 	if p != "" && p[0] == '/' {
 		p = p[1:]
 	}
-
-	if p == "" {
-		p = "index" + vars.Ext
+	if p == "" || p[len(p)-1] == '/' {
+		p += index
 	}
 
-	for _, f := range b.files {
-		if f.path == p {
-			http.ServeContent(w, r, p, f.mod, f.buf)
-			w.Write(f.data)
-			return
-		}
+	f, err := b.fs.Open(p)
+	if errors.Is(err, os.ErrNotExist) {
+		http.NotFound(w, r)
+		return
+	}
+	if errors.Is(err, os.ErrPermission) {
+		errStatus(w, http.StatusForbidden)
+		return
+	}
+	if err != nil {
+		b.log.Println(err)
+		errStatus(w, http.StatusInternalServerError)
+		return
 	}
 
-	http.NotFound(w, r)
+	stat, err := f.Stat()
+	if err != nil {
+		b.log.Println(err)
+		errStatus(w, http.StatusInternalServerError)
+		return
+	}
+
+	data, err := io.ReadAll(f)
+	if err != nil {
+		b.log.Println(err)
+		errStatus(w, http.StatusInternalServerError)
+		return
+	}
+
+	http.ServeContent(w, r, p, stat.ModTime(), bytes.NewReader(data))
+}
+
+func errStatus(w http.ResponseWriter, status int) {
+	http.Error(w, http.StatusText(status), status)
 }

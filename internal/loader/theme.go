@@ -8,7 +8,7 @@ import (
 
 	"github.com/issue9/sliceutil"
 
-	"github.com/caixw/blogit/internal/utils"
+	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -49,7 +49,7 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 	}
 
 	for index, s := range t.Screenshots {
-		if !utils.FileExists(filepath.Join(dir, s)) {
+		if !filesystem.Exists(filepath.Join(dir, s)) {
 			return &FieldError{Message: "不存在的示例图", Field: "screenshots[" + strconv.Itoa(index) + "]"}
 		}
 	}
@@ -59,19 +59,19 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 	}
 
 	if t.Sitemap != "" {
-		if !utils.FileExists(filepath.Join(dir, t.Sitemap)) {
+		if !filesystem.Exists(filepath.Join(dir, t.Sitemap)) {
 			return &FieldError{Message: "不存在该模板文件", Field: "sitemap", Value: t.Sitemap}
 		}
 	}
 
 	if t.RSS != "" {
-		if !utils.FileExists(filepath.Join(dir, t.RSS)) {
+		if !filesystem.Exists(filepath.Join(dir, t.RSS)) {
 			return &FieldError{Message: "不存在该模板文件", Field: "rss", Value: t.RSS}
 		}
 	}
 
 	if t.Atom != "" {
-		if !utils.FileExists(filepath.Join(dir, t.Atom)) {
+		if !filesystem.Exists(filepath.Join(dir, t.Atom)) {
 			return &FieldError{Message: "不存在该模板文件", Field: "atom", Value: t.Atom}
 		}
 	}

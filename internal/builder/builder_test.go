@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/issue9/assert"
 	"github.com/issue9/assert/rest"
 
+	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -36,29 +36,10 @@ func TestBuild(t *testing.T) {
 		FileExists("../../testdata/dest/posts/p1" + vars.Ext)
 }
 
-func TestBuilder_appendFile(t *testing.T) {
-	a := assert.New(t)
-	now := time.Now()
-
-	b := &Builder{files: make([]*file, 0, 10)}
-	a.Panic(func() {
-		b.appendFile("", now, []byte("<html><head></head></html>"))
-	})
-
-	b = &Builder{files: make([]*file, 0, 10)}
-	b.appendFile("abc.html", now, []byte("#h1\n\n##h2"))
-	a.NotNil(b.files[0].data).Equal(b.files[0].path, "abc.html")
-
-	b = &Builder{files: make([]*file, 0, 10)}
-	b.appendFile("/abc.html", now, []byte("#h1\n\n##h2"))
-	a.NotNil(b.files[0].data).Equal(b.files[0].path, "abc.html")
-
-}
-
 func TestBuilder_ServeHTTP(t *testing.T) {
 	a := assert.New(t)
 
-	b := &Builder{}
+	b := New(filesystem.Memory(), nil)
 	srv := rest.NewServer(t, b, nil)
 
 	// b 未加载任何数据。返回都是 404

@@ -15,7 +15,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 
 	"github.com/caixw/blogit/internal/builder"
-	"github.com/caixw/blogit/internal/utils"
+	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -65,7 +65,7 @@ func Watch(src, base, cert, key string, info, erro, succ *log.Logger) (*Watcher,
 		addr = ":" + addr
 	}
 
-	if scheme == "https" && (!utils.FileExists(cert) || !utils.FileExists(key)) {
+	if scheme == "https" && (!filesystem.Exists(cert) || !filesystem.Exists(key)) {
 		return nil, errors.New("HTTPS 模式但是证书不存在")
 	}
 
