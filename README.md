@@ -3,6 +3,8 @@
 [![Test](https://github.com/caixw/blogit/workflows/Test/badge.svg)](https://github.com/caixw/blogit/actions?query=workflow%3ATest)
 [![Go version](https://img.shields.io/github/go-mod/go-version/caixw/blogit)](https://golang.org)
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/caixw/blogit)](https://pkg.go.dev/github.com/caixw/blogit)
+[![codecov](https://codecov.io/gh/caixw/blogit/branch/master/graph/badge.svg)](https://codecov.io/gh/caixw/blogit)
+![License](https://img.shields.io/github/license/caixw/blogit)
 
 静态博客生成工具
 
