@@ -7,13 +7,14 @@ import (
 	"bytes"
 	"encoding/xml"
 	"html/template"
+	"io"
 	"io/ioutil"
-	"mime"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/issue9/errwrap"
 
@@ -25,8 +26,9 @@ import (
 
 type file struct {
 	data []byte
-	ct   string
+	buf  io.ReadSeeker
 	path string
+	mod  time.Time
 }
 
 // Builder 提供了一个可重复生成 HTML 内容的对象
@@ -72,11 +74,16 @@ func (b *Builder) Build(src, base string) error {
 	}
 
 	for _, p := range paths {
+		stat, err := os.Stat(p)
+		if err != nil {
+			return err
+		}
+
 		data, err := ioutil.ReadFile(p)
 		if err != nil {
 			return err
 		}
-		b.appendFile(loader.Slug(src, p), "", data)
+		b.appendFile(loader.Slug(src, p), stat.ModTime(), data)
 	}
 
 	return b.buildData(src, base)
@@ -161,7 +168,7 @@ func (b *Builder) appendTemplateFile(path string, p *page) error {
 		return err
 	}
 
-	b.appendFile(path, "", buf.Bytes())
+	b.appendFile(path, time.Now(), buf.Bytes())
 	return nil
 }
 
@@ -184,12 +191,12 @@ func (b *Builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) e
 		return buf.Err
 	}
 
-	b.appendFile(path, "application/xml", buf.Bytes())
+	b.appendFile(path, time.Now(), buf.Bytes())
 	return nil
 }
 
 // 如果 path 以 / 开头，则会自动去除 /
-func (b *Builder) appendFile(p, ct string, data []byte) {
+func (b *Builder) appendFile(p string, mod time.Time, data []byte) {
 	if p == "" {
 		panic("参数 path 不能为空")
 	}
@@ -197,20 +204,11 @@ func (b *Builder) appendFile(p, ct string, data []byte) {
 		p = p[1:]
 	}
 
-	if ct == "" {
-		ct = mime.TypeByExtension(path.Ext(p))
-	}
-	if ct == "" {
-		ct = http.DetectContentType(data)
-	}
-	if index := strings.IndexByte(ct, ';'); index > 0 {
-		ct = ct[:index]
-	}
-
 	b.files = append(b.files, &file{
 		data: data,
 		path: p,
-		ct:   ct,
+		mod:  mod,
+		buf:  bytes.NewReader(data),
 	})
 }
 
@@ -227,7 +225,7 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	for _, f := range b.files {
 		if f.path == p {
-			w.Header().Set("Content-Type", f.ct)
+			http.ServeContent(w, r, p, f.mod, f.buf)
 			w.Write(f.data)
 			return
 		}

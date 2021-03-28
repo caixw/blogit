@@ -3,6 +3,8 @@
 package builder
 
 import (
+	"time"
+
 	"github.com/issue9/errwrap"
 
 	"github.com/caixw/blogit/internal/data"
@@ -33,6 +35,6 @@ func (b *Builder) buildProfile(d *data.Data) error {
 		return buf.Err
 	}
 
-	b.appendFile(p.Path, "", buf.Bytes())
+	b.appendFile(p.Path, time.Now(), buf.Bytes())
 	return nil
 }
