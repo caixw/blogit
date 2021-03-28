@@ -141,14 +141,10 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 		return &FieldError{Field: "title", Message: "不能为空"}
 	}
 
-	dir = filepath.ToSlash(filepath.Clean(dir))
-	path = filepath.ToSlash(filepath.Clean(path)) // Clean 同时会将分隔符转换成系统对应的字符，所以先 Clean 再 ToSlash
-
-	slug := strings.TrimPrefix(path, dir)
+	slug := Slug(dir, path)
 	if strings.HasSuffix(strings.ToLower(slug[len(slug)-3:]), vars.MarkdownExt) {
 		slug = slug[:len(slug)-len(vars.MarkdownExt)] // 不能用 strings.TrimSuffix，后缀名可能是大写的
 	}
-	slug = strings.Trim(slug, "./")
 	if strings.IndexFunc(slug, func(r rune) bool { return unicode.IsSpace(r) }) >= 0 {
 		return &FieldError{Field: "slug", Message: "不能包含空格", Value: slug}
 	}
@@ -186,4 +182,14 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 	}
 
 	return nil
+}
+
+// Slug 返回文章的唯一 ID
+//
+// 含扩展名，相对于 dir 目录。
+func Slug(dir, p string) string {
+	// Clean 同时会将分隔符转换成系统对应的字符，所以先 Clean 再 ToSlash
+	p = filepath.ToSlash(filepath.Clean(p))
+	dir = filepath.ToSlash(filepath.Clean(dir)) + "/" // 防止 dir = "p" p = "post/p1.md" 会被处理在成 ost/p1.md
+	return strings.TrimLeft(strings.TrimPrefix(p, dir), "./")
 }

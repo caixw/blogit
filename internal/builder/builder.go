@@ -18,6 +18,7 @@ import (
 	"github.com/issue9/errwrap"
 
 	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/internal/loader"
 	"github.com/caixw/blogit/internal/utils"
 	"github.com/caixw/blogit/internal/vars"
 )
@@ -70,18 +71,12 @@ func (b *Builder) Build(src, base string) error {
 		b.files = b.files[:0]
 	}
 
-	dir := filepath.ToSlash(filepath.Clean(src))
-
 	for _, p := range paths {
 		data, err := ioutil.ReadFile(p)
 		if err != nil {
 			return err
 		}
-
-		p = filepath.ToSlash(filepath.Clean(p))
-		p = strings.TrimPrefix(p, dir)
-
-		b.appendFile(p, "", data)
+		b.appendFile(loader.Slug(src, p), "", data)
 	}
 
 	return b.buildData(src, base)

@@ -29,3 +29,13 @@ func TestLoadPost(t *testing.T) {
 }
 `)
 }
+
+func TestSlug(t *testing.T) {
+	a := assert.New(t)
+
+	a.Equal(Slug("./", "./posts/p1.md"), "posts/p1.md")
+	a.Equal(Slug(".", "./posts/p1.md"), "posts/p1.md")
+	a.Equal(Slug("./posts", "./posts/p1.md"), "p1.md")
+	a.Equal(Slug("posts", "./posts/p1.md"), "p1.md")
+	a.Equal(Slug("p", "./posts/p1.md"), "posts/p1.md")
+}
