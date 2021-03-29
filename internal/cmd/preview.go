@@ -5,8 +5,10 @@ package cmd
 import (
 	"io"
 
-	"github.com/caixw/blogit"
 	"github.com/issue9/cmdopt"
+
+	"github.com/caixw/blogit"
+	"github.com/caixw/blogit/filesystem"
 )
 
 var (
@@ -26,17 +28,19 @@ func initPreview(opt *cmdopt.CmdOpt) {
 }
 
 func preview(w io.Writer) error {
-	watcher, err := blogit.Watch(
-		previewSrc,
-		previewBase,
-		previewCert,
-		previewKey,
-		info.asLogger(),
-		erro.asLogger(),
-		succ.asLogger(),
-	)
+	o := &blogit.Options{
+		Src:     previewSrc,
+		Dest:    filesystem.Memory(),
+		BaseURL: previewBase,
+		Cert:    previewCert,
+		Key:     previewKey,
+		Erro:    erro.asLogger(),
+		Info:    info.asLogger(),
+		Succ:    succ.asLogger(),
+	}
+	s, err := blogit.Watch(o)
 	if err != nil {
 		return err
 	}
-	return watcher.Watch()
+	return s.Serve()
 }

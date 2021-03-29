@@ -8,6 +8,7 @@ import (
 	"github.com/issue9/cmdopt"
 
 	"github.com/caixw/blogit"
+	"github.com/caixw/blogit/filesystem"
 )
 
 var (
@@ -25,5 +26,18 @@ func initServe(opt *cmdopt.CmdOpt) {
 }
 
 func serve(w io.Writer) error {
-	return blogit.Serve(serveSrc, serveAddr, servePath, info.asLogger())
+	o := &blogit.Options{
+		Src:  serveSrc,
+		Dest: filesystem.Memory(),
+		Addr: serveAddr,
+		Path: servePath,
+		Erro: erro.asLogger(),
+		Info: info.asLogger(),
+		Succ: succ.asLogger(),
+	}
+	s, err := blogit.Serve(o)
+	if err != nil {
+		return err
+	}
+	return s.Serve()
 }
