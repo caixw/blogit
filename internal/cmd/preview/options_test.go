@@ -68,8 +68,10 @@ func TestOptions_watch(t *testing.T) {
 		url:    "http://localhost:8080",
 	}
 
+	exit := make(chan bool, 1)
 	go func() {
-		o.watch()
+		a.Equal(o.watch(), http.ErrServerClosed)
+		exit <- true
 	}()
 	time.Sleep(500 * time.Millisecond) // 等待启动完成
 
@@ -92,4 +94,7 @@ func TestOptions_watch(t *testing.T) {
 	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8080/not-exists.html").
 		Do().
 		Status(http.StatusNotFound)
+
+	a.NotError(o.close())
+	<-exit
 }

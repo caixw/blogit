@@ -44,10 +44,11 @@ type options struct {
 	erro *log.Logger
 	succ *log.Logger
 
-	b   *blogit.Builder
-	srv *http.Server
-
+	b       *blogit.Builder
+	srv     *http.Server
 	builded time.Time
+
+	stop chan struct{}
 }
 
 func (o *options) sanitize() error {
@@ -101,6 +102,8 @@ func (o *options) sanitize() error {
 	o.b = blogit.NewBuilder(dest, o.erro)
 
 	o.srv = &http.Server{Addr: o.addr, Handler: o.initServer()}
+
+	o.stop = make(chan struct{}, 1)
 
 	return nil
 }
@@ -169,8 +172,15 @@ func (o *options) watch() error {
 		case err := <-watcher.Errors:
 			o.erro.Println(err)
 			return err
+		case <-o.stop:
+			return http.ErrServerClosed
 		}
 	}
+}
+
+func (o *options) close() error {
+	o.stop <- struct{}{}
+	return o.srv.Close()
 }
 
 func (o *options) serve() error {
