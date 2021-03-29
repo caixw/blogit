@@ -1,0 +1,106 @@
+// SPDX-License-Identifier: MIT
+
+package serve
+
+import (
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/internal/builder"
+)
+
+// options 启动服务的参数选项
+type options struct {
+	// 项目的源码目录
+	// 如果为空，采用 ./ 作为默认值。
+	source string
+
+	// 项目编译后的输出地址
+	// 如果为空，则会要用 filesystem.Memory() 作为默认值。
+	dest string
+
+	// 服务要监听的地址
+	addr string
+
+	// 服务的访问根路径
+	path string
+
+	// HTTPS 模式下的证书
+	cert string
+	key  string
+
+	info *log.Logger
+	erro *log.Logger
+
+	srv *http.Server
+}
+
+func (o *options) serve() error {
+	if err := o.sanitize(); err != nil {
+		return err
+	}
+
+	var dest filesystem.WritableFS
+	if o.dest == "" {
+		dest = filesystem.Memory()
+	} else {
+		dest = filesystem.Dir(o.dest)
+	}
+	src := os.DirFS(o.source)
+
+	b := builder.New(dest, o.erro)
+	if err := b.Rebuild(src, ""); err != nil {
+		return err
+	}
+
+	o.srv = &http.Server{Addr: o.addr, Handler: o.initServer(b)}
+	if o.cert != "" && o.key != "" {
+		return o.srv.ListenAndServeTLS(o.cert, o.key)
+	}
+	return o.srv.ListenAndServe()
+}
+
+func (o *options) sanitize() error {
+	if o.info == nil {
+		o.info = log.New(os.Stdout, "", log.LstdFlags)
+	}
+
+	if o.erro == nil {
+		o.erro = log.New(os.Stderr, "", log.LstdFlags)
+	}
+
+	if o.source == "" {
+		o.source = "./"
+	}
+
+	if o.addr == "" {
+		if o.cert != "" && o.key != "" {
+			o.addr = ":443"
+		} else {
+			o.addr = ":80"
+		}
+	}
+
+	if o.path == "" {
+		o.path = "/"
+	}
+
+	return nil
+}
+
+func (o *options) initServer(b *builder.Builder) http.Handler {
+	var h http.Handler = b
+
+	if o.info != nil {
+		o.info.Println("启动服务：", o.addr)
+
+		h = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			o.info.Printf("访问 %s\n", r.URL.String())
+			b.ServeHTTP(w, r)
+		})
+	}
+
+	return http.StripPrefix(o.path, h)
+}

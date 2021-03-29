@@ -14,6 +14,8 @@ import (
 	"github.com/issue9/term/v2/colors"
 
 	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/internal/cmd/preview"
+	"github.com/caixw/blogit/internal/cmd/serve"
 )
 
 var (
@@ -77,11 +79,11 @@ func Exec() error {
 	}
 
 	initBuild(opt)
-	initServe(opt)
-	initPreview(opt)
 	initInit(opt)
 	initPost(opt)
 	initVersion(opt)
+	serve.Init(opt, info.asLogger(), erro.asLogger())
+	preview.Init(opt, succ.asLogger(), info.asLogger(), erro.asLogger())
 	opt.Help("help", "显示当前内容\n")
 
 	return opt.Exec(os.Args[1:])

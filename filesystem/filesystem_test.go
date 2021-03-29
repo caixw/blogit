@@ -55,8 +55,8 @@ func TestWritableFS(t *testing.T) {
 
 	testWritableFS(Memory(), a)
 
-	tmp := "./tmp"
-	a.NotError(os.Mkdir(tmp, os.ModePerm))
-	testWritableFS(Dir(tmp), a)
-	a.NotError(os.RemoveAll(tmp))
+	dir := "./fs"
+	a.NotError(os.Mkdir(dir, os.ModePerm))
+	testWritableFS(Dir(dir), a)
+	a.NotError(os.RemoveAll(dir))
 }
