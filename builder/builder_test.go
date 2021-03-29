@@ -25,32 +25,10 @@ func TestIsIgnore(t *testing.T) {
 	a.False(isIgnore("themes/layout/header.html")) // 不符合 themes/xx/layout 的格式
 }
 
-func TestBuild(t *testing.T) {
-	a := assert.New(t)
-	a.NotError(os.RemoveAll("../../testdata/dest"))
-	src := os.DirFS("../../testdata/src")
-
-	// Dir
-	dest := filesystem.Dir("../../testdata/dest")
-	a.NotError(Build(src, dest))
-	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
-		True(filesystem.Exists(dest, "tags"+vars.Ext)).
-		True(filesystem.Exists(dest, "tags/default"+vars.Ext)).
-		True(filesystem.Exists(dest, "posts/p1"+vars.Ext))
-
-	// Memory
-	dest = filesystem.Memory()
-	a.NotError(Build(src, dest))
-	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
-		True(filesystem.Exists(dest, "tags"+vars.Ext)).
-		True(filesystem.Exists(dest, "tags/default"+vars.Ext)).
-		True(filesystem.Exists(dest, "posts/p1"+vars.Ext))
-}
-
 func TestBuilder_ServeHTTP(t *testing.T) {
 	a := assert.New(t)
-	a.NotError(os.RemoveAll("../../testdata/dest"))
-	src := filesystem.Dir("../../testdata/src")
+	a.NotError(os.RemoveAll("../testdata/dest"))
+	src := filesystem.Dir("../testdata/src")
 
 	// Memory
 
@@ -73,7 +51,7 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 
 	// Dir
 
-	b = New(filesystem.Dir("../../testdata/dest"), nil)
+	b = New(filesystem.Dir("../testdata/dest"), nil)
 	srv = rest.NewServer(t, b, nil)
 
 	// b 未加载任何数据。返回都是 404

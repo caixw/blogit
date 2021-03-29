@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/caixw/blogit"
 	"github.com/caixw/blogit/filesystem"
-	"github.com/caixw/blogit/internal/builder"
 )
 
 // options 启动服务的参数选项
@@ -50,7 +50,7 @@ func (o *options) serve() error {
 	}
 	src := os.DirFS(o.source)
 
-	b := builder.New(dest, o.erro)
+	b := blogit.NewBuilder(dest, o.erro)
 	if err := b.Rebuild(src, ""); err != nil {
 		return err
 	}
@@ -90,7 +90,7 @@ func (o *options) sanitize() error {
 	return nil
 }
 
-func (o *options) initServer(b *builder.Builder) http.Handler {
+func (o *options) initServer(b *blogit.Builder) http.Handler {
 	var h http.Handler = b
 
 	if o.info != nil {

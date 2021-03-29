@@ -16,8 +16,8 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 
+	"github.com/caixw/blogit"
 	"github.com/caixw/blogit/filesystem"
-	"github.com/caixw/blogit/internal/builder"
 )
 
 // options 启动服务的参数选项
@@ -44,7 +44,7 @@ type options struct {
 	erro *log.Logger
 	succ *log.Logger
 
-	b   *builder.Builder
+	b   *blogit.Builder
 	srv *http.Server
 
 	builded time.Time
@@ -98,7 +98,7 @@ func (o *options) sanitize() error {
 	} else {
 		dest = filesystem.Dir(o.dest)
 	}
-	o.b = builder.New(dest, o.erro)
+	o.b = blogit.NewBuilder(dest, o.erro)
 
 	o.srv = &http.Server{Addr: o.addr, Handler: o.initServer()}
 

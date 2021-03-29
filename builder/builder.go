@@ -32,11 +32,6 @@ type Builder struct {
 	tpl  *template.Template
 }
 
-// Build 编译内容
-func Build(src fs.FS, dest filesystem.WritableFS) error {
-	return New(dest, nil).Rebuild(src, "")
-}
-
 // New 声明 Builder 实例
 //
 // fs 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
