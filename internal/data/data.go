@@ -4,6 +4,7 @@
 package data
 
 import (
+	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
@@ -46,8 +47,8 @@ type (
 // Load 加载并处理数据
 //
 // 如果 baseURL 不为空，则会替换配置文件中的 URL 字段。
-func Load(dir, baseURL string) (*Data, error) {
-	conf, err := loader.LoadConfig(filepath.Join(dir, vars.ConfYAML))
+func Load(fs fs.FS, baseURL string) (*Data, error) {
+	conf, err := loader.LoadConfig(fs, vars.ConfYAML)
 	if err != nil {
 		return nil, err
 	}
@@ -55,17 +56,17 @@ func Load(dir, baseURL string) (*Data, error) {
 		conf.URL = baseURL
 	}
 
-	tags, err := loader.LoadTags(filepath.Join(dir, vars.TagsYAML))
+	tags, err := loader.LoadTags(fs, vars.TagsYAML)
 	if err != nil {
 		return nil, err
 	}
 
-	posts, err := loader.LoadPosts(dir)
+	posts, err := loader.LoadPosts(fs)
 	if err != nil {
 		return nil, err
 	}
 
-	theme, err := loader.LoadTheme(dir, conf.Theme)
+	theme, err := loader.LoadTheme(fs, conf.Theme)
 	if err != nil {
 		return nil, err
 	}

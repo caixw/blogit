@@ -4,6 +4,7 @@ package loader
 
 import (
 	"bytes"
+	"io/fs"
 	"strconv"
 
 	"github.com/issue9/sliceutil"
@@ -32,9 +33,9 @@ type Tag struct {
 }
 
 // LoadTags 加载标签列表
-func LoadTags(path string) (*Tags, error) {
+func LoadTags(fs fs.FS, path string) (*Tags, error) {
 	tags := &Tags{}
-	if err := loadYAML(path, &tags); err != nil {
+	if err := loadYAML(fs, path, &tags); err != nil {
 		return nil, err
 	}
 

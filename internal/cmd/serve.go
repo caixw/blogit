@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"io"
+	"os"
 
 	"github.com/issue9/cmdopt"
 
@@ -27,7 +28,7 @@ func initServe(opt *cmdopt.CmdOpt) {
 
 func serve(w io.Writer) error {
 	o := &blogit.Options{
-		Src:  serveSrc,
+		Src:  os.DirFS(serveSrc),
 		Dest: filesystem.Memory(),
 		Addr: serveAddr,
 		Path: servePath,

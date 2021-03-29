@@ -3,6 +3,7 @@
 package filesystem
 
 import (
+	"os"
 	"testing"
 
 	"github.com/issue9/assert"
@@ -10,9 +11,10 @@ import (
 
 func TestExists(t *testing.T) {
 	a := assert.New(t)
+	fs := os.DirFS("./")
 
-	a.True(Exists("./utils.go"))
-	a.True(Exists("."))
-	a.True(Exists("../"))
-	a.False(Exists("../not-exists"))
+	a.True(Exists(fs, "utils.go"))
+	a.True(Exists(fs, "."))
+	a.False(Exists(fs, "..")) // 不允许的值
+	a.False(Exists(fs, "./not-exists"))
 }

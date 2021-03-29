@@ -3,6 +3,7 @@
 package loader
 
 import (
+	"io/fs"
 	"strconv"
 	"time"
 
@@ -42,10 +43,10 @@ type RSS struct {
 }
 
 // LoadConfig 加载配置文件
-func LoadConfig(path string) (*Config, error) {
+func LoadConfig(fs fs.FS, path string) (*Config, error) {
 	conf := &Config{}
 
-	if err := loadYAML(path, conf); err != nil {
+	if err := loadYAML(fs, path, conf); err != nil {
 		return nil, err
 	}
 	if err := conf.sanitize(); err != nil {

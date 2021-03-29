@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"io"
+	"os"
 
 	"github.com/issue9/cmdopt"
 
@@ -29,7 +30,7 @@ func initPreview(opt *cmdopt.CmdOpt) {
 
 func preview(w io.Writer) error {
 	o := &blogit.Options{
-		Src:     previewSrc,
+		Src:     os.DirFS(previewSrc),
 		Dest:    filesystem.Memory(),
 		BaseURL: previewBase,
 		Cert:    previewCert,
@@ -38,7 +39,7 @@ func preview(w io.Writer) error {
 		Info:    info.asLogger(),
 		Succ:    succ.asLogger(),
 	}
-	s, err := blogit.Watch(o)
+	s, err := blogit.Watch(previewSrc, o)
 	if err != nil {
 		return err
 	}

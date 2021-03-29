@@ -3,17 +3,20 @@
 package data
 
 import (
+	"os"
 	"testing"
 	"time"
 
-	"github.com/caixw/blogit/internal/vars"
 	"github.com/issue9/assert"
+
+	"github.com/caixw/blogit/internal/vars"
 )
 
 func TestLoad(t *testing.T) {
 	a := assert.New(t)
+	fs := os.DirFS("../../testdata/src")
 
-	data, err := Load("../../testdata/src", "")
+	data, err := Load(fs, "")
 	a.NotError(err).NotNil(data)
 
 	a.Equal(data.Icon.Type, "image/png").Equal(data.Icon.Sizes, "256x256")
@@ -28,7 +31,7 @@ func TestLoad(t *testing.T) {
 
 	a.True(data.Builded.After(time.Time{}))
 
-	data, err = Load("../../testdata/src", "https://example.com/v2")
+	data, err = Load(fs, "https://example.com/v2")
 	a.NotError(err).NotNil(data)
 	a.Equal(data.URL, "https://example.com/v2")
 }

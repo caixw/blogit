@@ -9,12 +9,10 @@ import (
 	"errors"
 	"html/template"
 	"io"
-	"io/ioutil"
+	"io/fs"
 	"log"
 	"net/http"
-	"os"
 	"path"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -35,7 +33,7 @@ type Builder struct {
 }
 
 // Build 编译内容
-func Build(src string, dest filesystem.WritableFS) error {
+func Build(src fs.FS, dest filesystem.WritableFS) error {
 	return New(dest, nil).Build(src, "")
 }
 
@@ -54,36 +52,30 @@ func New(fs filesystem.WritableFS, l *log.Logger) *Builder {
 }
 
 // Build 重新生成数据
-func (b *Builder) Build(src, base string) error {
+func (b *Builder) Build(src fs.FS, base string) error {
 	paths := make([]string, 0, 100)
 
-	err := filepath.Walk(src, func(path string, d os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if !d.IsDir() && !isIgnore(path) {
+	err := fs.WalkDir(src, ".", func(path string, d fs.DirEntry, err error) error {
+		if err == nil && !d.IsDir() && !isIgnore(path) {
 			paths = append(paths, path)
 		}
-
-		return nil
+		return err
 	})
-
 	if err != nil {
 		return err
 	}
 
 	for _, p := range paths {
-		stat, err := os.Stat(p)
+		stat, err := fs.Stat(src, p)
 		if err != nil {
 			return err
 		}
 
-		data, err := ioutil.ReadFile(p)
+		data, err := fs.ReadFile(src, p)
 		if err != nil {
 			return err
 		}
-		if err = b.appendFile(loader.Slug(src, p), stat.ModTime(), data); err != nil {
+		if err = b.appendFile(loader.Slug(p), stat.ModTime(), data); err != nil {
 			return err
 		}
 	}
@@ -91,7 +83,7 @@ func (b *Builder) Build(src, base string) error {
 	return b.buildData(src, base)
 }
 
-func (b *Builder) buildData(src, base string) (err error) {
+func (b *Builder) buildData(src fs.FS, base string) (err error) {
 	d, err := data.Load(src, base)
 	if err != nil {
 		return err
@@ -173,7 +165,7 @@ func (b *Builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) e
 
 // 如果 path 以 / 开头，则会自动去除 /
 func (b *Builder) appendFile(p string, mod time.Time, data []byte) error {
-	return b.fs.WriteFile(p, data, os.ModePerm)
+	return b.fs.WriteFile(p, data, fs.ModePerm)
 }
 
 // ServeHTTP 作为 HTTP 服务接口使用
@@ -190,11 +182,11 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	f, err := b.fs.Open(p)
-	if errors.Is(err, os.ErrNotExist) {
+	if errors.Is(err, fs.ErrNotExist) {
 		http.NotFound(w, r)
 		return
 	}
-	if errors.Is(err, os.ErrPermission) {
+	if errors.Is(err, fs.ErrPermission) {
 		errStatus(w, http.StatusForbidden)
 		return
 	}

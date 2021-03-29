@@ -4,9 +4,11 @@ package blogit
 
 import (
 	"fmt"
+	"io/fs"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/caixw/blogit/filesystem"
@@ -17,8 +19,8 @@ import (
 type Options struct {
 	// 项目的源码目录
 	//
-	// 如果为空，则会采用 ./ 作为默认值。
-	Src string
+	// 如果为空，则会采用 os.DirFS(./) 作为默认值。
+	Src fs.FS
 
 	// 项目编译后的输出地址
 	//
@@ -76,8 +78,8 @@ func (o *Options) init() error {
 		o.Dest = filesystem.Memory()
 	}
 
-	if o.Src == "" {
-		o.Src = "./"
+	if o.Src == nil {
+		o.Src = os.DirFS("./")
 	}
 
 	u, err := url.Parse(o.BaseURL)

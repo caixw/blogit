@@ -25,19 +25,32 @@ func TestIsIgnore(t *testing.T) {
 
 func TestBuild(t *testing.T) {
 	a := assert.New(t)
+	a.NotError(os.RemoveAll("../../testdata/dest"))
+	src := os.DirFS("../../testdata/src")
 
-	a.NotError(os.RemoveAll("../../testdata/dest/index.xml"))
+	// Dir
+	dest := filesystem.Dir("../../testdata/dest")
+	a.NotError(Build(src, dest))
+	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
+		True(filesystem.Exists(dest, "tags"+vars.Ext)).
+		True(filesystem.Exists(dest, "tags/default"+vars.Ext)).
+		True(filesystem.Exists(dest, "posts/p1"+vars.Ext))
 
-	err := Build("../../testdata/src", filesystem.Dir("../../testdata/dest"))
-	a.NotError(err)
-	a.FileExists("../../testdata/dest/index" + vars.Ext).
-		FileExists("../../testdata/dest/tags" + vars.Ext).
-		FileExists("../../testdata/dest/tags/default" + vars.Ext).
-		FileExists("../../testdata/dest/posts/p1" + vars.Ext)
+	// Memory
+	dest = filesystem.Memory()
+	a.NotError(Build(src, dest))
+	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
+		True(filesystem.Exists(dest, "tags"+vars.Ext)).
+		True(filesystem.Exists(dest, "tags/default"+vars.Ext)).
+		True(filesystem.Exists(dest, "posts/p1"+vars.Ext))
 }
 
 func TestBuilder_ServeHTTP(t *testing.T) {
 	a := assert.New(t)
+	a.NotError(os.RemoveAll("../../testdata/dest"))
+	src := filesystem.Dir("../../testdata/src")
+
+	// Memory
 
 	b := New(filesystem.Memory(), nil)
 	srv := rest.NewServer(t, b, nil)
@@ -45,7 +58,26 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 	// b 未加载任何数据。返回都是 404
 	srv.Get("/robots.txt").Do().Status(http.StatusNotFound)
 
-	a.NotError(b.Build("../../testdata/src", "http://localhost:8080"))
+	a.NotError(b.Build(src, "http://localhost:8080"))
+	srv.Get("/robots.txt").Do().Status(http.StatusOK)
+	srv.Get("/posts/p1" + vars.Ext).Do().Status(http.StatusOK)
+	srv.Get("/posts/not-exists.html").Do().Status(http.StatusNotFound)
+	srv.Get("/themes/default/style.css").Do().Status(http.StatusOK)
+
+	// index.html
+	srv.Get("/").Do().Status(http.StatusOK)
+	srv.Get("/index" + vars.Ext).Do().Status(http.StatusOK)
+	srv.Get("/themes/").Do().Status(http.StatusNotFound) // 目录下没有 index.html
+
+	// Dir
+
+	b = New(filesystem.Dir("../../testdata/dest"), nil)
+	srv = rest.NewServer(t, b, nil)
+
+	// b 未加载任何数据。返回都是 404
+	srv.Get("/robots.txt").Do().Status(http.StatusNotFound)
+
+	a.NotError(b.Build(src, "http://localhost:8080"))
 	srv.Get("/robots.txt").Do().Status(http.StatusOK)
 	srv.Get("/posts/p1" + vars.Ext).Do().Status(http.StatusOK)
 	srv.Get("/posts/not-exists.html").Do().Status(http.StatusNotFound)

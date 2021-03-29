@@ -3,15 +3,13 @@
 package blogit
 
 import (
+	"errors"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-
-	"github.com/caixw/blogit/internal/vars"
 )
 
 // Server 表示一个长期运行的服务对象的基本操作
@@ -32,6 +30,7 @@ type server struct {
 // watcher 热编译功能
 type watcher struct {
 	*Options
+	dir     string
 	builded time.Time
 	stop    chan struct{}
 }
@@ -56,13 +55,16 @@ func (s *server) Close() error {
 }
 
 // Watch 热编译服务对象
-func Watch(o *Options) (Server, error) {
+//
+// dir 是指需要监视的目录，当该目录下的文件发生改变时，即会重新编译项目；
+func Watch(dir string, o *Options) (Server, error) {
 	if err := o.init(); err != nil {
 		return nil, err
 	}
 
 	return &watcher{
 		Options: o,
+		dir:     dir,
 		builded: time.Now(),
 		stop:    make(chan struct{}, 1),
 	}, nil
@@ -70,9 +72,8 @@ func Watch(o *Options) (Server, error) {
 
 func (w *watcher) Serve() error {
 	go func() {
-		if err := w.serve(); err != nil {
+		if err := w.serve(); !errors.Is(err, http.ErrServerClosed) {
 			w.erro(err)
-			return
 		}
 	}()
 
@@ -124,20 +125,17 @@ func (w *watcher) Close() error {
 
 func (w *watcher) getWatcher() (*fsnotify.Watcher, error) {
 	paths := make([]string, 0, 10)
-	err := filepath.Walk(w.Src, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(w.dir, func(p string, d os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		name := info.Name()
+		name := d.Name()
 		if name != "." && name[0] == '.' { // 忽略隐藏文件
 			return filepath.SkipDir
 		}
 
-		ext := strings.ToLower(filepath.Ext(name))
-		if info.IsDir() || ext == vars.MarkdownExt || ext == ".yaml" || ext == ".yml" {
-			paths = append(paths, path)
-		}
+		paths = append(paths, p)
 		return nil
 	})
 	if err != nil {

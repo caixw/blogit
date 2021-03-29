@@ -5,6 +5,7 @@ package blogit
 import (
 	"log"
 	"net/http"
+	"os"
 	"testing"
 	"time"
 
@@ -18,7 +19,7 @@ func TestServe(t *testing.T) {
 	a := assert.New(t)
 
 	o := &Options{
-		Src:  "./testdata/src",
+		Src:  os.DirFS("./testdata/src"),
 		Addr: ":8080",
 		Erro: log.Default(),
 		Info: log.Default(),
@@ -29,8 +30,7 @@ func TestServe(t *testing.T) {
 
 	exit := make(chan struct{}, 1)
 	go func() {
-		err := s.Serve()
-		a.Equal(err, http.ErrServerClosed)
+		a.Equal(s.Serve(), http.ErrServerClosed)
 		exit <- struct{}{}
 	}()
 	time.Sleep(500 * time.Millisecond) // 等待启动完成
@@ -56,25 +56,25 @@ func TestServe(t *testing.T) {
 		Status(http.StatusNotFound)
 
 	a.NotError(s.Close())
+	<-exit
 }
 
 func TestWatch(t *testing.T) {
 	a := assert.New(t)
 
 	o := &Options{
-		Src:  "./testdata/src",
+		Src:  os.DirFS("./testdata/src"),
 		Addr: ":8080",
 		Erro: log.Default(),
 		Info: log.Default(),
 		Succ: log.Default(),
 	}
-	s, err := Watch(o)
+	s, err := Watch("./testdata/src", o)
 	a.NotError(err).NotNil(s)
 
 	exit := make(chan struct{}, 1)
 	go func() {
-		err := s.Serve()
-		a.Equal(err, http.ErrServerClosed)
+		a.Equal(s.Serve(), http.ErrServerClosed)
 		exit <- struct{}{}
 	}()
 	time.Sleep(500 * time.Millisecond) // 等待启动完成
@@ -100,4 +100,5 @@ func TestWatch(t *testing.T) {
 		Status(http.StatusNotFound)
 
 	a.NotError(s.Close())
+	<-exit
 }

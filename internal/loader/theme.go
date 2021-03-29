@@ -3,7 +3,8 @@
 package loader
 
 import (
-	"path/filepath"
+	"io/fs"
+	"path"
 	"strconv"
 
 	"github.com/issue9/sliceutil"
@@ -29,8 +30,9 @@ type Theme struct {
 	Atom    string `yaml:"atom,omitempty"`
 }
 
-// dir 为主题目录；id 为主题目录的名称
-func (t *Theme) sanitize(dir, id string) *FieldError {
+// dir 为当前主题所在的目录；
+// id 为主题目录的名称
+func (t *Theme) sanitize(fs fs.FS, dir, id string) *FieldError {
 	t.ID = id
 
 	for index, author := range t.Authors {
@@ -49,7 +51,7 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 	}
 
 	for index, s := range t.Screenshots {
-		if !filesystem.Exists(filepath.Join(dir, s)) {
+		if !filesystem.Exists(fs, path.Join(dir, s)) {
 			return &FieldError{Message: "不存在的示例图", Field: "screenshots[" + strconv.Itoa(index) + "]"}
 		}
 	}
@@ -59,19 +61,19 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 	}
 
 	if t.Sitemap != "" {
-		if !filesystem.Exists(filepath.Join(dir, t.Sitemap)) {
+		if !filesystem.Exists(fs, path.Join(dir, t.Sitemap)) {
 			return &FieldError{Message: "不存在该模板文件", Field: "sitemap", Value: t.Sitemap}
 		}
 	}
 
 	if t.RSS != "" {
-		if !filesystem.Exists(filepath.Join(dir, t.RSS)) {
+		if !filesystem.Exists(fs, path.Join(dir, t.RSS)) {
 			return &FieldError{Message: "不存在该模板文件", Field: "rss", Value: t.RSS}
 		}
 	}
 
 	if t.Atom != "" {
-		if !filesystem.Exists(filepath.Join(dir, t.Atom)) {
+		if !filesystem.Exists(fs, path.Join(dir, t.Atom)) {
 			return &FieldError{Message: "不存在该模板文件", Field: "atom", Value: t.Atom}
 		}
 	}
@@ -80,16 +82,16 @@ func (t *Theme) sanitize(dir, id string) *FieldError {
 }
 
 // LoadTheme 加载指定主题
-func LoadTheme(dir, name string) (*Theme, error) {
-	dir = filepath.Join(dir, vars.ThemesDir, name)
-	path := filepath.Join(dir, vars.ThemeYAML)
+func LoadTheme(fs fs.FS, id string) (*Theme, error) {
+	dir := path.Join(vars.ThemesDir, id)
+	path := path.Join(dir, vars.ThemeYAML)
 
 	theme := &Theme{}
-	if err := loadYAML(path, &theme); err != nil {
+	if err := loadYAML(fs, path, &theme); err != nil {
 		return nil, err
 	}
 
-	if err := theme.sanitize(dir, name); err != nil {
+	if err := theme.sanitize(fs, dir, id); err != nil {
 		err.File = path
 		return nil, err
 	}

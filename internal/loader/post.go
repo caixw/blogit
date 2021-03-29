@@ -5,8 +5,8 @@ package loader
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
-	"os"
+	"io/fs"
+	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -69,11 +69,11 @@ type Post struct {
 }
 
 // LoadPosts 加载所有的文章
-func LoadPosts(dir string) ([]*Post, error) {
+func LoadPosts(fsys fs.FS) ([]*Post, error) {
 	paths := make([]string, 0, 10)
-	err := filepath.Walk(filepath.Join(dir, vars.PostsDir), func(path string, info os.FileInfo, err error) error {
-		if err == nil && !info.IsDir() && strings.ToLower(filepath.Ext(info.Name())) == vars.MarkdownExt {
-			paths = append(paths, path)
+	err := fs.WalkDir(fsys, vars.PostsDir, func(p string, d fs.DirEntry, err error) error {
+		if err == nil && !d.IsDir() && strings.ToLower(path.Ext(p)) == vars.MarkdownExt {
+			paths = append(paths, p)
 		}
 		return err
 	})
@@ -88,7 +88,7 @@ func LoadPosts(dir string) ([]*Post, error) {
 	posts := make([]*Post, 0, len(paths))
 
 	for _, path := range paths {
-		post, err := loadPost(dir, path)
+		post, err := loadPost(fsys, path)
 		if err != nil {
 			return nil, err
 		}
@@ -107,8 +107,8 @@ func LoadPosts(dir string) ([]*Post, error) {
 	return posts, nil
 }
 
-func loadPost(dir, path string) (*Post, error) {
-	bs, err := ioutil.ReadFile(path)
+func loadPost(fsys fs.FS, path string) (*Post, error) {
+	bs, err := fs.ReadFile(fsys, path)
 	if err != nil {
 		return nil, err
 	}
@@ -129,19 +129,19 @@ func loadPost(dir, path string) (*Post, error) {
 	}
 	post.Content = buf.String()
 
-	if err := post.sanitize(dir, path); err != nil {
+	if err := post.sanitize(path); err != nil {
 		err.File = path
 		return nil, err
 	}
 	return post, nil
 }
 
-func (p *Post) sanitize(dir, path string) *FieldError {
+func (p *Post) sanitize(path string) *FieldError {
 	if p.Title == "" {
 		return &FieldError{Field: "title", Message: "不能为空"}
 	}
 
-	slug := Slug(dir, path)
+	slug := Slug(path)
 	if strings.HasSuffix(strings.ToLower(slug[len(slug)-3:]), vars.MarkdownExt) {
 		slug = slug[:len(slug)-len(vars.MarkdownExt)] // 不能用 strings.TrimSuffix，后缀名可能是大写的
 	}
@@ -185,11 +185,8 @@ func (p *Post) sanitize(dir, path string) *FieldError {
 }
 
 // Slug 返回文章的唯一 ID
-//
-// 含扩展名，相对于 dir 目录。
-func Slug(dir, p string) string {
+func Slug(p string) string {
 	// Clean 同时会将分隔符转换成系统对应的字符，所以先 Clean 再 ToSlash
 	p = filepath.ToSlash(filepath.Clean(p))
-	dir = filepath.ToSlash(filepath.Clean(dir)) + "/" // 防止 dir = "p" p = "post/p1.md" 会被处理在成 ost/p1.md
-	return strings.TrimLeft(strings.TrimPrefix(p, dir), "./")
+	return strings.TrimLeft(p, "./")
 }

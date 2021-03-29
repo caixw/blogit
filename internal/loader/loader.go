@@ -8,7 +8,7 @@ package loader
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io/fs"
 	"mime"
 	"path"
 
@@ -88,8 +88,8 @@ func (err *FieldError) Error() string {
 	return fmt.Sprintf("%s 位于 %s:%s，实际值为:%#v", err.Message, err.File, err.Field, err.Value)
 }
 
-func loadYAML(path string, v interface{}) error {
-	data, err := ioutil.ReadFile(path)
+func loadYAML(fsys fs.FS, path string, v interface{}) error {
+	data, err := fs.ReadFile(fsys, path)
 	if err != nil {
 		return err
 	}

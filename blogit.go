@@ -4,6 +4,8 @@
 package blogit
 
 import (
+	"io/fs"
+
 	"github.com/caixw/blogit/filesystem"
 	"github.com/caixw/blogit/internal/builder"
 	"github.com/caixw/blogit/internal/vars"
@@ -18,6 +20,6 @@ func Version() string {
 //
 // dir 表示源码目录；
 // dest 表示输出的目录；
-func Build(src string, dest filesystem.WritableFS) error {
+func Build(src fs.FS, dest filesystem.WritableFS) error {
 	return builder.Build(src, dest)
 }

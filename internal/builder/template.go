@@ -4,7 +4,8 @@ package builder
 
 import (
 	"html/template"
-	"path/filepath"
+	"io/fs"
+	"path"
 	"regexp"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
-func newTemplate(d *data.Data, src string) (*template.Template, error) {
+func newTemplate(d *data.Data, src fs.FS) (*template.Template, error) {
 	templateFuncs := template.FuncMap{
 		"strip":   stripTags,
 		"html":    func(html string) interface{} { return template.HTML(html) },
@@ -26,7 +27,7 @@ func newTemplate(d *data.Data, src string) (*template.Template, error) {
 
 	return template.New(d.Theme.ID).
 		Funcs(templateFuncs).
-		ParseGlob(filepath.Join(src, vars.ThemesDir, d.Theme.ID, vars.LayoutDir, "/*"))
+		ParseFS(src, path.Join(vars.ThemesDir, d.Theme.ID, vars.LayoutDir, "/*"))
 }
 
 // 去掉所有的标签信息
