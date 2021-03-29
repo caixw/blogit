@@ -6,9 +6,8 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
-	"path/filepath"
+	"path"
 	"strings"
 	"time"
 
@@ -41,30 +40,24 @@ func post(w io.Writer) error {
 		return nil
 	}
 
-	dir, err := os.Getwd()
+	wfs, err := getWD()
 	if err != nil {
 		erro.printf(err.Error())
 		return nil
 	}
-	dir = filepath.Join(dir, vars.PostsDir)
 
-	path := postFS.Arg(0)
-	if strings.ToLower(filepath.Ext(path)) != vars.MarkdownExt {
-		path += vars.MarkdownExt
+	p := postFS.Arg(0)
+	if strings.ToLower(path.Ext(p)) != vars.MarkdownExt {
+		p += vars.MarkdownExt
 	}
-	path = filepath.Clean(filepath.Join(dir, path))
-
-	if !strings.HasPrefix(path, dir) {
-		erro.printf("必须位于 %s 目录下\n", dir)
-		return nil
-	}
+	p = path.Clean(path.Join(vars.PostsDir, p))
 
 	c := fmt.Sprintf(content, time.Now().Format(time.RFC3339))
-	if err := ioutil.WriteFile(path, []byte(c), os.ModePerm); err != nil {
-		erro.println(err.Error())
+	if err := wfs.WriteFile(p, []byte(c), os.ModePerm); err != nil {
+		erro.println(err)
 		return nil
 	}
-	succ.printf("创建文件: %s\n", path)
+	succ.printf("创建文件: %s\n", p)
 
 	return nil
 }

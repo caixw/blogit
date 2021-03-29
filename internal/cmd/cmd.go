@@ -12,6 +12,8 @@ import (
 
 	"github.com/issue9/cmdopt"
 	"github.com/issue9/term/v2/colors"
+
+	"github.com/caixw/blogit/filesystem"
 )
 
 var (
@@ -83,4 +85,12 @@ func Exec() error {
 	opt.Help("help", "显示当前内容\n")
 
 	return opt.Exec(os.Args[1:])
+}
+
+func getWD() (filesystem.WritableFS, error) {
+	dir, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	return filesystem.Dir(dir), nil
 }

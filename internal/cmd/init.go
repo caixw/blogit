@@ -5,14 +5,14 @@ package cmd
 import (
 	"flag"
 	"io"
-	"io/ioutil"
-	"os"
-	"path/filepath"
+	"io/fs"
+	"path"
 	"time"
 
 	"github.com/issue9/cmdopt"
 	"gopkg.in/yaml.v2"
 
+	"github.com/caixw/blogit/filesystem"
 	"github.com/caixw/blogit/internal/loader"
 	"github.com/caixw/blogit/internal/vars"
 )
@@ -30,9 +30,9 @@ func initF(w io.Writer) error {
 		return nil
 	}
 
-	dir, err := os.Getwd()
+	wfs, err := getWD()
 	if err != nil {
-		erro.println(err.Error())
+		erro.println(err)
 		return nil
 	}
 
@@ -43,12 +43,11 @@ func initF(w io.Writer) error {
 		Uptime: time.Now(),
 		Theme:  "default",
 	}
-	path := filepath.Join(dir, vars.ConfYAML)
-	if err := writeYAML(path, conf); err != nil {
-		erro.println(err.Error())
+	if err := writeYAML(wfs, vars.ConfYAML, conf); err != nil {
+		erro.println(err)
 		return nil
 	}
-	succ.printf("创建了文件: %s", path)
+	succ.println("创建了文件:", vars.ConfYAML)
 
 	// tags.yaml
 	tags := []*loader.Tag{
@@ -58,30 +57,38 @@ func initF(w io.Writer) error {
 			Content: "这是默认的标签",
 		},
 	}
-	path = filepath.Join(dir, vars.TagsYAML)
-	if err := writeYAML(path, tags); err != nil {
-		erro.println(err.Error())
+	if err := writeYAML(wfs, vars.TagsYAML, tags); err != nil {
+		erro.println(err)
 		return nil
 	}
-	succ.printf("创建了文件: %s", path)
+	succ.println("创建了文件:", vars.TagsYAML)
 
 	// themes
-	if err := os.MkdirAll(filepath.Join(dir, vars.ThemesDir), os.ModePerm); err != nil {
-		erro.println(err.Error())
+	theme := &loader.Theme{
+		URL:         "https://example.com",
+		Description: "description",
+	}
+	p := path.Join(vars.ThemesDir, "default", "theme.yaml")
+	if err := writeYAML(wfs, p, theme); err != nil {
+		erro.println(err)
 		return nil
 	}
+	succ.println("创建了主题文件:", p)
 
-	if err := os.MkdirAll(filepath.Join(dir, vars.PostsDir), os.ModePerm); err != nil {
-		erro.println(err.Error())
+	p = path.Join(vars.PostsDir, time.Now().Format("2006"), "post1.md")
+	if err := wfs.WriteFile(p, []byte(content), fs.ModePerm); err != nil {
+		erro.println(err)
+		return nil
 	}
+	succ.println("创建了文章:", p)
 
 	return nil
 }
 
-func writeYAML(path string, v interface{}) error {
+func writeYAML(wfs filesystem.WritableFS, path string, v interface{}) error {
 	bs, err := yaml.Marshal(v)
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, bs, os.ModePerm)
+	return wfs.WriteFile(path, bs, fs.ModePerm)
 }

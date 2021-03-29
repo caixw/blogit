@@ -18,8 +18,9 @@ type WritableFS interface {
 
 	// 将内容写入文件
 	//
-	// path 遵守 fs.FS.Open 中有关文件的处理规则。
+	// path 遵守 fs.FS.Open 中有关 path 参数的处理规则。
 	// 整个函数处理逻辑应该与 os.WriteFile 相同。
+	// 如果文件父目录不存在，应该要自动创建。
 	WriteFile(path string, data []byte, perm fs.FileMode) error
 }
 
