@@ -34,7 +34,7 @@ type Builder struct {
 
 // Build 编译内容
 func Build(src fs.FS, dest filesystem.WritableFS) error {
-	return New(dest, nil).Build(src, "")
+	return New(dest, nil).Rebuild(src, "")
 }
 
 // New 声明 Builder 实例
@@ -51,10 +51,13 @@ func New(fs filesystem.WritableFS, l *log.Logger) *Builder {
 	return &Builder{fs: fs, log: l}
 }
 
-// Build 重新生成数据
-func (b *Builder) Build(src fs.FS, base string) error {
-	paths := make([]string, 0, 100)
+// Rebuild 重新生成数据
+func (b *Builder) Rebuild(src fs.FS, base string) error {
+	if err := b.fs.Reset(); err != nil {
+		return err
+	}
 
+	paths := make([]string, 0, 100)
 	err := fs.WalkDir(src, ".", func(path string, d fs.DirEntry, err error) error {
 		if err == nil && !d.IsDir() && !isIgnore(path) {
 			paths = append(paths, path)

@@ -35,6 +35,14 @@ func testWritableFS(wfs WritableFS, a *assert.Assertion) {
 	data, err = io.ReadAll(file)
 	a.NotError(err).Equal(data, []byte{1, 2, 3})
 
+	// 重置后内容不再存在
+	a.NotError(wfs.Reset())
+	a.False(Exists(wfs, "dir1/file.png"))
+	a.False(Exists(wfs, "dir1/dir2/file.png"))
+	a.NotError(wfs.WriteFile("dir1/file.png", []byte{1, 2, 3}, fs.ModePerm)) // 重新写入
+	file, err = wfs.Open("dir1/file.png")
+	a.NotError(err).NotNil(file)
+
 	// 无效的 path 参数
 	_, err = wfs.Open("/dir1/file.png")
 	a.Error(err)

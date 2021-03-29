@@ -134,7 +134,7 @@ func (o *Options) initServer() http.Handler {
 }
 
 func (o *Options) build() error {
-	return o.b.Build(o.Src, o.BaseURL)
+	return o.b.Rebuild(o.Src, o.BaseURL)
 }
 
 func (o *Options) info(v ...interface{}) {

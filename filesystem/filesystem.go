@@ -22,6 +22,9 @@ type WritableFS interface {
 	// 整个函数处理逻辑应该与 os.WriteFile 相同。
 	// 如果文件父目录不存在，应该要自动创建。
 	WriteFile(path string, data []byte, perm fs.FileMode) error
+
+	// 清空内容
+	Reset() error
 }
 
 // Memory 返回以内存作为保存对象的文件系统
@@ -60,9 +63,18 @@ func (dir dirFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
 	return os.WriteFile(string(dir)+"/"+name, data, perm)
 }
 
+func (dir dirFS) Reset() error {
+	return os.RemoveAll(string(dir))
+}
+
 func (m *memoryFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
 	if err := m.FS.MkdirAll(path.Dir(name), perm); err != nil {
 		return err
 	}
 	return m.FS.WriteFile(name, data, perm)
+}
+
+func (m *memoryFS) Reset() error {
+	m.FS = memfs.New()
+	return nil
 }
