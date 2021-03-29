@@ -55,7 +55,8 @@ func TestWritableFS(t *testing.T) {
 
 	testWritableFS(Memory(), a)
 
-	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
-	a.NotError(err)
-	testWritableFS(Dir(dir), a)
+	tmp := "./tmp"
+	a.NotError(os.Mkdir(tmp, os.ModePerm))
+	testWritableFS(Dir(tmp), a)
+	a.NotError(os.RemoveAll(tmp))
 }
