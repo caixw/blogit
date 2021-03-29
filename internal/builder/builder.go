@@ -117,12 +117,18 @@ func (b *Builder) buildData(src fs.FS, base string) (err error) {
 	return
 }
 
+var (
+	layoutPattern = path.Join(vars.ThemesDir, "*", vars.LayoutDir, "*")
+	themePattern  = path.Join(vars.ThemesDir, "*", vars.ThemeYAML)
+)
+
 func isIgnore(src string) bool {
-	// themes/**/layout/file 这种格式将忽略
-	layout := path.Dir(src)
-	if path.Base(layout) == vars.LayoutDir &&
-		path.Base(path.Dir(path.Dir(layout))) == vars.ThemesDir {
+	if ok, _ := path.Match(layoutPattern, src); ok {
 		return true
+	}
+
+	if ok, _ := path.Match(themePattern, src); ok {
+		return false
 	}
 
 	ext := strings.ToLower(path.Ext(src))

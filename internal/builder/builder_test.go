@@ -19,8 +19,10 @@ func TestIsIgnore(t *testing.T) {
 
 	a.True(isIgnore("abc/def/a.md"))
 	a.True(isIgnore("abc/def/.git"))
-	a.True(isIgnore("abc/themes/d/layout/header.html"))
-	a.False(isIgnore("abc/themes/layout/header.html")) // 不符合 themes/xx/layout 的格式
+	a.True(isIgnore("themes/d/layout/header.html"))
+	a.True(isIgnore("themes/layout/layout/header.html")) // 第一个 layout 为主题名称
+	a.False(isIgnore("themes/d/theme.yaml"))
+	a.False(isIgnore("themes/layout/header.html")) // 不符合 themes/xx/layout 的格式
 }
 
 func TestBuild(t *testing.T) {
