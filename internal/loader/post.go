@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/fs"
 	"path"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -184,9 +183,10 @@ func (p *Post) sanitize(path string) *FieldError {
 	return nil
 }
 
-// Slug 返回文章的唯一 ID
+// Slug 根据文章路径返回文章的唯一 ID
 func Slug(p string) string {
-	// Clean 同时会将分隔符转换成系统对应的字符，所以先 Clean 再 ToSlash
-	p = filepath.ToSlash(filepath.Clean(p))
+	if !fs.ValidPath(p) {
+		panic(fmt.Sprintf("无效的参数 p: %s", p))
+	}
 	return strings.TrimLeft(p, "./")
 }
