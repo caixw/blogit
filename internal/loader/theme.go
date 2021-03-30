@@ -7,6 +7,7 @@ import (
 	"path"
 	"strconv"
 
+	"github.com/alecthomas/chroma/styles"
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/filesystem"
@@ -23,11 +24,22 @@ type Theme struct {
 
 	Templates []string `yaml:"templates,omitempty"`
 
+	// 指定高亮的主题名称
+	//
+	// 名称值可以从 https://pkg.go.dev/github.com/alecthomas/chroma@v0.8.2/styles 获取
+	Highlights []*Highlight `yaml:"highlights,omitempty"`
+
 	// 部分可选内容的模板，如果为空，则其输出相应的 xml 文件时不会为其添加 xsl 文件。
 	// 模板名称为相对于当前主题目录的文件路径。
 	Sitemap string `yaml:"sitemap,omitempty"`
 	RSS     string `yaml:"rss,omitempty"`
 	Atom    string `yaml:"atom,omitempty"`
+}
+
+// Highlight 高亮主题指定
+type Highlight struct {
+	Name  string `yaml:"name"` // 指向的主题名称
+	Media string `yaml:"media,omitempty"`
 }
 
 // dir 为当前主题所在的目录；
@@ -76,6 +88,35 @@ func (t *Theme) sanitize(fs fs.FS, dir, id string) *FieldError {
 		if !filesystem.Exists(fs, path.Join(dir, t.Atom)) {
 			return &FieldError{Message: "不存在该模板文件", Field: "atom", Value: t.Atom}
 		}
+	}
+
+	var mediaIsEmpty bool
+	for index, h := range t.Highlights {
+		i := strconv.Itoa(index)
+		prefix := "highlight[" + i + "]."
+
+		if err := h.sanitize(); err != nil {
+			err.Field = prefix + err.Field
+			return err
+		}
+
+		if h.Media == "" {
+			if mediaIsEmpty {
+				return &FieldError{Message: "只能一个为空", Field: prefix + "media"}
+			}
+			mediaIsEmpty = true
+		}
+	}
+
+	return nil
+}
+
+var highlightCSSName = styles.Names()
+
+func (h *Highlight) sanitize() *FieldError {
+	names := highlightCSSName
+	if sliceutil.Count(names, func(i int) bool { return names[i] == h.Name }) == 0 {
+		return &FieldError{Message: "不存在", Field: "name", Value: h.Name}
 	}
 
 	return nil

@@ -64,7 +64,7 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 			keys = append(keys, t.Title)
 		}
 
-		p := buildPath(path.Join(vars.TagsDir, t.Slug))
+		p := path.Join(vars.TagsDir, t.Slug+vars.Ext)
 		ts.Tags = append(ts.Tags, &Tag{
 			Permalink: BuildURL(conf.URL, p),
 			Slug:      t.Slug,

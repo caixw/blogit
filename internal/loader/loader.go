@@ -13,6 +13,7 @@ import (
 	"path"
 
 	fh "github.com/alecthomas/chroma/formatters/html"
+	"github.com/caixw/blogit/internal/vars"
 	"github.com/issue9/validation/is"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting"
@@ -30,9 +31,10 @@ var markdown = goldmark.New(
 		extension.Footnote,
 		meta.Meta,
 		highlighting.NewHighlighting(
-			highlighting.WithStyle("monokai"),
 			highlighting.WithFormatOptions(
 				fh.WithLineNumbers(true),
+				fh.WithClasses(true),
+				fh.ClassPrefix(vars.HighlightClassPrefix),
 			),
 		),
 	),

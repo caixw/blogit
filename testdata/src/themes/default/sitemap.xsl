@@ -22,18 +22,6 @@
 <link rel="stylesheet" type="text/css" href="/themes/default/style.css" />
 <style>
 /* 颜色等值由引用的 style.css 决定。当前 style 标签中只规定了表格的相关设置。 */
-table {
-    width: 100%;
-    text-align: left;
-    border-collapse: collapse;
-    line-height: 1.5;
-}
-td, th {
-    padding: 1px 5px;
-}
-td.sitemap-lastmod {
-    text-align:right;
-}
 .lastmod {
     width: 10rem;
 }
@@ -42,6 +30,9 @@ td.sitemap-lastmod {
 }
 .priority {
     width: 3rem;
+}
+.foot {
+    text-align: right;
 }
 </style>
 </head>
@@ -79,7 +70,7 @@ td.sitemap-lastmod {
     <thead>
         <tr>
             <th>地址</th>
-            <th class="lastmod">最后更新</th>
+            <th class="lastmod">更新</th>
             <th class="changefreq">更新频率</th>
             <th class="priority">权重</th>
         </tr>
@@ -87,8 +78,8 @@ td.sitemap-lastmod {
 
     <tfoot>
         <tr>
-            <td colspan="1">当前总共&#160;<xsl:value-of select="count(/sm:urlset/sm:url)" />&#160;条记录</td>
-            <td colspan="3" class="sitemap-lastmod">最后更新于&#160;<span><xsl:value-of select="$max" /></span></td>
+            <td colspan="4" class="foot">总共&#160;<xsl:value-of select="count(/sm:urlset/sm:url)" />&#160;条记录，
+            更新于&#160;<time><xsl:value-of select="$max" /></time>。</td>
         </tr>
     </tfoot>
 
@@ -112,11 +103,11 @@ td.sitemap-lastmod {
             <td>
                 <xsl:choose>
                     <xsl:when test="sm:changefreq = 'never'">从不</xsl:when>
-                    <xsl:when test="sm:changefreq = 'yearly'">每年</xsl:when>
-                    <xsl:when test="sm:changefreq = 'monthly'">每月</xsl:when>
-                    <xsl:when test="sm:changefreq = 'weekly'">每周</xsl:when>
-                    <xsl:when test="sm:changefreq = 'daily'">每天</xsl:when>
-                    <xsl:when test="sm:changefreq = 'hourly'">每小时</xsl:when>
+                    <xsl:when test="sm:changefreq = 'yearly'">年</xsl:when>
+                    <xsl:when test="sm:changefreq = 'monthly'">月</xsl:when>
+                    <xsl:when test="sm:changefreq = 'weekly'">周</xsl:when>
+                    <xsl:when test="sm:changefreq = 'daily'">天</xsl:when>
+                    <xsl:when test="sm:changefreq = 'hourly'">小时</xsl:when>
                     <xsl:when test="sm:changefreq = 'always'">实时</xsl:when>
                     <xsl:otherwise><xsl:attribute name="class">error</xsl:attribute>未知的值</xsl:otherwise>
                 </xsl:choose>

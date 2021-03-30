@@ -22,6 +22,9 @@
         {{if .Prev}}<link rel="prev" href="{{.Prev.URL}}" />{{end}}
 
         <link rel="stylesheet" type="text/css" href="{{"default/style.css"|themeURL}}" />
+        {{- range .Site.Highlights -}}
+            <link rel="stylesheet" type="text/css" media="{{.Media}}" href="{{.URL}}" />
+        {{- end -}}
 
         {{- if .JSONLD -}}
         <script type="application/ld+json">

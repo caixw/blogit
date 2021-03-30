@@ -10,3 +10,11 @@ templates:
   - post
 
 sitemap: sitemap.xsl
+
+highlights:
+- name: solarized-dark256
+  media: '(prefers-color-scheme: dark)'
+- name: solarized-light
+  media: '(prefers-color-scheme: light)'
+- name: igor
+  media: print

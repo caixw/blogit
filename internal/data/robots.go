@@ -13,7 +13,7 @@ type Robots struct {
 
 func newRobots(conf *loader.Config, sitemap *Sitemap) *Robots {
 	robots := &Robots{
-		Path:   buildPath("robots.txt"),
+		Path:   "robots.txt",
 		Agents: conf.Robots,
 	}
 

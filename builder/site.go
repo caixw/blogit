@@ -3,7 +3,11 @@
 package builder
 
 import (
+	"bytes"
 	"time"
+
+	"github.com/alecthomas/chroma/formatters/html"
+	"github.com/alecthomas/chroma/styles"
 
 	"github.com/caixw/blogit/internal/data"
 	"github.com/caixw/blogit/internal/loader"
@@ -38,7 +42,8 @@ type site struct {
 	AppName    string // 程序名称
 	AppURL     string // 程序官网
 	AppVersion string // 当前程序的版本号
-	Theme      *loader.Theme
+	Theme      *data.Theme
+	Highlights []*styleLink // 高亮引用的 CSS 文件列表
 
 	Title    string
 	Subtitle string       // 网站副标题
@@ -59,12 +64,18 @@ type site struct {
 	Builded  time.Time // 最后次编译时间
 }
 
+type styleLink struct {
+	Media string
+	URL   string
+}
+
 func newSite(d *data.Data) *site {
 	s := &site{
 		AppName:    vars.Name,
 		AppURL:     vars.URL,
 		AppVersion: vars.Version(),
 		Theme:      d.Theme,
+		Highlights: make([]*styleLink, 0, len(d.Highlights)),
 
 		Title:    d.Title,
 		Subtitle: d.Subtitle,
@@ -92,6 +103,13 @@ func newSite(d *data.Data) *site {
 		s.Sitemap = &loader.Link{URL: d.Sitemap.Permalink, Text: d.Sitemap.Title}
 	}
 
+	for _, h := range d.Highlights {
+		s.Highlights = append(s.Highlights, &styleLink{
+			Media: h.Media,
+			URL:   h.URL,
+		})
+	}
+
 	return s
 }
 
@@ -100,4 +118,22 @@ func (b *Builder) page(t string) *page {
 		Site: b.site,
 		Type: t,
 	}
+}
+
+var cssFormater = html.New(
+	html.ClassPrefix(vars.HighlightClassPrefix),
+)
+
+func (b *Builder) buildHighlights(d *data.Data) error {
+	for _, h := range d.Highlights {
+		buf := &bytes.Buffer{}
+		if err := cssFormater.WriteCSS(buf, styles.Get(h.Name)); err != nil {
+			return err
+		}
+		if err := b.appendFile(h.Path, time.Now(), buf.Bytes()); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

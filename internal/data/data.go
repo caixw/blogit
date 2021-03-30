@@ -6,7 +6,6 @@ package data
 import (
 	"io/fs"
 	"path"
-	"path/filepath"
 	"time"
 
 	"github.com/caixw/blogit/internal/loader"
@@ -24,7 +23,8 @@ type (
 		Language    string
 		Author      *loader.Author
 		License     *loader.Link
-		Theme       *loader.Theme
+		Theme       *Theme
+		Highlights  []*Highlight
 
 		RSS     *RSS
 		Atom    *RSS
@@ -108,7 +108,8 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		Language:    conf.Language,
 		Author:      conf.Author,
 		License:     conf.License,
-		Theme:       theme,
+		Theme:       newTheme(theme),
+		Highlights:  newHighlights(conf, theme),
 
 		Uptime:   conf.Uptime,
 		Builded:  time.Now(),
@@ -164,21 +165,4 @@ func buildThemeURL(baseURL, themeID string, p ...string) string {
 	pp := make([]string, 0, len(p))
 	pp = append(pp, vars.ThemesDir, themeID)
 	return BuildURL(baseURL, append(pp, p...)...)
-}
-
-// 如果 slug 不再扩展名，再会加上默认的扩展名 .html
-func buildPath(slug string) string {
-	if slug == "" {
-		panic("slug 不能为空")
-	}
-
-	// fs 中不允许除 / 之外的分隔符，这里不也不用判断其它的。
-	if slug[0] == '/' {
-		slug = slug[1:]
-	}
-
-	if filepath.Ext(slug) != "" {
-		return slug
-	}
-	return slug + vars.Ext
 }

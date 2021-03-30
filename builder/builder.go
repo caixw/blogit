@@ -27,7 +27,7 @@ import (
 // Builder 提供了一个可重复生成 HTML 内容的对象
 type Builder struct {
 	log  *log.Logger
-	fs   filesystem.WritableFS
+	wfs  filesystem.WritableFS
 	site *site
 	tpl  *template.Template
 }
@@ -43,12 +43,12 @@ func New(fs filesystem.WritableFS, l *log.Logger) *Builder {
 	if l == nil {
 		l = log.Default()
 	}
-	return &Builder{fs: fs, log: l}
+	return &Builder{wfs: fs, log: l}
 }
 
 // Rebuild 重新生成数据
 func (b *Builder) Rebuild(src fs.FS, base string) error {
-	if err := b.fs.Reset(); err != nil {
+	if err := b.wfs.Reset(); err != nil {
 		return err
 	}
 
@@ -108,6 +108,7 @@ func (b *Builder) buildData(src fs.FS, base string) (err error) {
 	call(b.buildRSS)
 	call(b.buildRobots)
 	call(b.buildProfile)
+	call(b.buildHighlights)
 
 	return
 }
@@ -169,7 +170,7 @@ func (b *Builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) e
 
 // 如果 path 以 / 开头，则会自动去除 /
 func (b *Builder) appendFile(p string, mod time.Time, data []byte) error {
-	return b.fs.WriteFile(p, data, fs.ModePerm)
+	return b.wfs.WriteFile(p, data, fs.ModePerm)
 }
 
 // ServeHTTP 作为 HTTP 服务接口使用
@@ -185,7 +186,7 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		p += index
 	}
 
-	f, err := b.fs.Open(p)
+	f, err := b.wfs.Open(p)
 	if errors.Is(err, fs.ErrNotExist) {
 		http.NotFound(w, r)
 		return

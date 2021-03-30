@@ -21,7 +21,7 @@ func newProfile(conf *loader.Config, posts []*Post) *Profile {
 	}
 
 	profile := &Profile{
-		Path:   buildPath("README.md"),
+		Path:   "README.md",
 		Title:  p.Title,
 		Footer: p.Footer,
 		Posts:  make([]*Post, 0, size),

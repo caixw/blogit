@@ -8,8 +8,6 @@ import (
 	"time"
 
 	"github.com/issue9/assert"
-
-	"github.com/caixw/blogit/internal/vars"
 )
 
 func TestLoad(t *testing.T) {
@@ -102,14 +100,4 @@ func TestBuildThemeURL(t *testing.T) {
 	a.Equal(buildThemeURL(url, id, "p1/p2.md"), "https://example.com/themes/p1/p2.md")
 	a.Equal(buildThemeURL(url, id, ""), "https://example.com/themes")
 	a.Equal(buildThemeURL(url, id, "/"), "https://example.com/themes")
-}
-
-func TestBuildPath(t *testing.T) {
-	a := assert.New(t)
-
-	a.Panic(func() { buildPath("") })
-
-	a.Equal(buildPath("slug"), "slug"+vars.Ext)
-	a.Equal(buildPath("/slug"), "slug"+vars.Ext)
-	a.Equal(buildPath("/slug.xml"), "slug.xml")
 }

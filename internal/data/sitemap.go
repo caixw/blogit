@@ -16,11 +16,10 @@ type Sitemap struct {
 }
 
 func newSitemap(conf *loader.Config, theme *loader.Theme) *Sitemap {
-	p := buildPath(vars.SitemapXML)
 	sm := &Sitemap{
 		Sitemap:   conf.Sitemap,
-		Permalink: BuildURL(conf.URL, p),
-		Path:      p,
+		Permalink: BuildURL(conf.URL, vars.SitemapXML),
+		Path:      vars.SitemapXML,
 	}
 
 	if theme.Sitemap != "" {

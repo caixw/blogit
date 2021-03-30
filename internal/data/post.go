@@ -102,7 +102,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		p.JSONLD = ld
 	}
 
-	path := buildPath(p.Slug)
+	path := p.Slug + vars.Ext
 	return &Post{
 		Permalink: BuildURL(conf.URL, path),
 		Slug:      p.Slug,

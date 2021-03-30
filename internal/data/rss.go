@@ -19,7 +19,6 @@ func newRSS(conf *loader.Config, r *loader.RSS, path, xsl string, posts []*Post)
 		size = l
 	}
 
-	path = buildPath(path)
 	rss := &RSS{
 		Title:     r.Title,
 		Permalink: BuildURL(conf.URL, path),

@@ -9,8 +9,6 @@ theme: default
 robots:
 - agent:
   - '*'
-  disallow:
-  - /themes/
   allow:
   - /
 
