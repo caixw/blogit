@@ -15,7 +15,10 @@ var opt = &options{}
 // Init 注册 serve 子命令
 func Init(o *cmdopt.CmdOpt, info, erro *log.Logger) {
 	fs := o.New("serve", "以 HTTP 服务运行\n", func(w io.Writer) error {
-		return opt.serve()
+		if err := opt.serve(); err != nil {
+			erro.Println(err)
+		}
+		return nil
 	})
 
 	fs.StringVar(&opt.source, "src", "./", "指定源码目录")

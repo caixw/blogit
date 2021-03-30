@@ -19,7 +19,10 @@ func Init(o *cmdopt.CmdOpt, succ, info, erro *log.Logger) {
 	opt.erro = erro
 
 	fs := o.New("preview", "以预览的方式运行 HTTP 服务\n", func(w io.Writer) error {
-		return opt.watch()
+		if err := opt.watch(); err != nil {
+			erro.Println(err)
+		}
+		return nil
 	})
 
 	fs.StringVar(&opt.source, "src", "./", "指定源码目录")

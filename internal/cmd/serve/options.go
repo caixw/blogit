@@ -56,7 +56,7 @@ func (o *options) serve() error {
 	}
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		o.info.Printf("访问 %s\n", r.URL.String())
+		o.info.Println("访问 ", r.URL.String())
 		b.ServeHTTP(w, r)
 	})
 	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}

@@ -13,7 +13,7 @@ import (
 	"github.com/issue9/cmdopt"
 	"github.com/issue9/term/v2/colors"
 
-	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/internal/cmd/create"
 	"github.com/caixw/blogit/internal/cmd/preview"
 	"github.com/caixw/blogit/internal/cmd/serve"
 )
@@ -79,20 +79,12 @@ func Exec(args []string) error {
 	}
 
 	initBuild(opt)
-	initInit(opt)
-	initPost(opt)
 	initVersion(opt)
 	serve.Init(opt, info.asLogger(), erro.asLogger())
 	preview.Init(opt, succ.asLogger(), info.asLogger(), erro.asLogger())
+	create.InitInit(opt, succ.asLogger(), erro.asLogger())
+	create.InitPost(opt, succ.asLogger(), erro.asLogger())
 	opt.Help("help", "显示当前内容\n")
 
 	return opt.Exec(args)
-}
-
-func getWD() (filesystem.WritableFS, error) {
-	dir, err := os.Getwd()
-	if err != nil {
-		return nil, err
-	}
-	return filesystem.Dir(dir), nil
 }

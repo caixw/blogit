@@ -30,7 +30,7 @@ func build(w io.Writer) error {
 
 	info.println("开始编译内容")
 	if err := blogit.Build(os.DirFS(buildSrc), filesystem.Dir(buildDest)); err != nil {
-		erro.println(err.Error())
+		erro.println(err)
 		return nil
 	}
 

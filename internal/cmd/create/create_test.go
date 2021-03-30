@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-package cmd
+package create
 
 import (
 	"testing"
