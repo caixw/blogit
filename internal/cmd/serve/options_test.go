@@ -42,7 +42,7 @@ func TestOptions_serve(t *testing.T) {
 
 	o := &options{
 		source: "../../../testdata/src",
-		addr:   ":8080",
+		addr:   ":8081",
 	}
 
 	exit := make(chan struct{}, 1)
@@ -53,22 +53,22 @@ func TestOptions_serve(t *testing.T) {
 	time.Sleep(500 * time.Millisecond) // 等待启动完成
 
 	// /index.html
-	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8080/index"+vars.Ext).
+	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8081/index"+vars.Ext).
 		Do().
 		Status(http.StatusOK)
 
 	// /
-	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8080/").
+	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8081/").
 		Do().
 		Status(http.StatusOK)
 
 	// /themes/default/
-	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8080/themes/default/").
+	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8081/themes/default/").
 		Do().
 		Status(http.StatusNotFound)
 
 	// not-exists.html
-	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8080/not-exists.html").
+	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8081/not-exists.html").
 		Do().
 		Status(http.StatusNotFound)
 

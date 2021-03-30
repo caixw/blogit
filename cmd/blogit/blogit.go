@@ -5,10 +5,14 @@
 // 可通过 blogit 查看具体的子命令。
 package main
 
-import "github.com/caixw/blogit/internal/cmd"
+import (
+	"os"
+
+	"github.com/caixw/blogit/internal/cmd"
+)
 
 func main() {
-	if err := cmd.Exec(); err != nil {
+	if err := cmd.Exec(os.Args[1:]); err != nil {
 		panic(err)
 	}
 }

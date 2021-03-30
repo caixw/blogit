@@ -52,6 +52,8 @@ type options struct {
 }
 
 func (o *options) sanitize() error {
+	o.stop = make(chan struct{}, 1)
+
 	if o.info == nil {
 		o.info = log.New(os.Stdout, "", log.LstdFlags)
 	}
@@ -69,6 +71,28 @@ func (o *options) sanitize() error {
 	}
 	o.srcFS = os.DirFS(o.source)
 
+	if err := o.parseURL(); err != nil {
+		return err
+	}
+
+	var dest filesystem.WritableFS
+	if o.dest == "" {
+		dest = filesystem.Memory()
+	} else {
+		dest = filesystem.Dir(o.dest)
+	}
+	o.b = blogit.NewBuilder(dest, o.erro)
+
+	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		o.info.Printf("访问 %s\n", r.URL.String())
+		o.b.ServeHTTP(w, r)
+	})
+	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
+
+	return nil
+}
+
+func (o *options) parseURL() error {
 	u, err := url.Parse(o.url)
 	if err != nil {
 		return err
@@ -93,37 +117,14 @@ func (o *options) sanitize() error {
 		o.path = "/" + o.path
 	}
 
-	var dest filesystem.WritableFS
-	if o.dest == "" {
-		dest = filesystem.Memory()
-	} else {
-		dest = filesystem.Dir(o.dest)
-	}
-	o.b = blogit.NewBuilder(dest, o.erro)
-
-	o.srv = &http.Server{Addr: o.addr, Handler: o.initServer()}
-
-	o.stop = make(chan struct{}, 1)
-
 	return nil
 }
 
-func (o *options) initServer() http.Handler {
-	var h http.Handler = o.b
-
-	if o.info != nil {
-		o.info.Println("启动服务：", o.addr)
-
-		h = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			o.info.Printf("访问 %s\n", r.URL.String())
-			o.b.ServeHTTP(w, r)
-		})
+func (o *options) build() (err error) {
+	if err = o.b.Rebuild(o.srcFS, o.url); err == nil {
+		o.builded = time.Now()
 	}
-	return http.StripPrefix(o.path, h)
-}
-
-func (o *options) build() error {
-	return o.b.Rebuild(o.srcFS, o.url)
+	return err
 }
 
 func (o *options) watch() error {
@@ -135,7 +136,7 @@ func (o *options) watch() error {
 		if err := o.serve(); !errors.Is(err, http.ErrServerClosed) {
 			o.erro.Println(err)
 		}
-		o.builded = time.Now()
+		o.stop <- struct{}{}
 	}()
 
 	if err := o.build(); err != nil {
@@ -166,7 +167,6 @@ func (o *options) watch() error {
 					o.erro.Println(err)
 					return
 				}
-				o.builded = time.Now()
 				o.succ.Println("重新编译成功")
 			}()
 		case err := <-watcher.Errors:
@@ -179,11 +179,12 @@ func (o *options) watch() error {
 }
 
 func (o *options) close() error {
-	o.stop <- struct{}{}
 	return o.srv.Close()
 }
 
 func (o *options) serve() error {
+	o.info.Println("启动服务：", o.addr)
+
 	if o.cert != "" && o.key != "" {
 		return o.srv.ListenAndServeTLS(o.cert, o.key)
 	}

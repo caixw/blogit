@@ -55,7 +55,13 @@ func (o *options) serve() error {
 		return err
 	}
 
-	o.srv = &http.Server{Addr: o.addr, Handler: o.initServer(b)}
+	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		o.info.Printf("访问 %s\n", r.URL.String())
+		b.ServeHTTP(w, r)
+	})
+	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
+
+	o.info.Println("启动服务：", o.addr)
 	if o.cert != "" && o.key != "" {
 		return o.srv.ListenAndServeTLS(o.cert, o.key)
 	}
@@ -88,19 +94,4 @@ func (o *options) sanitize() error {
 	}
 
 	return nil
-}
-
-func (o *options) initServer(b *blogit.Builder) http.Handler {
-	var h http.Handler = b
-
-	if o.info != nil {
-		o.info.Println("启动服务：", o.addr)
-
-		h = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			o.info.Printf("访问 %s\n", r.URL.String())
-			b.ServeHTTP(w, r)
-		})
-	}
-
-	return http.StripPrefix(o.path, h)
 }

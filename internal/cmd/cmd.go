@@ -65,7 +65,7 @@ func (msg *consoleLogger) asLogger() *log.Logger {
 }
 
 // Exec 执行命令行
-func Exec() error {
+func Exec(args []string) error {
 	opt := &cmdopt.CmdOpt{
 		Output:        os.Stdout,
 		ErrorHandling: flag.ExitOnError,
@@ -86,7 +86,7 @@ func Exec() error {
 	preview.Init(opt, succ.asLogger(), info.asLogger(), erro.asLogger())
 	opt.Help("help", "显示当前内容\n")
 
-	return opt.Exec(os.Args[1:])
+	return opt.Exec(args)
 }
 
 func getWD() (filesystem.WritableFS, error) {
