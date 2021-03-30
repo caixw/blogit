@@ -3,12 +3,12 @@
 package serve
 
 import (
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/caixw/blogit"
 	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/internal/cmd/console"
 )
 
 // options 启动服务的参数选项
@@ -31,13 +31,10 @@ type options struct {
 	cert string
 	key  string
 
-	info *log.Logger
-	erro *log.Logger
-
 	srv *http.Server
 }
 
-func (o *options) serve() error {
+func (o *options) serve(info, erro *console.Logger) error {
 	if err := o.sanitize(); err != nil {
 		return err
 	}
@@ -50,18 +47,18 @@ func (o *options) serve() error {
 	}
 	src := os.DirFS(o.source)
 
-	b := blogit.NewBuilder(dest, o.erro)
+	b := blogit.NewBuilder(dest, erro.AsLogger())
 	if err := b.Rebuild(src, ""); err != nil {
 		return err
 	}
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		o.info.Println("访问 ", r.URL.String())
+		info.Println("访问 ", r.URL.String())
 		b.ServeHTTP(w, r)
 	})
 	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
 
-	o.info.Println("启动服务：", o.addr)
+	info.Println("启动服务：", o.addr)
 	if o.cert != "" && o.key != "" {
 		return o.srv.ListenAndServeTLS(o.cert, o.key)
 	}
@@ -69,14 +66,6 @@ func (o *options) serve() error {
 }
 
 func (o *options) sanitize() error {
-	if o.info == nil {
-		o.info = log.New(os.Stdout, "", log.LstdFlags)
-	}
-
-	if o.erro == nil {
-		o.erro = log.New(os.Stderr, "", log.LstdFlags)
-	}
-
 	if o.source == "" {
 		o.source = "./"
 	}

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -18,6 +17,7 @@ import (
 
 	"github.com/caixw/blogit"
 	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/internal/cmd/console"
 )
 
 // options 启动服务的参数选项
@@ -29,7 +29,8 @@ type options struct {
 
 	// 项目编译后的输出地址
 	// 如果为空，则会要用 filesystem.Memory() 作为默认值。
-	dest string
+	dest   string
+	destFS filesystem.WritableFS
 
 	// 如果指定了此值，那么表示要替换 conf.yaml 中的 url
 	url  string
@@ -39,10 +40,6 @@ type options struct {
 	// HTTPS 模式下的证书
 	cert string
 	key  string
-
-	info *log.Logger
-	erro *log.Logger
-	succ *log.Logger
 
 	b       *blogit.Builder
 	srv     *http.Server
@@ -54,18 +51,6 @@ type options struct {
 func (o *options) sanitize() error {
 	o.stop = make(chan struct{}, 1)
 
-	if o.info == nil {
-		o.info = log.New(os.Stdout, "", log.LstdFlags)
-	}
-
-	if o.succ == nil {
-		o.succ = log.New(os.Stdout, "", log.LstdFlags)
-	}
-
-	if o.erro == nil {
-		o.erro = log.New(os.Stderr, "", log.LstdFlags)
-	}
-
 	if o.source == "" {
 		o.source = "./"
 	}
@@ -75,19 +60,11 @@ func (o *options) sanitize() error {
 		return err
 	}
 
-	var dest filesystem.WritableFS
 	if o.dest == "" {
-		dest = filesystem.Memory()
+		o.destFS = filesystem.Memory()
 	} else {
-		dest = filesystem.Dir(o.dest)
+		o.destFS = filesystem.Dir(o.dest)
 	}
-	o.b = blogit.NewBuilder(dest, o.erro)
-
-	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		o.info.Println("访问 ", r.URL.String())
-		o.b.ServeHTTP(w, r)
-	})
-	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
 
 	return nil
 }
@@ -127,20 +104,28 @@ func (o *options) build() (err error) {
 	return err
 }
 
-func (o *options) watch() error {
+func (o *options) watch(succ, info, erro *console.Logger) error {
 	if err := o.sanitize(); err != nil {
 		return err
 	}
 
+	o.b = blogit.NewBuilder(o.destFS, erro.AsLogger())
+
+	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		info.Println("访问 ", r.URL.String())
+		o.b.ServeHTTP(w, r)
+	})
+	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
+
 	go func() {
-		if err := o.serve(); !errors.Is(err, http.ErrServerClosed) {
-			o.erro.Println(err)
+		if err := o.serve(info, erro); !errors.Is(err, http.ErrServerClosed) {
+			erro.Println(err)
 		}
 		o.stop <- struct{}{}
 	}()
 
 	if err := o.build(); err != nil {
-		o.erro.Println(err)
+		erro.Println(err)
 	}
 
 	watcher, err := o.getWatcher()
@@ -156,21 +141,21 @@ func (o *options) watch() error {
 			}
 
 			if time.Since(o.builded) <= time.Second {
-				o.info.Println("watcher.Events:更新太频繁，该监控事件被忽略:", event)
+				info.Println("watcher.Events:更新太频繁，该监控事件被忽略:", event)
 				continue
 			}
 
-			o.info.Println("触发事件：", event, "，开始重新编译！")
+			info.Println("触发事件：", event, "，开始重新编译！")
 
 			go func() {
 				if err = o.build(); err != nil {
-					o.erro.Println(err)
+					erro.Println(err)
 					return
 				}
-				o.succ.Println("重新编译成功")
+				succ.Println("重新编译成功")
 			}()
 		case err := <-watcher.Errors:
-			o.erro.Println(err)
+			erro.Println(err)
 			return err
 		case <-o.stop:
 			return http.ErrServerClosed
@@ -182,8 +167,8 @@ func (o *options) close() error {
 	return o.srv.Close()
 }
 
-func (o *options) serve() error {
-	o.info.Println("启动服务：", o.addr)
+func (o *options) serve(info, erro *console.Logger) error {
+	info.Println("启动服务：", o.addr)
 
 	if o.cert != "" && o.key != "" {
 		return o.srv.ListenAndServeTLS(o.cert, o.key)

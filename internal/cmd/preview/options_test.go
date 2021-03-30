@@ -4,12 +4,14 @@ package preview
 
 import (
 	"net/http"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/issue9/assert"
 	"github.com/issue9/assert/rest"
 
+	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -20,8 +22,8 @@ func TestOptions_sanitize(t *testing.T) {
 	o := &options{}
 	a.NotError(o.sanitize()).
 		Equal(o.path, "/").
-		Equal(o.source, "./").
-		Equal(o.dest, "").NotNil(o.b).
+		Equal(o.source, "./").NotNil(o.srcFS).
+		Equal(o.dest, "").NotNil(o.destFS).
 		Equal(o.addr, ":80")
 
 	o = &options{
@@ -63,6 +65,10 @@ func TestOptions_sanitize(t *testing.T) {
 func TestOptions_watch(t *testing.T) {
 	a := assert.New(t)
 
+	succ := &console.Logger{Out: os.Stdout}
+	info := &console.Logger{Out: os.Stdout}
+	erro := &console.Logger{Out: os.Stderr}
+
 	o := &options{
 		source: "../../..//testdata/src",
 		url:    "http://localhost:8080",
@@ -70,7 +76,7 @@ func TestOptions_watch(t *testing.T) {
 
 	exit := make(chan bool, 1)
 	go func() {
-		a.Equal(o.watch(), http.ErrServerClosed)
+		a.Equal(o.watch(succ, info, erro), http.ErrServerClosed)
 		exit <- true
 	}()
 	time.Sleep(500 * time.Millisecond) // 等待启动完成

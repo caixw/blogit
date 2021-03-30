@@ -5,21 +5,18 @@ package preview
 
 import (
 	"io"
-	"log"
 
 	"github.com/issue9/cmdopt"
+
+	"github.com/caixw/blogit/internal/cmd/console"
 )
 
 var opt = &options{}
 
 // Init 注册 preview 子命令
-func Init(o *cmdopt.CmdOpt, succ, info, erro *log.Logger) {
-	opt.succ = succ
-	opt.info = info
-	opt.erro = erro
-
+func Init(o *cmdopt.CmdOpt, succ, info, erro *console.Logger) {
 	fs := o.New("preview", "以预览的方式运行 HTTP 服务\n", func(w io.Writer) error {
-		if err := opt.watch(); err != nil {
+		if err := opt.watch(succ, info, erro); err != nil {
 			erro.Println(err)
 		}
 		return nil

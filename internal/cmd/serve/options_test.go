@@ -4,12 +4,14 @@ package serve
 
 import (
 	"net/http"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/issue9/assert"
 	"github.com/issue9/assert/rest"
 
+	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -45,9 +47,12 @@ func TestOptions_serve(t *testing.T) {
 		addr:   ":8081",
 	}
 
+	info := &console.Logger{Out: os.Stdout}
+	erro := &console.Logger{Out: os.Stderr}
+
 	exit := make(chan struct{}, 1)
 	go func() {
-		a.Equal(o.serve(), http.ErrServerClosed)
+		a.Equal(o.serve(info, erro), http.ErrServerClosed)
 		exit <- struct{}{}
 	}()
 	time.Sleep(500 * time.Millisecond) // 等待启动完成

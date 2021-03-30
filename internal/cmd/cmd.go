@@ -6,63 +6,36 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"io"
-	"log"
 	"os"
 
 	"github.com/issue9/cmdopt"
 	"github.com/issue9/term/v2/colors"
 
+	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/cmd/create"
 	"github.com/caixw/blogit/internal/cmd/preview"
 	"github.com/caixw/blogit/internal/cmd/serve"
 )
 
 var (
-	erro = &consoleLogger{
-		prefix:   "[ERRO] ",
+	erro = &console.Logger{
+		Prefix:   "[ERRO] ",
 		Colorize: colors.New(colors.Normal, colors.Red, colors.Default),
-		out:      os.Stderr,
+		Out:      os.Stderr,
 	}
 
-	info = &consoleLogger{
-		prefix:   "[INFO] ",
+	info = &console.Logger{
+		Prefix:   "[INFO] ",
 		Colorize: colors.New(colors.Normal, colors.Default, colors.Default),
-		out:      os.Stdout,
+		Out:      os.Stdout,
 	}
 
-	succ = &consoleLogger{
-		prefix:   "[SUCC] ",
+	succ = &console.Logger{
+		Prefix:   "[SUCC] ",
 		Colorize: colors.New(colors.Normal, colors.Green, colors.Default),
-		out:      os.Stdout,
+		Out:      os.Stdout,
 	}
 )
-
-type consoleLogger struct {
-	colors.Colorize
-	prefix string
-	out    io.Writer
-}
-
-func (msg *consoleLogger) printf(format string, v ...interface{}) {
-	msg.Fprint(msg.out, msg.prefix)
-	colors.Fprintf(msg.out, colors.Normal, colors.Default, colors.Default, format, v...)
-}
-
-func (msg *consoleLogger) println(v ...interface{}) {
-	msg.Fprint(msg.out, msg.prefix)
-	colors.Fprintln(msg.out, colors.Normal, colors.Default, colors.Default, v...)
-}
-
-func (msg *consoleLogger) Write(bs []byte) (int, error) {
-	msg.Fprint(msg.out, msg.prefix)
-	colors.Fprint(msg.out, colors.Normal, colors.Default, colors.Default, string(bs))
-	return 0, nil
-}
-
-func (msg *consoleLogger) asLogger() *log.Logger {
-	return log.New(msg, "", log.Ldate)
-}
 
 // Exec 执行命令行
 func Exec(args []string) error {
@@ -80,10 +53,10 @@ func Exec(args []string) error {
 
 	initBuild(opt)
 	initVersion(opt)
-	serve.Init(opt, info.asLogger(), erro.asLogger())
-	preview.Init(opt, succ.asLogger(), info.asLogger(), erro.asLogger())
-	create.InitInit(opt, succ.asLogger(), erro.asLogger())
-	create.InitPost(opt, succ.asLogger(), erro.asLogger())
+	serve.Init(opt, info, erro)
+	preview.Init(opt, succ, info, erro)
+	create.InitInit(opt, succ, erro)
+	create.InitPost(opt, succ, erro)
 	opt.Help("help", "显示当前内容\n")
 
 	return opt.Exec(args)

@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/issue9/cmdopt"
 
+	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -32,11 +32,11 @@ state: draft
 var postFS *flag.FlagSet
 
 // InitPost 注册 post 子命令
-func InitPost(opt *cmdopt.CmdOpt, succ, erro *log.Logger) {
+func InitPost(opt *cmdopt.CmdOpt, succ, erro *console.Logger) {
 	postFS = opt.New("post", "创建新文章\n", post(succ, erro))
 }
 
-func post(succ, erro *log.Logger) cmdopt.DoFunc {
+func post(succ, erro *console.Logger) cmdopt.DoFunc {
 	return func(w io.Writer) error {
 		if postFS.NArg() != 1 {
 			erro.Println("必须指定路径")
@@ -45,7 +45,7 @@ func post(succ, erro *log.Logger) cmdopt.DoFunc {
 
 		wfs, err := getWD()
 		if err != nil {
-			erro.Panicln(err)
+			erro.Println(err)
 			return nil
 		}
 
@@ -58,7 +58,7 @@ func post(succ, erro *log.Logger) cmdopt.DoFunc {
 		now := time.Now().Format(time.RFC3339)
 		c := fmt.Sprintf(postContent, now, now)
 		if err := wfs.WriteFile(p, []byte(c), os.ModePerm); err != nil {
-			erro.Panicln(err)
+			erro.Println(err)
 			return nil
 		}
 		succ.Println("创建文件:", p)

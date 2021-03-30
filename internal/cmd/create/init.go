@@ -6,7 +6,6 @@ import (
 	"flag"
 	"io"
 	"io/fs"
-	"log"
 	"path"
 	"time"
 
@@ -14,6 +13,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/loader"
 	"github.com/caixw/blogit/internal/vars"
 )
@@ -21,20 +21,20 @@ import (
 var initFS *flag.FlagSet
 
 // InitInit 注册 init 子命令
-func InitInit(opt *cmdopt.CmdOpt, succ, erro *log.Logger) {
+func InitInit(opt *cmdopt.CmdOpt, succ, erro *console.Logger) {
 	initFS = opt.New("init", "初始化新的博客内容\n", initF(succ, erro))
 }
 
-func initF(succ, erro *log.Logger) cmdopt.DoFunc {
+func initF(succ, erro *console.Logger) cmdopt.DoFunc {
 	return func(w io.Writer) error {
 		if initFS.NArg() != 1 {
-			erro.Panicln("必须指定目录")
+			erro.Println("必须指定目录")
 			return nil
 		}
 
 		wfs, err := getWD()
 		if err != nil {
-			erro.Panicln(err)
+			erro.Println(err)
 			return nil
 		}
 
@@ -46,7 +46,7 @@ func initF(succ, erro *log.Logger) cmdopt.DoFunc {
 			Theme:  "default",
 		}
 		if err := writeYAML(wfs, vars.ConfYAML, conf); err != nil {
-			erro.Panicln(err)
+			erro.Println(err)
 			return nil
 		}
 		succ.Println("创建了文件:", vars.ConfYAML)
@@ -60,7 +60,7 @@ func initF(succ, erro *log.Logger) cmdopt.DoFunc {
 			},
 		}
 		if err := writeYAML(wfs, vars.TagsYAML, tags); err != nil {
-			erro.Panicln(err)
+			erro.Println(err)
 			return nil
 		}
 		succ.Println("创建了文件:", vars.TagsYAML)
@@ -72,14 +72,14 @@ func initF(succ, erro *log.Logger) cmdopt.DoFunc {
 		}
 		p := path.Join(vars.ThemesDir, "default", "theme.yaml")
 		if err := writeYAML(wfs, p, theme); err != nil {
-			erro.Panicln(err)
+			erro.Println(err)
 			return nil
 		}
 		succ.Println("创建了主题文件:", p)
 
 		p = path.Join(vars.PostsDir, time.Now().Format("2006"), "post1.md")
 		if err := wfs.WriteFile(p, []byte(postContent), fs.ModePerm); err != nil {
-			erro.Panicln(err)
+			erro.Println(err)
 			return nil
 		}
 		succ.Println("创建了文章:", p)

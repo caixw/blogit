@@ -28,12 +28,12 @@ func initBuild(opt *cmdopt.CmdOpt) {
 func build(w io.Writer) error {
 	start := time.Now()
 
-	info.println("开始编译内容")
+	info.Println("开始编译内容")
 	if err := blogit.Build(os.DirFS(buildSrc), filesystem.Dir(buildDest)); err != nil {
-		erro.println(err)
+		erro.Println(err)
 		return nil
 	}
 
-	succ.printf("完成编译，用时：%v\n", time.Since(start))
+	succ.Println("完成编译，用时：", time.Since(start))
 	return nil
 }

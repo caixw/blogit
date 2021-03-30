@@ -5,17 +5,18 @@ package serve
 
 import (
 	"io"
-	"log"
 
 	"github.com/issue9/cmdopt"
+
+	"github.com/caixw/blogit/internal/cmd/console"
 )
 
 var opt = &options{}
 
 // Init 注册 serve 子命令
-func Init(o *cmdopt.CmdOpt, info, erro *log.Logger) {
+func Init(o *cmdopt.CmdOpt, info, erro *console.Logger) {
 	fs := o.New("serve", "以 HTTP 服务运行\n", func(w io.Writer) error {
-		if err := opt.serve(); err != nil {
+		if err := opt.serve(info, erro); err != nil {
 			erro.Println(err)
 		}
 		return nil
