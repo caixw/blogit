@@ -27,6 +27,7 @@ func testWritableFS(wfs WritableFS, a *assert.Assertion) {
 	a.NotError(err).NotNil(file)
 	data, err := io.ReadAll(file)
 	a.NotError(err).Empty(data)
+	a.NotError(file.Close())
 
 	// 写入文件，父目录存在，内容不为空
 	a.NotError(wfs.WriteFile("dir1/file.png", []byte{1, 2, 3}, fs.ModePerm))
@@ -34,6 +35,7 @@ func testWritableFS(wfs WritableFS, a *assert.Assertion) {
 	a.NotError(err).NotNil(file)
 	data, err = io.ReadAll(file)
 	a.NotError(err).Equal(data, []byte{1, 2, 3})
+	a.NotError(file.Close())
 
 	// 重置后内容不再存在
 	a.NotError(wfs.Reset())
@@ -42,6 +44,7 @@ func testWritableFS(wfs WritableFS, a *assert.Assertion) {
 	a.NotError(wfs.WriteFile("dir1/file.png", []byte{1, 2, 3}, fs.ModePerm)) // 重新写入
 	file, err = wfs.Open("dir1/file.png")
 	a.NotError(err).NotNil(file)
+	a.NotError(file.Close())
 
 	// 无效的 path 参数
 	_, err = wfs.Open("/dir1/file.png")
