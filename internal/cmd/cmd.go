@@ -53,6 +53,7 @@ func Exec(args []string) error {
 
 	initBuild(opt)
 	initVersion(opt)
+	initStyles(opt)
 	serve.Init(opt, info, erro)
 	preview.Init(opt, succ, info, erro)
 	create.InitInit(opt, succ, erro)
