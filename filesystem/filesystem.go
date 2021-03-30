@@ -64,11 +64,7 @@ func (dir dirFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
 }
 
 func (dir dirFS) Reset() error {
-	if err := os.RemoveAll(string(dir)); err != nil {
-		return err
-	}
-
-	return os.Mkdir(string(dir), os.ModePerm)
+	return os.RemoveAll(string(dir))
 }
 
 func (m *memoryFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
