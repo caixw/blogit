@@ -21,7 +21,7 @@ type Archives struct {
 
 // Archive 单个存档项
 type Archive struct {
-	date  time.Time // 当前存档的一个日期值，可用于生成 Title 和排序用，具体取值方式，可自定义
+	date  time.Time // 当前存档的一个日期值，范围内的任意值都可以。
 	Title string    // 当前存档页的标题
 	Posts []*Post   // 当前存档的文章列表
 }
@@ -33,14 +33,15 @@ func buildArchives(conf *loader.Config, posts []*Post) (*Archives, error) {
 
 	list := make([]*Archive, 0, 10)
 	for _, post := range posts {
-		t := post.Created
+		// 把某一时间内文章的创建时间固定为特定的值，
+		// 通过比较该值可以确定是不是属于同一个存档期。
 		var date time.Time
-
+		created := post.Created
 		switch conf.Archive.Type {
 		case loader.ArchiveTypeMonth:
-			date = time.Date(t.Year(), t.Month(), 2, 0, 0, 0, 0, t.Location())
+			date = time.Date(created.Year(), created.Month(), 2, 0, 0, 0, 0, created.Location())
 		case loader.ArchiveTypeYear:
-			date = time.Date(t.Year(), 2, 0, 0, 0, 0, 0, t.Location())
+			date = time.Date(created.Year(), 2, 0, 0, 0, 0, 0, created.Location())
 		default:
 			panic("无效的 archive.type 值")
 		}

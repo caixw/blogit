@@ -86,7 +86,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 
 	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 0 {
 		return nil, &loader.FieldError{
-			Message: "模板不存在于 theme.yaml",
+			Message: "模板不存在于 " + vars.ThemeYAML,
 			Field:   "template",
 			File:    p.Slug + vars.MarkdownExt,
 			Value:   p.Template,
@@ -147,4 +147,15 @@ func sortPosts(posts []*loader.Post) {
 			return posts[i].Created.After(posts[j].Created)
 		}
 	})
+}
+
+func sortPostsByCreated(posts []*Post) []*Post {
+	sorted := make([]*Post, len(posts))
+	copy(sorted, posts)
+
+	sort.SliceStable(sorted, func(i, j int) bool {
+		return sorted[i].Created.After(sorted[j].Created)
+	})
+
+	return sorted
 }

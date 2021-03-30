@@ -2,7 +2,7 @@
 
 package vars
 
-const mainVersion = "1.2.0"
+const mainVersion = "1.2.1"
 
 var (
 	buildDate  string

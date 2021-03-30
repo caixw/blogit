@@ -5,7 +5,6 @@ package data
 
 import (
 	"io/fs"
-	"os"
 	"path"
 	"path/filepath"
 	"time"
@@ -121,11 +120,14 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		Archives: archives,
 	}
 
+	// 获得一份按时间排序的列表，诸如 rss 等不应该受自定义排序的影响，始终以时间作为排序。
+	sorted := sortPostsByCreated(index.Posts)
+
 	if conf.RSS != nil {
-		data.RSS = newRSS(conf, conf.RSS, vars.RssXML, theme.RSS, index.Posts)
+		data.RSS = newRSS(conf, conf.RSS, vars.RssXML, theme.RSS, sorted)
 	}
 	if conf.Atom != nil {
-		data.Atom = newRSS(conf, conf.Atom, vars.AtomXML, theme.Atom, index.Posts)
+		data.Atom = newRSS(conf, conf.Atom, vars.AtomXML, theme.Atom, sorted)
 	}
 	if conf.Sitemap != nil {
 		data.Sitemap = newSitemap(conf, theme)
@@ -134,7 +136,7 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		data.Robots = newRobots(conf, data.Sitemap)
 	}
 	if conf.Profile != nil {
-		data.Profile = newProfile(conf, index.Posts)
+		data.Profile = newProfile(conf, sorted)
 	}
 
 	return data, nil
@@ -170,7 +172,8 @@ func buildPath(slug string) string {
 		panic("slug 不能为空")
 	}
 
-	if slug[0] == '/' || slug[0] == os.PathSeparator {
+	// fs 中不允许除 / 之外的分隔符，这里不也不用判断其它的。
+	if slug[0] == '/' {
 		slug = slug[1:]
 	}
 

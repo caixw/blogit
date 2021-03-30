@@ -79,7 +79,7 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 		ts.Keywords = strings.Join(keys, ",")
 	}
 
-	sortTags(ts, tags.OrderType, tags.Order)
+	sortTags(ts.Tags, tags.OrderType, tags.Order)
 	tagsPrevNext(ts.Tags)
 
 	return ts, nil
@@ -98,15 +98,15 @@ func tagsPrevNext(tags []*Tag) {
 	}
 }
 
-func sortTags(tags *Tags, typ, order string) {
+func sortTags(tags []*Tag, typ, order string) {
 	if typ == loader.TagOrderTypeSize {
-		sort.SliceStable(tags.Tags, func(i, j int) bool {
-			return len(tags.Tags[i].Posts) > len(tags.Tags[j].Posts)
+		sort.SliceStable(tags, func(i, j int) bool {
+			return len(tags[i].Posts) > len(tags[j].Posts)
 		})
 	}
 
 	if order == loader.OrderDesc {
-		sliceutil.Reverse(tags.Tags)
+		sliceutil.Reverse(tags)
 	}
 }
 
