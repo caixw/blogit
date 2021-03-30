@@ -4,13 +4,19 @@ package create
 
 import (
 	"io"
+	"os"
+	"path"
 	"testing"
+	"time"
 
 	"github.com/issue9/assert"
+	"github.com/issue9/cmdopt"
 	"gopkg.in/yaml.v2"
 
 	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/loader"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 func TestWriteYAML(t *testing.T) {
@@ -29,4 +35,22 @@ func TestWriteYAML(t *testing.T) {
 	inst := &loader.Theme{}
 	a.NotError(yaml.Unmarshal(data, inst))
 	a.Equal(inst, obj)
+}
+
+func TestCmd_Init(t *testing.T) {
+	a := assert.New(t)
+	opt := &cmdopt.CmdOpt{}
+	succ := &console.Logger{Out: os.Stdout}
+	erro := &console.Logger{Out: os.Stderr}
+	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
+	a.NotError(err)
+
+	InitInit(opt, succ, erro)
+	a.NotError(opt.Exec([]string{"init", dir}))
+
+	fs := os.DirFS(dir)
+	a.True(filesystem.Exists(fs, vars.ConfYAML)).
+		True(filesystem.Exists(fs, vars.TagsYAML)).
+		True(filesystem.Exists(fs, path.Join(vars.ThemesDir, "default", vars.ThemeYAML))).
+		True(filesystem.Exists(fs, path.Join(vars.PostsDir, time.Now().Format("2006"), "post1.md")))
 }

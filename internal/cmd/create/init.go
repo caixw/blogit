@@ -32,11 +32,7 @@ func initF(succ, erro *console.Logger) cmdopt.DoFunc {
 			return nil
 		}
 
-		wfs, err := getWD()
-		if err != nil {
-			erro.Println(err)
-			return nil
-		}
+		wfs := filesystem.Dir(initFS.Arg(0))
 
 		// conf.yaml
 		conf := &loader.Config{
@@ -70,7 +66,7 @@ func initF(succ, erro *console.Logger) cmdopt.DoFunc {
 			URL:         "https://example.com",
 			Description: "description",
 		}
-		p := path.Join(vars.ThemesDir, "default", "theme.yaml")
+		p := path.Join(vars.ThemesDir, "default", vars.ThemeYAML)
 		if err := writeYAML(wfs, p, theme); err != nil {
 			erro.Println(err)
 			return nil
