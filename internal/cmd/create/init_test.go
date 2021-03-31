@@ -25,7 +25,7 @@ func TestWriteYAML(t *testing.T) {
 
 	obj := &loader.Theme{Description: "desc", URL: "https://example.com"}
 
-	wfs := builder.Memory()
+	wfs := builder.MemoryFS()
 	a.NotError(writeYAML(wfs, "conf.yaml", obj))
 
 	f, err := wfs.Open("conf.yaml")

@@ -61,9 +61,9 @@ func (o *options) sanitize() error {
 	}
 
 	if o.dest == "" {
-		o.destFS = builder.Memory()
+		o.destFS = builder.MemoryFS()
 	} else {
-		o.destFS = builder.Dir(o.dest)
+		o.destFS = builder.DirFS(o.dest)
 	}
 
 	return nil

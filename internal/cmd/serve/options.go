@@ -41,9 +41,9 @@ func (o *options) serve(info, erro *console.Logger) error {
 
 	var dest builder.WritableFS
 	if o.dest == "" {
-		dest = builder.Memory()
+		dest = builder.MemoryFS()
 	} else {
-		dest = builder.Dir(o.dest)
+		dest = builder.DirFS(o.dest)
 	}
 	src := os.DirFS(o.source)
 

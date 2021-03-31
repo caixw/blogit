@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	_ WritableFS = Memory()
-	_ WritableFS = Dir("./")
+	_ WritableFS = MemoryFS()
+	_ WritableFS = DirFS("./")
 )
 
 func testWritableFS(wfs WritableFS, a *assert.Assertion) {
@@ -60,11 +60,11 @@ func testWritableFS(wfs WritableFS, a *assert.Assertion) {
 func TestWritableFS(t *testing.T) {
 	a := assert.New(t)
 
-	testWritableFS(Memory(), a)
+	testWritableFS(MemoryFS(), a)
 
 	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)
-	testWritableFS(Dir(dir), a)
+	testWritableFS(DirFS(dir), a)
 }
 
 func TestDir(t *testing.T) {
@@ -79,7 +79,7 @@ func TestDir(t *testing.T) {
 	obj := path.Join(git, "obj")
 	a.NotError(os.WriteFile(obj, []byte{1, 2, 3}, os.ModePerm))
 
-	inst := Dir(dir)
+	inst := DirFS(dir)
 	a.NotNil(inst)
 	a.NotError(inst.WriteFile("a.txt", []byte{1, 2, 3}, os.ModePerm))
 	a.NotError(inst.Reset())

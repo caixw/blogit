@@ -82,5 +82,5 @@ func getWD() (builder.WritableFS, error) {
 	if err != nil {
 		return nil, err
 	}
-	return builder.Dir(dir), nil
+	return builder.DirFS(dir), nil
 }

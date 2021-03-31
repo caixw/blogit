@@ -29,19 +29,20 @@ type WritableFS interface {
 	Reset() error
 }
 
-// Memory 返回以内存作为保存对象的文件系统
-func Memory() WritableFS {
+// MemoryFS 返回以内存作为保存对象的文件系统
+func MemoryFS() WritableFS {
 	return &memoryFS{FS: memfs.New()}
 }
 
-// Dir 返回以普通目录作为保存对象的文件系统
-func Dir(dir string) WritableFS {
+// DirFS 返回以普通目录作为保存对象的文件系统
+func DirFS(dir string) WritableFS {
 	return &dirFS{
 		dir:   dir,
 		files: make([]string, 0, 10),
 	}
 }
 
+// 内存文件系统，每次创建都是新的，不存在与 dirFS 一样的问题。
 type memoryFS struct {
 	*memfs.FS
 }

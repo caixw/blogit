@@ -27,11 +27,11 @@ func TestIsIgnore(t *testing.T) {
 func TestBuilder_ServeHTTP(t *testing.T) {
 	a := assert.New(t)
 	a.NotError(os.RemoveAll("../testdata/dest"))
-	src := Dir("../testdata/src")
+	src := DirFS("../testdata/src")
 
 	// Memory
 
-	b := New(Memory(), nil)
+	b := New(MemoryFS(), nil)
 	srv := rest.NewServer(t, b, nil)
 
 	// b 未加载任何数据。返回都是 404
@@ -50,7 +50,7 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 
 	// Dir
 
-	b = New(Dir("../testdata/dest"), nil)
+	b = New(DirFS("../testdata/dest"), nil)
 	srv = rest.NewServer(t, b, nil)
 
 	// b 未加载任何数据。返回都是 404

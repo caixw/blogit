@@ -37,7 +37,7 @@ func initF(succ, erro *console.Logger) cmdopt.DoFunc {
 			return nil
 		}
 
-		wfs := builder.Dir(initFS.Arg(0))
+		wfs := builder.DirFS(initFS.Arg(0))
 
 		// conf.yaml
 		conf := &loader.Config{
