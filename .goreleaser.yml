@@ -36,17 +36,18 @@ builds:
   - CGO_ENABLED=0
 
 brews:
-  tap:
+- tap:
     owner: caixw
     name: homebrew-caixw
-    url_template: "https://github.com/caixw/blogit/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+  url_template: "https://github.com/caixw/blogit/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
 
-    commit_author:
-      name: goreleaserbot
-      email: goreleaser@carlosbecker.com
-    folder: Formula
-    homepage: "https://github.com/caixw/blogit"
-    description: "静态博客生成工具"
+  commit_author:
+    name: goreleaserbot
+    email: goreleaser@carlosbecker.com
+  folder: Formula
+  homepage: "https://github.com/caixw/blogit"
+  description: 静态博客生成工具
+  license: MIT
 
 
 dockers:
