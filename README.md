@@ -6,11 +6,26 @@
 [![codecov](https://codecov.io/gh/caixw/blogit/branch/master/graph/badge.svg)](https://codecov.io/gh/caixw/blogit)
 ![License](https://img.shields.io/github/license/caixw/blogit)
 
-静态博客生成工具
+简单方便的静态博客生成工具
+
+- 没有分类信息；
+- 也不区分页面和文章；
+- 仅通过标签对文章进行归类；
+- 可生成 RSS、Atom 和 Sitemap 等数据；
+- 存档页按可以按月和年进行分类；
+- 采用 Go 模板作为主题模板语法；
+- 可在主题中指定代码高亮；
 
 ## 安装
 
-常用平台可以从 <https://github.com/caixw/blogit/releases> 下载，并将二进制文件放入 `PATH` 即可。
+macOS 和 linux 用户可以直接使用 brew 进行安装：
+
+```shell
+brew tap caixw/caixw
+brew install caixw/caixw/blogit
+```
+
+常用平台也可以从 <https://github.com/caixw/blogit/releases> 下载，并将二进制文件放入 `PATH` 即可。
 
 如果不存在你当前平台的二进制，可以自己编译：
 
