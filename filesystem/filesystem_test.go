@@ -3,9 +3,11 @@
 package filesystem
 
 import (
+	"errors"
 	"io"
 	"io/fs"
 	"os"
+	"path"
 	"testing"
 
 	"github.com/issue9/assert"
@@ -61,4 +63,27 @@ func TestWritableFS(t *testing.T) {
 	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)
 	testWritableFS(Dir(dir), a)
+}
+
+func TestDir(t *testing.T) {
+	a := assert.New(t)
+
+	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
+	a.NotError(err)
+
+	// 创建两个已经存在的文件
+	git := path.Join(dir, ".git")
+	a.NotError(os.Mkdir(git, os.ModePerm))
+	obj := path.Join(git, "obj")
+	a.NotError(os.WriteFile(obj, []byte{1, 2, 3}, os.ModePerm))
+
+	inst := Dir(dir)
+	a.NotNil(inst)
+	a.NotError(inst.WriteFile("a.txt", []byte{1, 2, 3}, os.ModePerm))
+	a.NotError(inst.Reset())
+	a.False(Exists(inst, "a.txt"))
+
+	// 非 writeFile 创建的文件依然存在
+	_, err = os.Stat(obj)
+	a.True(err == nil || errors.Is(err, fs.ErrExist))
 }
