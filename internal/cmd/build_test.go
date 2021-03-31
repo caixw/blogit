@@ -8,7 +8,7 @@ import (
 
 	"github.com/issue9/assert"
 
-	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/vars"
 )
 

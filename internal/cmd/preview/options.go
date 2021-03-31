@@ -16,7 +16,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 
 	"github.com/caixw/blogit"
-	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/cmd/console"
 )
 
@@ -28,9 +28,9 @@ type options struct {
 	srcFS  fs.FS
 
 	// 项目编译后的输出地址
-	// 如果为空，则会要用 filesystem.Memory() 作为默认值。
+	// 如果为空，则会要用 builder.Memory() 作为默认值。
 	dest   string
-	destFS filesystem.WritableFS
+	destFS builder.WritableFS
 
 	// 如果指定了此值，那么表示要替换 conf.yaml 中的 url
 	url  string
@@ -61,9 +61,9 @@ func (o *options) sanitize() error {
 	}
 
 	if o.dest == "" {
-		o.destFS = filesystem.Memory()
+		o.destFS = builder.Memory()
 	} else {
-		o.destFS = filesystem.Dir(o.dest)
+		o.destFS = builder.Dir(o.dest)
 	}
 
 	return nil

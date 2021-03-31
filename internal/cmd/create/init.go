@@ -12,7 +12,7 @@ import (
 	"github.com/issue9/cmdopt"
 	"gopkg.in/yaml.v2"
 
-	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/loader"
 	"github.com/caixw/blogit/internal/vars"
@@ -37,7 +37,7 @@ func initF(succ, erro *console.Logger) cmdopt.DoFunc {
 			return nil
 		}
 
-		wfs := filesystem.Dir(initFS.Arg(0))
+		wfs := builder.Dir(initFS.Arg(0))
 
 		// conf.yaml
 		conf := &loader.Config{
@@ -89,7 +89,7 @@ func initF(succ, erro *console.Logger) cmdopt.DoFunc {
 	}
 }
 
-func writeYAML(wfs filesystem.WritableFS, path string, v interface{}) error {
+func writeYAML(wfs builder.WritableFS, path string, v interface{}) error {
 	bs, err := yaml.Marshal(v)
 	if err != nil {
 		return err

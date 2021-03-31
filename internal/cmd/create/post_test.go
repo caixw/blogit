@@ -10,8 +10,8 @@ import (
 	"github.com/issue9/assert"
 	"github.com/issue9/cmdopt"
 
-	"github.com/caixw/blogit/filesystem"
 	"github.com/caixw/blogit/internal/cmd/console"
+	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/vars"
 )
 

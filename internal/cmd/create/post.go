@@ -13,7 +13,7 @@ import (
 
 	"github.com/issue9/cmdopt"
 
-	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/vars"
 )
@@ -77,10 +77,10 @@ func post(succ, erro *console.Logger) cmdopt.DoFunc {
 	}
 }
 
-func getWD() (filesystem.WritableFS, error) {
+func getWD() (builder.WritableFS, error) {
 	dir, err := os.Getwd()
 	if err != nil {
 		return nil, err
 	}
-	return filesystem.Dir(dir), nil
+	return builder.Dir(dir), nil
 }

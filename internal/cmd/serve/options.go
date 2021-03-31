@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/caixw/blogit"
-	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/cmd/console"
 )
 
@@ -39,11 +39,11 @@ func (o *options) serve(info, erro *console.Logger) error {
 		return err
 	}
 
-	var dest filesystem.WritableFS
+	var dest builder.WritableFS
 	if o.dest == "" {
-		dest = filesystem.Memory()
+		dest = builder.Memory()
 	} else {
-		dest = filesystem.Dir(o.dest)
+		dest = builder.Dir(o.dest)
 	}
 	src := os.DirFS(o.source)
 

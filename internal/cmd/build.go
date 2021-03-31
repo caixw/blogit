@@ -10,7 +10,7 @@ import (
 	"github.com/issue9/cmdopt"
 
 	"github.com/caixw/blogit"
-	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/builder"
 )
 
 var (
@@ -29,7 +29,7 @@ func build(w io.Writer) error {
 	start := time.Now()
 
 	info.Println("开始编译内容")
-	if err := blogit.Build(os.DirFS(buildSrc), filesystem.Dir(buildDest)); err != nil {
+	if err := blogit.Build(os.DirFS(buildSrc), builder.Dir(buildDest)); err != nil {
 		erro.Println(err)
 		return nil
 	}

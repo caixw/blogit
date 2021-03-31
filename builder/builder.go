@@ -18,7 +18,6 @@ import (
 
 	"github.com/issue9/errwrap"
 
-	"github.com/caixw/blogit/filesystem"
 	"github.com/caixw/blogit/internal/data"
 	"github.com/caixw/blogit/internal/loader"
 	"github.com/caixw/blogit/internal/vars"
@@ -27,7 +26,7 @@ import (
 // Builder 提供了一个可重复生成 HTML 内容的对象
 type Builder struct {
 	log  *log.Logger
-	wfs  filesystem.WritableFS
+	wfs  WritableFS
 	site *site
 	tpl  *template.Template
 }
@@ -35,15 +34,15 @@ type Builder struct {
 // New 声明 Builder 实例
 //
 // fs 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
-// 以及任何实现了 filesystem.WritableFS 接口都可以；
+// 以及任何实现了 WritableFS 接口都可以；
 // l 表示的是在把 Builder 当作 http.Handler 处理时，在出错时的日志输出通道。
 // 如果为空，则会采用 log.Default() 作为默认值。
 // 如果不准备其当作 http.Handler 使用，则此值是无用；
-func New(fs filesystem.WritableFS, l *log.Logger) *Builder {
+func New(wfs WritableFS, l *log.Logger) *Builder {
 	if l == nil {
 		l = log.Default()
 	}
-	return &Builder{wfs: fs, log: l}
+	return &Builder{wfs: wfs, log: l}
 }
 
 // Rebuild 重新生成数据

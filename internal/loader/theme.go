@@ -10,7 +10,7 @@ import (
 	"github.com/alecthomas/chroma/styles"
 	"github.com/issue9/sliceutil"
 
-	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/vars"
 )
 

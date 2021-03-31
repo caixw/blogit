@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// Package filesystem 提供文件系统相关功能
-package filesystem
+package builder
 
 import (
 	"io/fs"

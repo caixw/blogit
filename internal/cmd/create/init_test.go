@@ -13,8 +13,9 @@ import (
 	"github.com/issue9/cmdopt"
 	"gopkg.in/yaml.v2"
 
-	"github.com/caixw/blogit/filesystem"
+	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/cmd/console"
+	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/loader"
 	"github.com/caixw/blogit/internal/vars"
 )
@@ -24,7 +25,7 @@ func TestWriteYAML(t *testing.T) {
 
 	obj := &loader.Theme{Description: "desc", URL: "https://example.com"}
 
-	wfs := filesystem.Memory()
+	wfs := builder.Memory()
 	a.NotError(writeYAML(wfs, "conf.yaml", obj))
 
 	f, err := wfs.Open("conf.yaml")

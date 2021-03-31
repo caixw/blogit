@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 
+// Package filesystem 提供文件系统的相关函数
 package filesystem
 
 import (

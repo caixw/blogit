@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-package filesystem
+package builder
 
 import (
 	"errors"
@@ -11,6 +11,8 @@ import (
 	"testing"
 
 	"github.com/issue9/assert"
+
+	"github.com/caixw/blogit/internal/filesystem"
 )
 
 var (
@@ -41,8 +43,8 @@ func testWritableFS(wfs WritableFS, a *assert.Assertion) {
 
 	// 重置后内容不再存在
 	a.NotError(wfs.Reset())
-	a.False(Exists(wfs, "dir1/file.png"))
-	a.False(Exists(wfs, "dir1/dir2/file.png"))
+	a.False(filesystem.Exists(wfs, "dir1/file.png"))
+	a.False(filesystem.Exists(wfs, "dir1/dir2/file.png"))
 	a.NotError(wfs.WriteFile("dir1/file.png", []byte{1, 2, 3}, fs.ModePerm)) // 重新写入
 	file, err = wfs.Open("dir1/file.png")
 	a.NotError(err).NotNil(file)
@@ -81,7 +83,7 @@ func TestDir(t *testing.T) {
 	a.NotNil(inst)
 	a.NotError(inst.WriteFile("a.txt", []byte{1, 2, 3}, os.ModePerm))
 	a.NotError(inst.Reset())
-	a.False(Exists(inst, "a.txt"))
+	a.False(filesystem.Exists(inst, "a.txt"))
 
 	// 非 writeFile 创建的文件依然存在
 	_, err = os.Stat(obj)

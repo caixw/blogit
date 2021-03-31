@@ -10,7 +10,6 @@ import (
 	"github.com/issue9/assert"
 	"github.com/issue9/assert/rest"
 
-	"github.com/caixw/blogit/filesystem"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -28,11 +27,11 @@ func TestIsIgnore(t *testing.T) {
 func TestBuilder_ServeHTTP(t *testing.T) {
 	a := assert.New(t)
 	a.NotError(os.RemoveAll("../testdata/dest"))
-	src := filesystem.Dir("../testdata/src")
+	src := Dir("../testdata/src")
 
 	// Memory
 
-	b := New(filesystem.Memory(), nil)
+	b := New(Memory(), nil)
 	srv := rest.NewServer(t, b, nil)
 
 	// b 未加载任何数据。返回都是 404
@@ -51,7 +50,7 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 
 	// Dir
 
-	b = New(filesystem.Dir("../testdata/dest"), nil)
+	b = New(Dir("../testdata/dest"), nil)
 	srv = rest.NewServer(t, b, nil)
 
 	// b 未加载任何数据。返回都是 404
