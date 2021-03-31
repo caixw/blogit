@@ -32,9 +32,18 @@ state: draft
 
 var postFS *flag.FlagSet
 
+const postUsage = `创建新文章
+
+执行该命令会在 posts 目录下创建一个同名的文件，如果未指定扩展名，
+则自动添加 .md 作为扩展名，可以带目录结构，比如：blogit post 2021/03/31/file
+会在项目上目录下添加 posts/2021/03/31.file.md 文件，并在文件内添加必要的字段内容。
+
+执行命令时，当前工作目录必须为项目的根目录。
+`
+
 // InitPost 注册 post 子命令
 func InitPost(opt *cmdopt.CmdOpt, succ, erro *console.Logger) {
-	postFS = opt.New("post", "创建新文章\n", post(succ, erro))
+	postFS = opt.New("post", postUsage, post(succ, erro))
 }
 
 func post(succ, erro *console.Logger) cmdopt.DoFunc {

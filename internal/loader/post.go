@@ -43,7 +43,7 @@ type Post struct {
 	// State 表示文章的状态，有以下四种值：
 	// - top 表示文章被置顶；
 	// - last 表示文章会被放置在最后；
-	// - draft 表示这是一篇草稿，并不会被加地到内存中；
+	// - draft 表示这是一篇草稿；
 	// - 空值 按默认的方式进行处理。
 	State string `yaml:"state,omitempty"`
 

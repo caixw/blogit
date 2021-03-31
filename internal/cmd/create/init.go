@@ -18,11 +18,16 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
+const initUsage = `初始化博客内容
+
+在指定目录下初始化项目的必须文件，比如 conf.yaml、tags.yaml 等文件。
+`
+
 var initFS *flag.FlagSet
 
 // InitInit 注册 init 子命令
 func InitInit(opt *cmdopt.CmdOpt, succ, erro *console.Logger) {
-	initFS = opt.New("init", "初始化新的博客内容\n", initF(succ, erro))
+	initFS = opt.New("init", initUsage, initF(succ, erro))
 }
 
 func initF(succ, erro *console.Logger) cmdopt.DoFunc {
