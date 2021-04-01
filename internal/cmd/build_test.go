@@ -17,7 +17,7 @@ func TestCmd_Build(t *testing.T) {
 	dest, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)
 
-	a.NotError(Exec([]string{"build", "-src", "../../testdata/src", "-dest", dest}))
+	a.NotError(Exec([]string{"build", "-src", "../testdata", "-dest", dest}))
 
 	fs := os.DirFS(dest)
 	a.True(filesystem.Exists(fs, "index"+vars.Ext))

@@ -43,7 +43,7 @@ func TestOptions_serve(t *testing.T) {
 	a := assert.New(t)
 
 	o := &options{
-		source: "../../../testdata/src",
+		source: "../../testdata",
 		addr:   ":8081",
 	}
 

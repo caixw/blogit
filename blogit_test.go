@@ -3,24 +3,24 @@
 package blogit
 
 import (
-	"os"
 	"testing"
 
 	"github.com/issue9/assert"
 
 	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/filesystem"
+	"github.com/caixw/blogit/internal/testdata"
 	"github.com/caixw/blogit/internal/vars"
 )
 
 func TestBuild(t *testing.T) {
 	a := assert.New(t)
-	a.NotError(os.RemoveAll("./testdata/dest"))
-	src := os.DirFS("./testdata/src")
 
 	// Dir
-	dest := builder.DirFS("./testdata/dest")
-	a.NotError(Build(src, dest))
+	destDir, err := testdata.Temp()
+	a.NotError(err)
+	dest := builder.DirFS(destDir)
+	a.NotError(Build(testdata.Source, dest))
 	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags/default"+vars.Ext)).
@@ -28,7 +28,7 @@ func TestBuild(t *testing.T) {
 
 	// Memory
 	dest = builder.MemoryFS()
-	a.NotError(Build(src, dest))
+	a.NotError(Build(testdata.Source, dest))
 	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags/default"+vars.Ext)).

@@ -4,12 +4,12 @@ package builder
 
 import (
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/issue9/assert"
 	"github.com/issue9/assert/rest"
 
+	"github.com/caixw/blogit/internal/testdata"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -26,10 +26,8 @@ func TestIsIgnore(t *testing.T) {
 
 func TestBuilder_ServeHTTP(t *testing.T) {
 	a := assert.New(t)
-	a.NotError(os.RemoveAll("../testdata/dest"))
-	src := DirFS("../testdata/src")
 
-	// Memory
+	// MemoryFS
 
 	b := New(MemoryFS(), nil)
 	srv := rest.NewServer(t, b, nil)
@@ -37,7 +35,7 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 	// b 未加载任何数据。返回都是 404
 	srv.Get("/robots.txt").Do().Status(http.StatusNotFound)
 
-	a.NotError(b.Rebuild(src, "http://localhost:8080"))
+	a.NotError(b.Rebuild(testdata.Source, "http://localhost:8080"))
 	srv.Get("/robots.txt").Do().Status(http.StatusOK)
 	srv.Get("/posts/p1" + vars.Ext).Do().Status(http.StatusOK)
 	srv.Get("/posts/not-exists.html").Do().Status(http.StatusNotFound)
@@ -48,15 +46,17 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 	srv.Get("/index" + vars.Ext).Do().Status(http.StatusOK)
 	srv.Get("/themes/").Do().Status(http.StatusNotFound) // 目录下没有 index.html
 
-	// Dir
+	// DirFS
 
-	b = New(DirFS("../testdata/dest"), nil)
+	destDir, err := testdata.Temp()
+	a.NotError(err)
+	b = New(DirFS(destDir), nil)
 	srv = rest.NewServer(t, b, nil)
 
 	// b 未加载任何数据。返回都是 404
 	srv.Get("/robots.txt").Do().Status(http.StatusNotFound)
 
-	a.NotError(b.Rebuild(src, "http://localhost:8080"))
+	a.NotError(b.Rebuild(testdata.Source, "http://localhost:8080"))
 	srv.Get("/robots.txt").Do().Status(http.StatusOK)
 	srv.Get("/posts/p1" + vars.Ext).Do().Status(http.StatusOK)
 	srv.Get("/posts/not-exists.html").Do().Status(http.StatusNotFound)

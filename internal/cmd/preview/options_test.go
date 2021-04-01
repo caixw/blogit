@@ -70,7 +70,7 @@ func TestOptions_watch(t *testing.T) {
 	erro := &console.Logger{Out: os.Stderr}
 
 	o := &options{
-		source: "../../..//testdata/src",
+		source: "../../testdata",
 		url:    "http://localhost:8080",
 	}
 

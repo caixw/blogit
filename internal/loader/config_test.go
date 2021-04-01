@@ -7,19 +7,20 @@ import (
 	"testing"
 
 	"github.com/issue9/assert"
+
+	"github.com/caixw/blogit/internal/testdata"
 )
 
 func TestLoadConfig(t *testing.T) {
 	a := assert.New(t)
-	fs := os.DirFS("../../testdata/src")
 
-	conf, err := LoadConfig(fs, "conf.yaml")
+	conf, err := LoadConfig(testdata.Source, "conf.yaml")
 	a.NotError(err).NotNil(conf)
 
 	a.Equal(conf.Author.Name, "author1")
 	a.Equal(conf.Language, "cmn-Hans")
 
-	conf, err = LoadConfig(fs, "not-exists.yaml")
+	conf, err = LoadConfig(testdata.Source, "not-exists.yaml")
 	a.ErrorIs(err, os.ErrNotExist).Nil(conf)
 }
 

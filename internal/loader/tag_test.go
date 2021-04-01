@@ -3,10 +3,12 @@
 package loader
 
 import (
-	"os"
+	"io/fs"
 	"testing"
 
 	"github.com/issue9/assert"
+
+	"github.com/caixw/blogit/internal/testdata"
 )
 
 func TestTag_sanitize(t *testing.T) {
@@ -28,9 +30,8 @@ func TestTag_sanitize(t *testing.T) {
 
 func TestLoadTags(t *testing.T) {
 	a := assert.New(t)
-	fs := os.DirFS("../../testdata/src")
 
-	tags, err := LoadTags(fs, "tags.yaml")
+	tags, err := LoadTags(testdata.Source, "tags.yaml")
 	a.NotError(err).NotNil(tags).Equal(tags.Title, "标签").Equal(tags.OrderType, TagOrderTypeSize)
 	a.Equal(4, len(tags.Tags))
 	a.Equal(tags.Tags[0].Slug, "default").
@@ -38,6 +39,6 @@ func TestLoadTags(t *testing.T) {
 		Equal(tags.Tags[2].Slug, "firefox").
 		Equal(tags.Tags[3].Slug, "git")
 
-	tags, err = LoadTags(fs, "not-exists.yaml")
-	a.ErrorIs(err, os.ErrNotExist).Empty(tags)
+	tags, err = LoadTags(testdata.Source, "not-exists.yaml")
+	a.ErrorIs(err, fs.ErrNotExist).Empty(tags)
 }

@@ -3,38 +3,38 @@
 package loader
 
 import (
-	"os"
+	"io/fs"
 	"testing"
 
 	"github.com/issue9/assert"
+
+	"github.com/caixw/blogit/internal/testdata"
 )
 
 func TestLoadTheme(t *testing.T) {
 	a := assert.New(t)
-	fs := os.DirFS("../../testdata/src")
 
-	theme, err := LoadTheme(fs, "default")
+	theme, err := LoadTheme(testdata.Source, "default")
 	a.NotError(err).NotNil(theme)
 	a.Equal(len(theme.Authors), 2).
 		Equal(theme.ID, "default").
 		Equal(3, len(theme.Highlights))
 
-	theme, err = LoadTheme(fs, "not-exists")
-	a.ErrorIs(err, os.ErrNotExist).Nil(theme)
+	theme, err = LoadTheme(testdata.Source, "not-exists")
+	a.ErrorIs(err, fs.ErrNotExist).Nil(theme)
 }
 
 func TestTheme_sanitize(t *testing.T) {
 	a := assert.New(t)
-	fs := os.DirFS("../../testdata/src")
 
 	theme := &Theme{Templates: []string{"post"}}
-	a.NotError(theme.sanitize(fs, "themes/default", "default"))
+	a.NotError(theme.sanitize(testdata.Source, "themes/default", "default"))
 	a.Equal(theme.ID, "default").
 		Empty(theme.Description).
 		Equal(theme.Templates, []string{"post"})
 
 	theme = &Theme{Templates: []string{"style.xsl"}, Screenshots: []string{"not-exists"}}
-	err := theme.sanitize(fs, "themes/default", "default")
+	err := theme.sanitize(testdata.Source, "themes/default", "default")
 	a.Error(err).Equal(err.Field, "screenshots[0]")
 }
 
