@@ -4,7 +4,7 @@
 
 ## 初始化
 
-可通过 `blogit init path/to/blog/dir` 进行初始经，会在 `path/to/blog/dir` 下添加必要的配置文件。
+可通过 `blogit init path/to/blog/dir` 进行初始经，会在 `path/to/blog/dir` 生成完整的项目文件。
 
 ### conf.yaml
 
@@ -131,7 +131,7 @@ blogit 不支持文章分类，也没有一般博客的页面和文章的区别�
 主题包含在 themes/ 目录下，每个目录为一个主题，每个主题包含 `theme.yaml` 文件，
 该文件配置了一主题相关的一些内容。
 
-### theme.yaml
+#### theme.yaml
 
 | 名称            | 类型        | 描述
 |-----------------|-------------|-------------
@@ -151,6 +151,60 @@ blogit 不支持文章分类，也没有一般博客的页面和文章的区别�
 |-----------------|-------------|-------------
 | name            | string      | 名称，该值可通过 `blogit styles` 获取
 | media           | string      | 对应的媒体查询值，比如 `print`、`(prefers-color-scheme: dark)` 等。
+
+#### 模板
+
+每个主题下的 layout 目录之下可以存放模板。模板采用 go 的 html/template 语法。传递的变量如下：
+
+| 名称            | 类型        | 描述
+|-----------------|-------------|-------------
+| Type            | string      | 当前页面类型，同时也是页面采用的模板名称。除了文章详情之外，其它值都是固定的。
+| Site            | Site        | 站点的数据，不同页面该数据都是相同的。
+| Title           | string      | 当前页的标题，出现在 html>head>title 元素中，会加上网站名称作为后缀。
+| Permalink       | string      | 当前页的唯一链接
+| Keywords        | string      | 当前页的 html>head>meta.keywords 元素中数据。
+| Description     | string      | 当前页的 html>head>meta.desccription 元素中数据。
+| Description     | string      | 当前页的 html>head>meta.desccription 元素中数据。
+| Prev            | Link        | 前一页的链接
+| Next            | Link        | 后一页的链接
+| Author          | Author      | 当前页内容的作者
+| License         | Link        | 当前页的版权信息
+| Language        | string      | 当前页所采用的语言
+| JSONLD          | string      | 当前页的 JSON-LD 数据
+| Tag             | Tag         | 如果当前页是 `tag`，那么表示该标签的数据，否则为空值。
+| Post            | Post        | 如果当前页是 `post`，那么表示该标签的数据，否则为空值。
+
+Type 可以有以下值：
+
+- tags: 标签列表
+- index: 首页
+- tag: 标签页
+- archive: 存档页
+- post: 文章详情页，文章情况页也可以是其它任意非空值。
+
+##### Site
+
+| 名称            | 类型        | 描述
+|-----------------|-------------|-------------
+| AppName         | string      | 生成该模板的程序名称
+| AppVersion      | string      | 生成该模板的程序版本
+| Theme           | Theme       | 主题信息
+| Highlights      | []Link      | 代码高这所需要的 CSS 文件
+| Title           | string      | 网站名称
+| Subtitle        | string      | 网站副标题
+| URL             | string      | 网站根地址
+| Icon            | Icon        | 网站图标
+| Author          | Author      | 网站的默认作者
+| RSS             | Link        | RSS 链接
+| Atom            | Link        | Atom 链接
+| Sitemap         | Link        | Sitemap 链接
+| Tags            | Tags        | 标签列表
+| Index           | Index       | 文章列表
+| Archives        | Archives    | 存档信息
+| Uptime          | date        | 上线时间
+| Created         | date        | 最后次创建文章的时间
+| Modified        | date        | 最后次修改文章的时间
+| Builded         | date        | 编译项目的时间
 
 ## 添加文章
 
@@ -172,3 +226,4 @@ blogit 不支持文章分类，也没有一般博客的页面和文章的区别�
 | template        | string      | 文章的模板，如果为空，则采用默认值 `post`。
 | keywords        | string      | html>head>meta.keywords 的值，如果为空，自动提取 tags 作为默认值。
 | language        | string      | 页面的语言，如果为空，则采用 conf.yaml 中对应的值。
+
