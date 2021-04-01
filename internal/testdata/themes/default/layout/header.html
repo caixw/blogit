@@ -6,25 +6,28 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{{.Title}}</title>
-        {{if .Permalink}}<link rel="canonical" href="{{.Permalink}}" />{{end}}
-        {{if .Site.Icon}}<link rel="icon" type="{{.Site.Icon.Type}}" href="{{.Site.Icon.URL}}" />{{end}}
-        {{if .Site.RSS -}}
+        {{- if .Permalink -}}<link rel="canonical" href="{{.Permalink}}" />{{- end -}}
+        {{- if .Site.Icon -}}
+        <link rel="icon" type="{{.Site.Icon.Type}}" href="{{.Site.Icon.URL}}" />
+        <link rel=”mask-icon” href=”{{.Site.Icon.URL}}” color=”#000000” />
+        {{- end -}}
+        {{- if .Site.RSS -}}
         <link rel="alternate" type="application/rss+xml" title="{{.Site.RSS.Text}}" href="{{.Site.RSS.URL}}" />
-        {{- end}}
-        {{if .Site.Atom -}}
+        {{- end -}}
+        {{- if .Site.Atom -}}
         <link rel="alternate" type="application/atom+xml" title="{{.Site.Atom.Text}}" href="{{.Site.Atom.URL}}" />
-        {{- end}}
-        {{- range .Authors}}<link rel="author" href="{{.URL}}" />{{end}}
-        {{if .License}}<link rel="license" href="{{.License.URL}}" />{{end}}
-        {{if .Keywords}}<meta name="keywords" content="{{.Keywords}}" />{{end}}
-        {{if .Description}}<meta name="description" content="{{.Description|strip}}" />{{end}}
-        {{if .Next}}<link rel="next" href="{{.Next.URL}}" />{{end}}
-        {{if .Prev}}<link rel="prev" href="{{.Prev.URL}}" />{{end}}
+        {{- end -}}
+        {{- range .Authors -}}<link rel="author" href="{{.URL}}" />{{- end -}}
+        {{- if .License -}}<link rel="license" href="{{.License.URL}}" />{{- end -}}
+        {{- if .Keywords -}}<meta name="keywords" content="{{.Keywords}}" />{{- end -}}
+        {{- if .Description -}}<meta name="description" content="{{.Description|strip}}" />{{end}}
+        {{- if .Next -}}<link rel="next" href="{{.Next.URL}}" />{{end}}
+        {{- if .Prev -}}<link rel="prev" href="{{.Prev.URL}}" />{{end}}
 
-        <link rel="stylesheet" type="text/css" href="{{"default/style.css"|themeURL}}" />
         {{- range .Site.Highlights -}}
             <link rel="stylesheet" type="text/css" media="{{.Media}}" href="{{.URL}}" />
         {{- end -}}
+        <link rel="stylesheet" type="text/css" href="{{"default/style.css"|themeURL}}" />
 
         {{- if .JSONLD -}}
         <script type="application/ld+json">

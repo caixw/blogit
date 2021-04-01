@@ -3,14 +3,8 @@ url: https://caixw.io
 authors:
   - name: caixw
     url: https://caixw.io
-  - name: example
-    url: https://example.com
 
-templates:
-  - post
-
-sitemap: sitemap.xsl
-
+# 高亮主题，name 字段来自 https://pkg.go.dev/github.com/alecthomas/chroma@v0.8.2/styles
 highlights:
 - name: solarized-dark256
   media: '(prefers-color-scheme: dark)'
@@ -18,3 +12,8 @@ highlights:
   media: '(prefers-color-scheme: light)'
 - name: igor
   media: print
+
+templates:
+  - post
+
+sitemap: sitemap.xsl
