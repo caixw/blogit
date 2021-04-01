@@ -40,9 +40,4 @@ func TestLoadTags(t *testing.T) {
 
 	tags, err = LoadTags(fs, "not-exists.yaml")
 	a.ErrorIs(err, os.ErrNotExist).Empty(tags)
-
-	tags, err = LoadTags(fs, "failed_tags.yaml")
-	a.Error(err).Nil(tags)
-	ferr, ok := err.(*FieldError)
-	a.True(ok).Equal(ferr.File, "failed_tags.yaml")
 }

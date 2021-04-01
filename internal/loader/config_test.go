@@ -16,14 +16,11 @@ func TestLoadConfig(t *testing.T) {
 	conf, err := LoadConfig(fs, "conf.yaml")
 	a.NotError(err).NotNil(conf)
 
-	a.Equal(conf.Author.Name, "caixw")
+	a.Equal(conf.Author.Name, "author1")
 	a.Equal(conf.Language, "cmn-Hans")
 
 	conf, err = LoadConfig(fs, "not-exists.yaml")
 	a.ErrorIs(err, os.ErrNotExist).Nil(conf)
-
-	conf, err = LoadConfig(fs, "failed_conf.yaml")
-	a.ErrorType(err, &FieldError{}, err).Nil(conf)
 }
 
 func TestRSS_sanitize(t *testing.T) {

@@ -10,8 +10,14 @@ import (
 	"github.com/issue9/cmdopt"
 )
 
+const stylesUsage = `显示可用的代码高亮名称
+
+代码高亮的相关样式表是以文件的方式关联到 HTML 的，
+这些文件将以 themes/{id}/{name}.css 格式出现，
+其中 {id} 是主题名称，面 {name} 则是当前命令列的值。`
+
 func initStyles(opt *cmdopt.CmdOpt) {
-	opt.New("styles", "显示可用的代码高亮名称\n", func(w io.Writer) error {
+	opt.New("styles", stylesUsage, func(w io.Writer) error {
 		names := styles.Names()
 		_, err := fmt.Println(names)
 		return err

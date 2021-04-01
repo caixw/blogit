@@ -1,4 +1,4 @@
-title: caixw
+title: example
 url: https://example.com
 titleSeparator: " | "
 subtitle: subtitle
@@ -21,8 +21,8 @@ icon:
 
 # 默认的作者信息
 author:
-    name: caixw
-    url: https://caixw.io
+    name: author1
+    url: https://example.com
 
 # 默认的版权信息
 license:

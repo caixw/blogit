@@ -33,7 +33,7 @@ type Builder struct {
 
 // New 声明 Builder 实例
 //
-// fs 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
+// wfs 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
 // 以及任何实现了 WritableFS 接口都可以；
 // l 表示的是在把 Builder 当作 http.Handler 处理时，在出错时的日志输出通道。
 // 如果为空，则会采用 log.Default() 作为默认值。
@@ -132,17 +132,6 @@ func isIgnore(src string) bool {
 		ext == ".yml" ||
 		ext == ".gitignore" ||
 		ext == ".git"
-}
-
-// path 表示输出的文件路径，相对于源目录；
-func (b *Builder) appendTemplateFile(path string, p *page) error {
-	buf := &bytes.Buffer{}
-
-	if err := b.tpl.ExecuteTemplate(buf, p.Type, p); err != nil {
-		return err
-	}
-
-	return b.appendFile(path, time.Now(), buf.Bytes())
 }
 
 // path 表示输出的文件路径，相对于源目录；

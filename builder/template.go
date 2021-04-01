@@ -3,6 +3,7 @@
 package builder
 
 import (
+	"bytes"
 	"html/template"
 	"io/fs"
 	"path"
@@ -12,6 +13,17 @@ import (
 	"github.com/caixw/blogit/internal/data"
 	"github.com/caixw/blogit/internal/vars"
 )
+
+// path 表示输出的文件路径，相对于源目录；
+func (b *Builder) appendTemplateFile(path string, p *page) error {
+	buf := &bytes.Buffer{}
+
+	if err := b.tpl.ExecuteTemplate(buf, p.Type, p); err != nil {
+		return err
+	}
+
+	return b.appendFile(path, time.Now(), buf.Bytes())
+}
 
 func newTemplate(d *data.Data, src fs.FS) (*template.Template, error) {
 	templateFuncs := template.FuncMap{
