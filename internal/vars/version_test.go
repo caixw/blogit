@@ -12,5 +12,6 @@ import (
 func TestVersion(t *testing.T) {
 	a := assert.New(t)
 
-	a.True(v.SemVerValid(Version()))
+	a.True(v.SemVerValid(Version))
+	a.True(v.SemVerValid(FullVersion()))
 }

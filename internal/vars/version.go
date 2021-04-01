@@ -2,26 +2,21 @@
 
 package vars
 
-const mainVersion = "1.3.3"
+// Version 主版本号
+const Version = "1.3.3" // NOTE: 应该保持与 tag 同值
 
 var (
-	buildDate  string
-	commitHash string
-	version    = mainVersion
+	metadata    string
+	fullVersion = Version
 )
 
 func init() {
-	if len(buildDate) > 0 {
-		version += "+" + buildDate
+	if metadata != "" {
+		fullVersion += "+" + metadata
 	}
 }
 
-// Version 获取完整的版本号
-func Version() string {
-	return version
-}
-
-// CommitHash 获取最后一条代码提交记录的 hash 值
-func CommitHash() string {
-	return commitHash
+// FullVersion 获取完整的版本号
+func FullVersion() string {
+	return fullVersion
 }

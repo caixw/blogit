@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// Package blogit 依赖于 git 的博客系统
+// Package blogit 静态博客生成工具
 package blogit
 
 import (
@@ -16,14 +16,17 @@ type (
 	WritableFS = builder.WritableFS
 )
 
-// Version 版本号
-func Version() string {
-	return vars.Version()
-}
+// Version 当前的版本号
+const Version = vars.Version
+
+// FullVersion 返回完整的版本号
+///
+// 完整版本号包含了编译日期，提交的 hash 等额外的值。
+func FullVersion() string { return vars.FullVersion() }
 
 // Build 编译并输出内容
 //
-// dir 表示源码目录；
+// dir 表示源码目录，直接读该文件系统根目录下的内容；
 // dest 表示输出的目录；
 func Build(src fs.FS, dest WritableFS) error {
 	return NewBuilder(dest, nil).Rebuild(src, "")
