@@ -27,10 +27,21 @@
         <time class="value">{{date .Post.Modified "2006-01-02"}}</time>
     </div>
 </div>
-<article>
+<article id="content">
 {{.Post.Content|html}}
 </article>
 </article>
+
+
+<nav id="toc-nav">
+    <div id="toc-button" class="button">
+        <i class="css-icon icon-menu"></i>
+        <ul id="toc"></ul>
+    </div>
+
+    <span id="goto-top" class="button"><a href="#" class="css-icon icon-arrow-up"></a></span>
+</nav>
+<script src="{{"default/nav.js"|themeURL}}"></script>
 
 {{template "footer" .}}
 {{end}}

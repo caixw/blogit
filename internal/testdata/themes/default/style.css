@@ -150,6 +150,108 @@ ul.tags li:last-child {
     margin-right: 0;
 }
 
+
+/*********************** toc-nav ****************/
+
+#toc-nav .button {
+    padding: 2px 4px;
+    text-align: center;
+    cursor: pointer;
+    position: fixed;
+    box-shadow: 0px 0px 2px 1px var(--secondary);
+}
+
+#toc-button {
+    white-space: nowrap;
+    top: 5rem;
+    right: calc((100vw - var(--max-width)) / 2 - 3rem);
+    z-index: 999;
+    background: var(--background);
+    overflow-y: auto;
+    max-height: 60%;
+    display: none; /* 默认不显示，由 JS 控制它显示。 */
+}
+
+#toc-button ul {
+    list-style: none;
+    margin: 0;
+    padding: 1px;
+    text-align: left;
+}
+
+#toc-button ul li {
+    line-height: 1.5;
+}
+
+#toc-button i {
+    position: relative;
+    float: right;
+}
+
+#toc {
+    display: none;
+    position: relative;
+    top: 0;
+    right: 0;
+}
+#toc-button:hover #toc {
+    display: block;
+    padding: 10px 30px 10px 15px;
+}
+
+#goto-top {
+    bottom: 5rem;
+    right: calc((100vw - var(--max-width)) / 2 - 3rem);
+}
+
+/* 1000 即是 var(--max-width) 的值，media 指令中无法使用。 */
+@media (max-width: 1000px) {
+ #toc-button, #goto-top {
+        right: 2rem;
+    }
+}
+
+
+/************ icon ************/
+
+/* 图标库来自 https://www.zhangxinxu.com/sp/icon/css.php */
+
+.css-icon {
+    display: inline-block;
+    height: 1em; width: 1em;
+    font-size: 20px;
+    box-sizing: border-box;
+    text-indent: -9999px;
+    vertical-align: middle;
+    position: relative;
+    cursor: pointer;
+    color: var(--primary);
+}
+.css-icon::before,
+.css-icon::after {
+    content: '';
+    box-sizing: inherit;
+    position: absolute;
+    left: 50%; top: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.icon-menu::before {
+    box-shadow: 0 -.35em, 0 .35em;
+    border-top: 2px solid;
+    width: 100%;
+}
+
+.icon-arrow-up::before {
+    height: .65em; width: .65em;
+    border-style: solid;
+    border-width: 2px 0 0 2px;
+    -ms-transform: translate(-50%, -25%) rotate(45deg);
+    transform: translate(-50%, -25%) rotate(45deg);
+}
+
+
 /*********** print *****************/
 
 @media print {
@@ -164,7 +266,7 @@ ul.tags li:last-child {
         content: "(" attr(href) ")"; /* 所有链接后显示链接地址 */
     }
 
-    .pages-nav, #footer {
+    .pages-nav, #footer, #toc-nav {
         display: none;
     }
 
