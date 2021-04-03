@@ -16,7 +16,7 @@ func TestLoadTheme(t *testing.T) {
 
 	theme, err := LoadTheme(testdata.Source, "default")
 	a.NotError(err).NotNil(theme)
-	a.Equal(len(theme.Authors), 2).
+	a.Equal(len(theme.Authors), 1).
 		Equal(theme.ID, "default").
 		Equal(3, len(theme.Highlights))
 
