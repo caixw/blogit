@@ -17,9 +17,9 @@
         </main> <!-- end #main -->
 
         <footer id="footer">
-            <div class="line">
+            <div class="line" role="menu">
                 {{- range .Site.Menus -}}
-                <a class="item" href="{{.URL}}">{{.Text}}</a>
+                <a role="menuitem" class="item" href="{{.URL}}">{{.Text}}</a>
                 {{- end -}}
             </div>
 

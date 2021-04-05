@@ -64,6 +64,7 @@ type Post struct {
 	TOC     []Header `yaml:"-"`
 }
 
+// Header TOC 的每一项内容
 type Header struct {
 	Level  int
 	Indent int

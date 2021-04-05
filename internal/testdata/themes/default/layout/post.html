@@ -35,10 +35,10 @@
 
 {{- if .Post.TOC -}}
 <nav id="toc-button" class="nav-button">
-    <i class="css-icon icon-menu"></i>
-    <ul id="toc">
+    <i role="button" class="css-icon icon-menu"></i>
+    <ul id="toc" role="menu">
     {{- range .Post.TOC -}}
-    <li class="toc-h{{.Indent}}"><a href="#{{.ID}}">{{.Text}}</a></li>
+    <li role="menuitem" class="toc-h{{.Indent}}"><a href="#{{.ID}}">{{.Text}}</a></li>
     {{- end -}}
     </ul>
 </nav>
