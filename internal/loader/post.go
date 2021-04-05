@@ -3,7 +3,6 @@
 package loader
 
 import (
-	"bytes"
 	"fmt"
 	"io/fs"
 	"path"
@@ -13,9 +12,6 @@ import (
 	"unicode"
 
 	"github.com/issue9/sliceutil"
-	meta "github.com/yuin/goldmark-meta"
-	"github.com/yuin/goldmark/parser"
-	"gopkg.in/yaml.v2"
 
 	"github.com/caixw/blogit/internal/vars"
 )
@@ -63,8 +59,16 @@ type Post struct {
 	Language string    `yaml:"language,omitempty"`
 	Keywords string    `yaml:"keywords,omitempty"`
 
-	Content string `yaml:"-"` // markdown 内容
-	Slug    string `yaml:"-"`
+	Content string   `yaml:"-"` // markdown 内容
+	Slug    string   `yaml:"-"`
+	TOC     []Header `yaml:"-"`
+}
+
+type Header struct {
+	Level  int
+	Indent int
+	Text   string
+	ID     string
 }
 
 // LoadPosts 加载所有的文章
@@ -107,26 +111,10 @@ func LoadPosts(fsys fs.FS) ([]*Post, error) {
 }
 
 func loadPost(fsys fs.FS, path string) (*Post, error) {
-	bs, err := fs.ReadFile(fsys, path)
+	post, err := convert(fsys, path)
 	if err != nil {
 		return nil, err
 	}
-
-	ctx := parser.NewContext()
-	buf := new(bytes.Buffer)
-	if err := markdown.Convert(bs, buf, parser.WithContext(ctx)); err != nil {
-		return nil, err
-	}
-
-	metadata, err := yaml.Marshal(meta.Get(ctx))
-	if err != nil {
-		return nil, err
-	}
-	post := &Post{}
-	if err := yaml.Unmarshal(metadata, post); err != nil {
-		return nil, err
-	}
-	post.Content = buf.String()
 
 	if err := post.sanitize(path); err != nil {
 		err.File = path

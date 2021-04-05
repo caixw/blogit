@@ -12,40 +12,8 @@ import (
 	"mime"
 	"path"
 
-	fh "github.com/alecthomas/chroma/formatters/html"
-	"github.com/caixw/blogit/internal/vars"
 	"github.com/issue9/validation/is"
-	"github.com/yuin/goldmark"
-	highlighting "github.com/yuin/goldmark-highlighting"
-	meta "github.com/yuin/goldmark-meta"
-	"github.com/yuin/goldmark/extension"
-	"github.com/yuin/goldmark/parser"
-	"github.com/yuin/goldmark/renderer/html"
 	"gopkg.in/yaml.v2"
-)
-
-var markdown = goldmark.New(
-	goldmark.WithExtensions(
-		extension.GFM,
-		extension.Strikethrough,
-		extension.Footnote,
-		meta.Meta,
-		highlighting.NewHighlighting(
-			highlighting.WithFormatOptions(
-				fh.WithLineNumbers(true),
-				fh.WithClasses(true),
-				fh.ClassPrefix(vars.HighlightClassPrefix),
-			),
-		),
-	),
-
-	goldmark.WithParserOptions(
-		parser.WithAutoHeadingID(),
-	),
-
-	goldmark.WithRendererOptions(
-		html.WithUnsafe(),
-	),
 )
 
 // 排序方式

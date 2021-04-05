@@ -42,6 +42,7 @@ type Post struct {
 	Next      *Post
 	Template  string
 	JSONLD    string
+	TOC       []loader.Header
 }
 
 func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) (*Index, error) {
@@ -120,6 +121,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		Image:     p.Image,
 		Template:  p.Template,
 		JSONLD:    p.JSONLD,
+		TOC:       p.TOC,
 	}, nil
 }
 
