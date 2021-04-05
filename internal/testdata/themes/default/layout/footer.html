@@ -18,12 +18,9 @@
 
         <footer id="footer">
             <div class="line">
-                <a class="item" href="{{.Site.URL}}">首页</a>
-                <a class="item" href="{{.Site.Tags.Permalink}}">{{.Site.Tags.Title}}</a>
-                {{if .Site.Archives}}<a class="item" href="{{.Site.Archives.Permalink}}">{{.Site.Archives.Title}}</a>{{end}}
-                {{if .Site.RSS}}<a class="item" href="{{.Site.RSS.URL}}">{{.Site.RSS.Text}}</a>{{end}}
-                {{if .Site.Atom}}<a class="item" href="{{.Site.Atom.URL}}">{{.Site.Atom.Text}}</a>{{end}}
-                {{if .Site.Sitemap}}<a class="item" href="{{.Site.Sitemap.URL}}">{{.Site.Sitemap.Text}}</a>{{end}}
+                {{- range .Site.Menus -}}
+                <a class="item" href="{{.URL}}">{{.Text}}</a>
+                {{- end -}}
             </div>
 
             <div class="line">

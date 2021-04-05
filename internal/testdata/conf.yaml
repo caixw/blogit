@@ -59,3 +59,20 @@ profile:
   title: title
   size: 2
   footer: footer
+
+# menus
+menus:
+- url: /
+  text: 首页
+- url: /tags.html
+  text: 标签
+- url: /archive.html
+  text: 存档
+- url: /posts/about.html
+  text: 关于
+- url: /rss.xml
+  text: RSS
+- url: /atom.xml
+  text: Atom
+- url: /sitemap.xml
+  text: Sitemap

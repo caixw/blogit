@@ -25,6 +25,7 @@ type (
 		License     *loader.Link
 		Theme       *Theme
 		Highlights  []*Highlight
+		Menus       []*loader.Link
 
 		RSS     *RSS
 		Atom    *RSS
@@ -110,6 +111,7 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		License:     conf.License,
 		Theme:       newTheme(theme),
 		Highlights:  newHighlights(conf, theme),
+		Menus:       conf.Menus,
 
 		Uptime:   conf.Uptime,
 		Builded:  time.Now(),

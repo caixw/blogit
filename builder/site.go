@@ -53,6 +53,7 @@ type site struct {
 	RSS      *loader.Link // RSS 指针方便模板判断其值是否为空
 	Atom     *loader.Link
 	Sitemap  *loader.Link
+	Menus    []*loader.Link
 
 	Tags     *data.Tags
 	Index    *data.Index
@@ -76,6 +77,7 @@ func newSite(d *data.Data) *site {
 		AppVersion: vars.Version,
 		Theme:      d.Theme,
 		Highlights: make([]*styleLink, 0, len(d.Highlights)),
+		Menus:      d.Menus,
 
 		Title:    d.Title,
 		Subtitle: d.Subtitle,
