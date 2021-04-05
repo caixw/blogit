@@ -1,18 +1,16 @@
 {{- define "archive" -}}
-{{template "header" .}}
+{{- template "header" . -}}
 
 <h1>{{.Site.Archives.Title}}</h1>
 
-{{range .Site.Archives.Archives}}
-{{if .Posts}}
+{{- range .Site.Archives.Archives -}}
+{{- if .Posts -}}
 <h2>{{.Title}}</h2>
     <ul class="posts">
-    {{range .Posts}}
-        <li><a href="{{.Permalink}}">{{.Title}}</a><time>{{date .Modified "2006-01-02"}}</time></li>
-    {{end}}
+    {{- template "post-list" .Posts -}}
     </ul>
-{{end}}
-{{end}}
+{{- end -}}
+{{- end -}}
 
-{{template "footer" .}}
+{{- template "footer" . -}}
 {{- end -}}

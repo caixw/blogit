@@ -1,13 +1,11 @@
-{{define "index"}}
-{{template "header" .}}
+{{- define "index" -}}
+{{- template "header" . -}}
 
 <h1>{{.Site.Title}}</h1>
 
 <ul class="posts">
-{{range .Site.Index.Posts}}
-    <li><a href="{{.Permalink}}">{{.Title}}</a><time>{{date .Modified "2006-01-02"}}</time></li>
-{{end}}
+{{- template "post-list" .Site.Index.Posts -}}
 </ul>
 
-{{template "footer" .}}
-{{end}}
+{{- template "footer" . -}}
+{{- end -}}

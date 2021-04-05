@@ -62,13 +62,13 @@ td, th {
     padding: 1px 5px;
 }
 
-/************ posts/tags ***********/
-
-ul.posts {
+ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
+
+/************ posts/tags ***********/
 
 ul.posts li {
     display: flex;
@@ -156,12 +156,16 @@ ul.tags li:last-child {
 
 /*********************** toc-nav ****************/
 
-#toc-nav .button {
+.nav-button {
     padding: 2px 4px;
     text-align: center;
     cursor: pointer;
     position: fixed;
     box-shadow: 0px 0px 2px 1px var(--secondary);
+}
+
+.nav-button:hover {
+    box-shadow: 0px 0px 2px 1px var(--accent);
 }
 
 #toc-button {
@@ -172,12 +176,9 @@ ul.tags li:last-child {
     background: var(--background);
     overflow-y: auto;
     max-height: 60%;
-    display: none; /* 默认不显示，由 JS 控制它显示。 */
 }
 
 #toc-button ul {
-    list-style: none;
-    margin: 0;
     padding: 1px;
     text-align: left;
 }
@@ -192,17 +193,41 @@ ul.tags li:last-child {
 }
 
 #toc {
-    display: none;
     position: relative;
     top: 0;
     right: 0;
+    display: none;
 }
 #toc-button:hover #toc {
     display: block;
     padding: 10px 30px 10px 15px;
 }
 
+.toc-h0 {
+    margin-left: 0;
+}
+.toc-h1 {
+    margin-left: 1rem;
+}
+.toc-h2 {
+    margin-left: 2rem;
+}
+.toc-h3 {
+    margin-left: 3rem;
+}
+.toc-h4 {
+    margin-left: 4rem;
+}
+.toc-h5 {
+    margin-left: 5rem;
+}
+.toc-h6 {
+    margin-left: 6rem;
+}
+
 #goto-top {
+    background: var(--background);
+    color: var(--primary);
     bottom: 5rem;
     right: calc((100vw - var(--max-width)) / 2 - 3rem);
 }

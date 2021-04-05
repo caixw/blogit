@@ -33,15 +33,16 @@
 </article>
 
 
-<nav id="toc-nav">
-    <div id="toc-button" class="button">
-        <i class="css-icon icon-menu"></i>
-        <ul id="toc"></ul>
-    </div>
-
-    <span id="goto-top" class="button"><a href="#" class="css-icon icon-arrow-up"></a></span>
+{{- if .Post.TOC -}}
+<nav id="toc-button" class="nav-button">
+    <i class="css-icon icon-menu"></i>
+    <ul id="toc">
+    {{- range .Post.TOC -}}
+    <li class="toc-h{{.Indent}}"><a href="#{{.ID}}">{{.Text}}</a></li>
+    {{- end -}}
+    </ul>
 </nav>
-<script src="{{"default/nav.js"|themeURL}}"></script>
+{{- end -}}
 
 {{template "footer" .}}
 {{end}}

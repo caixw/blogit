@@ -1,18 +1,16 @@
 {{- define "tag" -}}
-{{template "header" .}}
+{{- template "header" . -}}
 
 <h1>{{.Tag.Title}}</h2>
 <article>
     {{.Tag.Content|html}}
 </article>
 
-{{if .Tag.Posts}}
+{{- if .Tag.Posts -}}
 <ul class="posts">
-    {{range .Tag.Posts}}
-    <li><a href="{{.Permalink}}">{{.Title}}</a><time>{{date .Modified "2006-01-02"}}</time></li>
-    {{end}}
+    {{- template "post-list" .Tag.Posts -}}
 </ul>
-{{end}}
+{{- end -}}
 
-{{template "footer" .}}
-{{end}}
+{{- template "footer" . -}}
+{{- end -}}
