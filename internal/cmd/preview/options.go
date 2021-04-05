@@ -183,9 +183,11 @@ func (o *options) getWatcher() (*fsnotify.Watcher, error) {
 			return err
 		}
 
-		name := d.Name()
-		if name != "." && name[0] == '.' { // 忽略隐藏文件
-			return filepath.SkipDir
+		if isHidden(d.Name()) { // 忽略隐藏文件
+			if d.IsDir() {
+				return filepath.SkipDir
+			}
+			return nil
 		}
 
 		paths = append(paths, p)
@@ -207,4 +209,8 @@ func (o *options) getWatcher() (*fsnotify.Watcher, error) {
 	}
 
 	return watcher, nil
+}
+
+func isHidden(name string) bool {
+	return len(name) > 2 && name[0] == '.' && name[1] != '/' && name[1] != os.PathSeparator
 }
