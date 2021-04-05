@@ -228,13 +228,12 @@ ul.tags li:last-child {
     bottom: 5rem;
 }
 
-/* 1000 即是 var(--max-width) 的值，media 指令中无法使用。 */
-@media (max-width: 1000px) {
+/* 1000 即是 var(--max-width) 的值再加上边框按钮所占的宽度，media 指令中无法使用。 */
+@media (max-width: 1100px) {
  #toc-button, #goto-top {
-        right: 2rem;
+        right: 2rem !important;
     }
 }
-
 
 /************ icon ************/
 
