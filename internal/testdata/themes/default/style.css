@@ -157,11 +157,14 @@ ul.tags li:last-child {
 /*********************** toc-nav ****************/
 
 .nav-button {
+    background: var(--background);
+    color: var(--primary);
     padding: 2px 4px;
     text-align: center;
     cursor: pointer;
     position: fixed;
     box-shadow: 0px 0px 2px 1px var(--secondary);
+    right: calc((100vw - var(--max-width)) / 2 - 3rem);
 }
 
 .nav-button:hover {
@@ -171,7 +174,6 @@ ul.tags li:last-child {
 #toc-button {
     white-space: nowrap;
     top: 5rem;
-    right: calc((100vw - var(--max-width)) / 2 - 3rem);
     z-index: 999;
     background: var(--background);
     overflow-y: auto;
@@ -221,15 +223,9 @@ ul.tags li:last-child {
 .toc-h5 {
     margin-left: 5rem;
 }
-.toc-h6 {
-    margin-left: 6rem;
-}
 
 #goto-top {
-    background: var(--background);
-    color: var(--primary);
     bottom: 5rem;
-    right: calc((100vw - var(--max-width)) / 2 - 3rem);
 }
 
 /* 1000 即是 var(--max-width) 的值，media 指令中无法使用。 */
@@ -279,7 +275,6 @@ ul.tags li:last-child {
     transform: translate(-50%, -25%) rotate(45deg);
 }
 
-
 /*********** print *****************/
 
 @media print {
@@ -294,8 +289,8 @@ ul.tags li:last-child {
         content: "(" attr(href) ")"; /* 所有链接后显示链接地址 */
     }
 
-    .pages-nav, #footer, #toc-nav {
-        display: none;
+    .pages-nav, #footer, .nav-button {
+        display: none !important; /* 不加 important chrome 不启作用 */
     }
 
     h1 {
