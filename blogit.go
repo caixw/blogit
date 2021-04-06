@@ -20,7 +20,7 @@ type (
 const Version = vars.Version
 
 // FullVersion 返回完整的版本号
-///
+//
 // 完整版本号包含了编译日期，提交的 hash 等额外的值。
 func FullVersion() string { return vars.FullVersion() }
 
