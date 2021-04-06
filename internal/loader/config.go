@@ -106,6 +106,10 @@ func (conf *Config) sanitize() *FieldError {
 		}
 	}
 
+	if conf.TOC < 0 {
+		return &FieldError{Message: "必须大于 0", Field: "toc", Value: conf.TOC}
+	}
+
 	// archive
 	if conf.Archive == nil {
 		return &FieldError{Message: "不能为空", Field: "archive"}
