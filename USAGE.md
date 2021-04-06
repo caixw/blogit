@@ -26,6 +26,7 @@
 | description     | string      | 首页的 html>head>meta.description 标签的值
 | menus           | []Link      | 菜单栏内容
 | toc             | number      | 当标题数量大于此值时，才会生成 TOC 数据，默认值为 0。
+| index           | Index       | 索引页相关的设置
 | archive         | Archive     | 存档页的相关定义，可以为空，表示不需要该页面。
 | rss             | RSS         | RSS 的相关定义，为空表示不需要。
 | atom            | RSS         | atom 的相关定义，为空表示不需要。
@@ -62,6 +63,13 @@
 | 名称            | 类型        | 描述
 |-----------------|-------------|-------------
 | title           | string      | 标题，部分模板可能会引用到。
+| size            | number      | 生成的文章数量
+
+#### Index
+
+| 名称            | 类型        | 描述
+|-----------------|-------------|-------------
+| title           | string      | 标题，可以带 `%d` 占位符，表示当前页的页码数字。
 | size            | number      | 生成的文章数量
 
 #### Sitemap
@@ -174,7 +182,8 @@ blogit 不支持文章分类，也没有一般博客的页面和文章的区别�
 | Language        | string      | 当前页所采用的语言
 | JSONLD          | string      | 当前页的 JSON-LD 数据
 | Tag             | Tag         | 如果当前页是 `tag`，那么表示该标签的数据，否则为空值。
-| Post            | Post        | 如果当前页是 `post`，那么表示该标签的数据，否则为空值。
+| Post            | Post        | 如果当前页是 `post`，那么表示该页的数据，否则为空值。
+| Index           | Index       | 如果当前页是 `index`，那么表示该页的数据，否则为空值。
 
 Type 可以有以下值：
 
@@ -202,12 +211,21 @@ Type 可以有以下值：
 | Sitemap         | Link        | Sitemap 链接
 | Menus           | []Link      | 全局菜单
 | Tags            | Tags        | 标签列表
-| Index           | Index       | 文章列表
 | Archives        | Archives    | 存档信息
 | Uptime          | date        | 上线时间
 | Created         | date        | 最后次创建文章的时间
 | Modified        | date        | 最后次修改文章的时间
 | Builded         | date        | 编译项目的时间
+
+##### Index
+
+| 名称            | 类型        | 描述
+|-----------------|-------------|-------------
+| Title           | string      | 页标题
+| Permalink       | string      | 链接
+| Posts           | []Post      | 文章列表
+| Index           | number      | 当前页的页码
+| Path            | string      | 当前页的文件地址
 
 ##### StyleLink
 
