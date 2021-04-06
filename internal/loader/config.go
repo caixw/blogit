@@ -28,6 +28,7 @@ type Config struct {
 	Keywords    string    `yaml:"keywords,omitempty"`    // 所有页面默认情况下的 keywords
 	Description string    `yaml:"description,omitempty"` // 所有页面默认情况下的 description
 	Menus       []*Link   `yaml:"menus,omitempty"`       // 菜单
+	TOC         int       `yaml:"toc,omitempty"`         // 当 headline 的数量大于此值时，生成 TOC
 
 	Archive *Archive `yaml:"archive,omitempty"`
 	RSS     *RSS     `yaml:"rss,omitempty"`

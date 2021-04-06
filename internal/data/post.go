@@ -85,6 +85,10 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		p.Modified = p.Created
 	}
 
+	if len(p.TOC) <= conf.TOC {
+		p.TOC = nil
+	}
+
 	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 0 {
 		return nil, &loader.FieldError{
 			Message: "模板不存在于 " + vars.ThemeYAML,
