@@ -3,7 +3,10 @@
 package data
 
 import (
+	"fmt"
+	"math"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/issue9/sliceutil"
@@ -12,13 +15,17 @@ import (
 	"github.com/caixw/blogit/internal/vars"
 )
 
-// Index 首页内容
+// Index 索引页内容
 type Index struct {
 	Title       string
 	Permalink   string
 	Keywords    string
 	Description string
 	Posts       []*Post
+	Index       int // 当前页的索引
+	Path        string
+	Next        *Index
+	Prev        *Index
 }
 
 // Post 文章详情
@@ -45,7 +52,7 @@ type Post struct {
 	TOC       []loader.Header
 }
 
-func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) (*Index, error) {
+func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) ([]*Post, error) {
 	sortPosts(posts)
 
 	ps := make([]*Post, 0, len(posts))
@@ -59,13 +66,54 @@ func buildPosts(conf *loader.Config, theme *loader.Theme, posts []*loader.Post) 
 
 	postsPrevNext(ps)
 
-	return &Index{
-		Title:       conf.Title,
-		Permalink:   conf.URL,
-		Keywords:    conf.Keywords,
-		Description: conf.Description,
-		Posts:       ps,
-	}, nil
+	return ps, nil
+}
+
+func buildIndexes(conf *loader.Config, posts []*Post) []*Index {
+	size := int(math.Ceil(float64(len(posts)) / float64(conf.Index.Size)))
+	indexes := make([]*Index, 0, size)
+	hasVerbs := strings.Contains(conf.Index.Title, "%d")
+
+	for page := 0; page < size; page++ {
+		start := page * conf.Index.Size
+		offset := start + conf.Index.Size
+		if offset > len(posts) {
+			offset = len(posts)
+		}
+
+		index := &Index{
+			Keywords:    conf.Keywords,
+			Description: conf.Description,
+			Posts:       posts[start:offset],
+			Index:       page + 1,
+		}
+		if hasVerbs {
+			index.Title = fmt.Sprintf(conf.Index.Title, index.Index)
+		} else {
+			index.Title = conf.Index.Title
+		}
+
+		if page == 0 {
+			index.Path = vars.IndexFilename
+			index.Permalink = conf.URL
+		} else {
+			index.Path = fmt.Sprintf(vars.IndexFilenameFormat, index.Index)
+			index.Permalink = BuildURL(conf.URL, index.Path)
+		}
+
+		indexes = append(indexes, index)
+	}
+
+	for i, index := range indexes {
+		if i > 0 {
+			index.Prev = indexes[i-1]
+		}
+		if i < len(indexes)-1 {
+			index.Next = indexes[i+1]
+		}
+	}
+
+	return indexes
 }
 
 func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post, error) {

@@ -3,9 +3,7 @@
 
 <h1>{{.Site.Title}}</h1>
 
-<ul class="posts">
-{{- template "post-list" .Site.Index.Posts -}}
-</ul>
+{{- template "post-list" .Index.Posts -}}
 
 {{- template "footer" . -}}
 {{- end -}}

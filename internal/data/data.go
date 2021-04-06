@@ -39,7 +39,8 @@ type (
 		Builded  time.Time // 最后次编译时间
 
 		Tags     *Tags
-		Index    *Index
+		Posts    []*Post
+		Indexes  []*Index
 		Archives *Archives
 	}
 )
@@ -85,17 +86,17 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		return nil, err
 	}
 
-	index, err := buildPosts(conf, theme, posts)
+	ps, err := buildPosts(conf, theme, posts)
 	if err != nil {
 		return nil, err
 	}
 
-	archives, err := buildArchives(conf, index.Posts)
+	archives, err := buildArchives(conf, ps)
 	if err != nil {
 		return nil, err
 	}
 
-	created, modified, err := relationTagsPosts(ts.Tags, index.Posts)
+	created, modified, err := relationTagsPosts(ts.Tags, ps)
 	if err != nil {
 		return nil, err
 	}
@@ -119,12 +120,13 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		Modified: modified,
 
 		Tags:     ts,
-		Index:    index,
+		Posts:    ps,
+		Indexes:  buildIndexes(conf, ps),
 		Archives: archives,
 	}
 
 	// 获得一份按时间排序的列表，诸如 rss 等不应该受自定义排序的影响，始终以时间作为排序。
-	sorted := sortPostsByCreated(index.Posts)
+	sorted := sortPostsByCreated(ps)
 
 	if conf.RSS != nil {
 		data.RSS = newRSS(conf, conf.RSS, vars.RssXML, theme.RSS, sorted)

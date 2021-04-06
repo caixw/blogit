@@ -43,3 +43,18 @@ func TestRSS_sanitize(t *testing.T) {
 	rss.Size = 10
 	a.NotError(rss.sanitize())
 }
+
+func TestIndex_sanitize(t *testing.T) {
+	a := assert.New(t)
+
+	i := &Index{}
+	err := i.sanitize()
+	a.Equal(err.Field, "size")
+
+	i.Size = 5
+	err = i.sanitize()
+	a.Equal(err.Field, "title")
+
+	i.Title = "xx"
+	a.NotError(i.sanitize())
+}

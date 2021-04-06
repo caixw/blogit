@@ -17,12 +17,13 @@ const (
 	TagsDir   = "tags"
 	LayoutDir = "layout"
 
-	TagsFilename    = "tags" + Ext
-	IndexFilename   = "index" + Ext
-	ArchiveFilename = "archive" + Ext
-	RssXML          = "rss.xml"
-	AtomXML         = "atom.xml"
-	SitemapXML      = "sitemap.xml"
+	TagsFilename        = "tags" + Ext
+	IndexFilename       = "index" + Ext    // 首页
+	IndexFilenameFormat = "index-%d" + Ext // 非首页的索引页
+	ArchiveFilename     = "archive" + Ext
+	RssXML              = "rss.xml"
+	AtomXML             = "atom.xml"
+	SitemapXML          = "sitemap.xml"
 
 	DefaultTemplate = "post"
 	IndexTemplate   = "index"

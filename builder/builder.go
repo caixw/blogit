@@ -101,6 +101,7 @@ func (b *Builder) buildData(src fs.FS, base string) (err error) {
 
 	call(b.buildTags)
 	call(b.buildPosts)
+	call(b.buildIndexes)
 	call(b.buildSitemap)
 	call(b.buildArchive)
 	call(b.buildAtom)

@@ -5,6 +5,11 @@ subtitle: subtitle
 uptime: 2016-03-06T00:00:01+08:00
 language: cmn-Hans
 theme: default
+toc: 2
+
+index:
+  title: 第 %d 页
+  size: 50
 
 robots:
 - agent:

@@ -31,7 +31,7 @@ func (b *Builder) buildSitemap(d *data.Data) error {
 
 	s := &urlset{
 		XMLNS:  sitempaNamespace,
-		URLSet: make([]*url, 0, len(d.Tags.Tags)+len(d.Index.Posts)),
+		URLSet: make([]*url, 0, len(d.Tags.Tags)+len(d.Posts)),
 	}
 
 	conf := d.Sitemap
@@ -43,7 +43,7 @@ func (b *Builder) buildSitemap(d *data.Data) error {
 	}
 
 	s.append(d.URL, d.Modified, conf.Changefreq, conf.Priority)
-	for _, p := range d.Index.Posts {
+	for _, p := range d.Posts {
 		s.append(p.Permalink, p.Modified, conf.PostChangefreq, conf.PostPriority)
 	}
 

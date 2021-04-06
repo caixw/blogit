@@ -34,8 +34,9 @@ type page struct {
 	JSONLD      string // JSON-LD 数据
 
 	// 以下内容，仅在对应的页面才会有内容
-	Tag  *data.Tag  // 标签详细页面，非标签详细页，则为空
-	Post *data.Post // 文章详细内容，仅文章页面用到。
+	Tag   *data.Tag   // 标签详细页面，非标签详细页，则为空
+	Post  *data.Post  // 文章详细内容，仅文章页面用到。
+	Index *data.Index // 索引页的数据
 }
 
 type site struct {
@@ -56,7 +57,6 @@ type site struct {
 	Menus    []*loader.Link
 
 	Tags     *data.Tags
-	Index    *data.Index
 	Archives *data.Archives
 
 	Uptime   time.Time
@@ -86,7 +86,6 @@ func newSite(d *data.Data) *site {
 		Author:   d.Author,
 
 		Tags:     d.Tags,
-		Index:    d.Index,
 		Archives: d.Archives,
 
 		Uptime:   d.Uptime,

@@ -6,9 +6,7 @@
 {{- range .Site.Archives.Archives -}}
 {{- if .Posts -}}
 <h2>{{.Title}}</h2>
-    <ul class="posts">
     {{- template "post-list" .Posts -}}
-    </ul>
 {{- end -}}
 {{- end -}}
 

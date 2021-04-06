@@ -1,8 +1,10 @@
 {{- define "post-list" -}}
+<ul class="posts">
 {{- range . -}}
     <li>
         <a href="{{.Permalink}}">{{.Title}}</a>
         <time title="修改时间:{{.Modified|rfc3339}}&#10;添加时间:{{.Created|rfc3339}}">{{date .Modified "2006-01-02"}}</time>
     </li>
 {{- end -}}
+</ul>
 {{- end -}}

@@ -29,6 +29,7 @@ type Config struct {
 	Description string    `yaml:"description,omitempty"` // 所有页面默认情况下的 description
 	Menus       []*Link   `yaml:"menus,omitempty"`       // 菜单
 	TOC         int       `yaml:"toc,omitempty"`         // 当 headline 的数量大于此值时，生成 TOC
+	Index       *Index    `yaml:"index"`                 // 分页设置
 
 	Archive *Archive `yaml:"archive,omitempty"`
 	RSS     *RSS     `yaml:"rss,omitempty"`
@@ -42,6 +43,12 @@ type Config struct {
 type RSS struct {
 	Title string `yaml:"title,omitempty"`
 	Size  int    `yaml:"size"` // 显示数量
+}
+
+// Index 索引页设置
+type Index struct {
+	Title string `yaml:"title"` // 标题格式，可以使用 %d 占位符，表示页码。
+	Size  int    `yaml:"size"`  // 每页数量
 }
 
 // LoadConfig 加载配置文件
@@ -108,6 +115,15 @@ func (conf *Config) sanitize() *FieldError {
 
 	if conf.TOC < 0 {
 		return &FieldError{Message: "必须大于 0", Field: "toc", Value: conf.TOC}
+	}
+
+	// index
+	if conf.Index == nil {
+		return &FieldError{Message: "不能为空", Field: "index"}
+	}
+	if err := conf.Index.sanitize(); err != nil {
+		err.Field = "index." + err.Field
+		return err
 	}
 
 	// archive
@@ -180,6 +196,18 @@ func (rss *RSS) sanitize() *FieldError {
 
 	if rss.Size <= 0 {
 		return &FieldError{Message: "必须大于 0", Field: "size", Value: rss.Size}
+	}
+
+	return nil
+}
+
+func (index *Index) sanitize() *FieldError {
+	if index.Size < 1 {
+		return &FieldError{Message: "必须大于 0", Field: "size", Value: index.Size}
+	}
+
+	if index.Title == "" {
+		return &FieldError{Message: "不能为空", Field: "title"}
 	}
 
 	return nil
