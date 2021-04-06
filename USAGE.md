@@ -24,6 +24,8 @@
 | theme           | string      | 网站采用的主题，该名称必须是 themes/ 下的文件夹名称。
 | keywords        | string      | 首页的 html>head>meta.keywords 标签的值
 | description     | string      | 首页的 html>head>meta.description 标签的值
+| menus           | []Link      | 菜单栏内容
+| toc             | number      | 当标题数量大于此值时，才会生成 TOC 数据，默认值为 0。
 | archive         | Archive     | 存档页的相关定义，可以为空，表示不需要该页面。
 | rss             | RSS         | RSS 的相关定义，为空表示不需要。
 | atom            | RSS         | atom 的相关定义，为空表示不需要。
@@ -69,9 +71,9 @@
 | title           | string      | 标题，部分模板可能会引用到。
 | enableTag       | boolean     | 是否将标签页也放入 sitemap
 | postPriority    | number      | 对应文章的 priority 值
-| postChangefreq  | striing     | 对应文章的 changefreq 值
+| postChangefreq  | string     | 对应文章的 changefreq 值
 | priority        | number      | 其它页面的 priority 值
-| changefreq      | striing     | 其它页面的 changefreq 值
+| changefreq      | string     | 其它页面的 changefreq 值
 
 #### Agent
 
@@ -113,7 +115,7 @@ blogit 不支持文章分类，也没有一般博客的页面和文章的区别�
 |-----------------|-------------|-------------
 | title           | string      | 标签页的标题
 | keywords        | string      | 标签页的 html>head>meta.keywords 中的值，如果没有，则提取所有标签值作为该值
-| description     | string      | 标签页的 thml>head>meta.description 元素的值。
+| description     | string      | 标签页的 html>head>meta.description 元素的值。
 | order           | string      | 排序，可是 `asc` 和 `desc`
 | orderType       | string      | 排序方式，可以是 size 表示按关联文章数量进行排序，或是为空，按添加顺序。
 | tags            | []Tag       | 标签列表
@@ -163,8 +165,8 @@ blogit 不支持文章分类，也没有一般博客的页面和文章的区别�
 | Title           | string      | 当前页的标题，出现在 html>head>title 元素中，会加上网站名称作为后缀。
 | Permalink       | string      | 当前页的唯一链接
 | Keywords        | string      | 当前页的 html>head>meta.keywords 元素中数据。
-| Description     | string      | 当前页的 html>head>meta.desccription 元素中数据。
-| Description     | string      | 当前页的 html>head>meta.desccription 元素中数据。
+| Description     | string      | 当前页的 html>head>meta.description 元素中数据。
+| Description     | string      | 当前页的 html>head>meta.description 元素中数据。
 | Prev            | Link        | 前一页的链接
 | Next            | Link        | 后一页的链接
 | Author          | Author      | 当前页内容的作者
@@ -226,4 +228,3 @@ Type 可以有以下值：
 | template        | string      | 文章的模板，如果为空，则采用默认值 `post`。
 | keywords        | string      | html>head>meta.keywords 的值，如果为空，自动提取 tags 作为默认值。
 | language        | string      | 页面的语言，如果为空，则采用 conf.yaml 中对应的值。
-
