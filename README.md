@@ -46,7 +46,7 @@ cd blogit
 
 ## 使用
 
-`blogit init dir` 可以直接生成一个完整的博客系统。具体使用，要参考 [USAGE](USAGE.md)。
+`blogit init dir` 可以直接生成一个完整的博客系统。具体使用可参考 [USAGE](USAGE.md)。
 
 ## github action
 
