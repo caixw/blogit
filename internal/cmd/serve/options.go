@@ -47,7 +47,7 @@ func (o *options) serve(info, erro *console.Logger) error {
 	}
 	src := os.DirFS(o.source)
 
-	b := blogit.NewBuilder(dest, erro.AsLogger())
+	b := blogit.NewBuilder(dest, info.AsLogger(), erro.AsLogger())
 	if err := b.Rebuild(src, ""); err != nil {
 		return err
 	}

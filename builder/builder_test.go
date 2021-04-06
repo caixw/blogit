@@ -29,7 +29,7 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 
 	// MemoryFS
 
-	b := New(MemoryFS(), nil)
+	b := New(MemoryFS(), nil, nil)
 	srv := rest.NewServer(t, b, nil)
 
 	// b 未加载任何数据。返回都是 404
@@ -50,7 +50,7 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 
 	destDir, err := testdata.Temp()
 	a.NotError(err)
-	b = New(DirFS(destDir), nil)
+	b = New(DirFS(destDir), nil, nil)
 	srv = rest.NewServer(t, b, nil)
 
 	// b 未加载任何数据。返回都是 404

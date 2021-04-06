@@ -25,8 +25,11 @@ import (
 
 // Builder 提供了一个可重复生成 HTML 内容的对象
 type Builder struct {
-	log  *log.Logger
+	info *log.Logger
+	erro *log.Logger
 	wfs  WritableFS
+
+	// 以下内容在 ReBuild 之后会重新生成
 	site *site
 	tpl  *template.Template
 }
@@ -35,14 +38,17 @@ type Builder struct {
 //
 // wfs 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
 // 以及任何实现了 WritableFS 接口都可以；
-// l 表示的是在把 Builder 当作 http.Handler 处理时，在出错时的日志输出通道。
-// 如果为空，则会采用 log.Default() 作为默认值。
-// 如果不准备其当作 http.Handler 使用，则此值是无用；
-func New(wfs WritableFS, l *log.Logger) *Builder {
-	if l == nil {
-		l = log.Default()
+// info 在运行过程中的一些提示信息通过此输出，如果为空，则会采用 log.Default()；
+// erro 表示的是在把 Builder 当作 http.Handler 处理时，在出错时的日志输出通道。
+// 如果为空，则会采用 log.Default()。如果不准备其当作 http.Handler 使用，则此值是无用；
+func New(wfs WritableFS, info, erro *log.Logger) *Builder {
+	if erro == nil {
+		erro = log.Default()
 	}
-	return &Builder{wfs: wfs, log: l}
+	if info == nil {
+		info = log.Default()
+	}
+	return &Builder{wfs: wfs, info: info, erro: erro}
 }
 
 // Rebuild 重新生成数据
@@ -159,20 +165,20 @@ func (b *Builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) e
 
 // 如果 path 以 / 开头，则会自动去除 /
 func (b *Builder) appendFile(p string, mod time.Time, data []byte) error {
+	b.info.Println("添加：", p)
 	return b.wfs.WriteFile(p, data, fs.ModePerm)
 }
 
 // ServeHTTP 作为 HTTP 服务接口使用
 func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// 为了自定义 index 的功能，没有采用 http.ServeFile 方法
-	const index = "index" + vars.Ext
+	// NOTE: 为了自定义 index 的功能，没有采用 http.ServeFile 方法
 
 	p := r.URL.Path
 	if p != "" && p[0] == '/' {
 		p = p[1:]
 	}
 	if p == "" || p[len(p)-1] == '/' {
-		p += index
+		p += vars.IndexFilename
 	}
 
 	f, err := b.wfs.Open(p)
@@ -185,21 +191,21 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err != nil {
-		b.log.Println(err)
+		b.erro.Println(err)
 		errStatus(w, http.StatusInternalServerError)
 		return
 	}
 
 	stat, err := f.Stat()
 	if err != nil {
-		b.log.Println(err)
+		b.erro.Println(err)
 		errStatus(w, http.StatusInternalServerError)
 		return
 	}
 
 	data, err := io.ReadAll(f)
 	if err != nil {
-		b.log.Println(err)
+		b.erro.Println(err)
 		errStatus(w, http.StatusInternalServerError)
 		return
 	}

@@ -28,10 +28,11 @@ func FullVersion() string { return vars.FullVersion() }
 //
 // dir 表示源码目录，直接读该文件系统根目录下的内容；
 // dest 表示输出的目录；
-func Build(src fs.FS, dest WritableFS) error {
-	return NewBuilder(dest, nil).Rebuild(src, "")
+// info 输出编译的进度信息，如果为空，会采用 log.Default()；
+func Build(src fs.FS, dest WritableFS, info *log.Logger) error {
+	return NewBuilder(dest, info, nil).Rebuild(src, "")
 }
 
-func NewBuilder(dest WritableFS, erro *log.Logger) *Builder {
-	return builder.New(dest, erro)
+func NewBuilder(dest WritableFS, info, erro *log.Logger) *Builder {
+	return builder.New(dest, info, erro)
 }

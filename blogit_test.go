@@ -28,7 +28,7 @@ func TestBuild(t *testing.T) {
 	destDir, err := testdata.Temp()
 	a.NotError(err)
 	dest := builder.DirFS(destDir)
-	a.NotError(Build(testdata.Source, dest))
+	a.NotError(Build(testdata.Source, dest, nil))
 	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags/default"+vars.Ext)).
@@ -36,7 +36,7 @@ func TestBuild(t *testing.T) {
 
 	// Memory
 	dest = builder.MemoryFS()
-	a.NotError(Build(testdata.Source, dest))
+	a.NotError(Build(testdata.Source, dest, nil))
 	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags/default"+vars.Ext)).

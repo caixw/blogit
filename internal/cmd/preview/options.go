@@ -109,7 +109,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 		return err
 	}
 
-	o.b = blogit.NewBuilder(o.destFS, erro.AsLogger())
+	o.b = blogit.NewBuilder(o.destFS, info.AsLogger(), erro.AsLogger())
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		info.Println("访问 ", r.URL.String())

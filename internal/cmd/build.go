@@ -29,7 +29,7 @@ func build(w io.Writer) error {
 	start := time.Now()
 
 	info.Println("开始编译内容")
-	if err := blogit.Build(os.DirFS(buildSrc), builder.DirFS(buildDest)); err != nil {
+	if err := blogit.Build(os.DirFS(buildSrc), builder.DirFS(buildDest), info.AsLogger()); err != nil {
 		erro.Println(err)
 		return nil
 	}
