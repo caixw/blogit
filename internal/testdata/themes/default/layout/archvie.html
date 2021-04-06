@@ -1,9 +1,9 @@
 {{- define "archive" -}}
 {{- template "header" . -}}
 
-<h1>{{.Site.Archives.Title}}</h1>
+<h1>{{.Archives.Title}}</h1>
 
-{{- range .Site.Archives.Archives -}}
+{{- range .Archives.Archives -}}
 {{- if .Posts -}}
 <h2>{{.Title}}</h2>
     {{- template "post-list" .Posts -}}

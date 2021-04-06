@@ -184,6 +184,7 @@ blogit 不支持文章分类，也没有一般博客的页面和文章的区别�
 | Tag             | Tag         | 如果当前页是 `tag`，那么表示该标签的数据，否则为空值。
 | Post            | Post        | 如果当前页是 `post`，那么表示该页的数据，否则为空值。
 | Index           | Index       | 如果当前页是 `index`，那么表示该页的数据，否则为空值。
+| Archives        | Archives    | 存档信息
 
 Type 可以有以下值：
 
@@ -211,7 +212,6 @@ Type 可以有以下值：
 | Sitemap         | Link        | Sitemap 链接
 | Menus           | []Link      | 全局菜单
 | Tags            | Tags        | 标签列表
-| Archives        | Archives    | 存档信息
 | Uptime          | date        | 上线时间
 | Created         | date        | 最后次创建文章的时间
 | Modified        | date        | 最后次修改文章的时间
