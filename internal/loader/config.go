@@ -97,6 +97,14 @@ func (conf *Config) sanitize() *FieldError {
 		return &FieldError{Message: "不能为空", Field: "theme"}
 	}
 
+	// menus
+	for i, m := range conf.Menus {
+		if err := m.sanitize(); err != nil {
+			err.Field = "menus[" + strconv.Itoa(i) + "]." + err.Field
+			return err
+		}
+	}
+
 	// archive
 	if conf.Archive == nil {
 		return &FieldError{Message: "不能为空", Field: "archive"}
