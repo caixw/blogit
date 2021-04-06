@@ -79,7 +79,7 @@
 
 | 名称            | 类型        | 描述
 |-----------------|-------------|-------------
-| agent           | []string    | 指定可有的爬虫，比如 ['*']
+| agent           | []string    | 指定可用的爬虫，比如 ['*']
 | disallow        | []string    | 禁止抓取的目录
 | allow           | []string    | 允许的目录
 
@@ -191,7 +191,7 @@ Type 可以有以下值：
 | AppName         | string      | 生成该模板的程序名称
 | AppVersion      | string      | 生成该模板的程序版本
 | Theme           | Theme       | 主题信息
-| Highlights      | []Link      | 代码高这所需要的 CSS 文件
+| Highlights      | []StyleLink | 代码高这所需要的 CSS 文件
 | Title           | string      | 网站名称
 | Subtitle        | string      | 网站副标题
 | URL             | string      | 网站根地址
@@ -200,6 +200,7 @@ Type 可以有以下值：
 | RSS             | Link        | RSS 链接
 | Atom            | Link        | Atom 链接
 | Sitemap         | Link        | Sitemap 链接
+| Menus           | []Link      | 全局菜单
 | Tags            | Tags        | 标签列表
 | Index           | Index       | 文章列表
 | Archives        | Archives    | 存档信息
@@ -207,6 +208,13 @@ Type 可以有以下值：
 | Created         | date        | 最后次创建文章的时间
 | Modified        | date        | 最后次修改文章的时间
 | Builded         | date        | 编译项目的时间
+
+##### StyleLink
+
+| 名称            | 类型        | 描述
+|-----------------|-------------|-------------
+| URL             | string      | CSS 指向的地址
+| Media           | string      | 对应的媒体查询值，比如 `print`、`(prefers-color-scheme: dark)` 等。
 
 ## 添加文章
 
