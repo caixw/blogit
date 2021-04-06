@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/caixw/blogit"
 	"github.com/issue9/assert"
 )
 
@@ -15,5 +16,5 @@ func TestPrintVersion(t *testing.T) {
 
 	w := bytes.Buffer{}
 	a.NotError(printVersion(&w))
-	a.True(strings.Contains(w.String(), "solarized-dark256"))
+	a.True(strings.Contains(w.String(), blogit.FullVersion()))
 }

@@ -7,7 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/caixw/blogit"
 	"github.com/issue9/assert"
 )
 
@@ -16,5 +15,5 @@ func TestPrintStyles(t *testing.T) {
 
 	w := bytes.Buffer{}
 	a.NotError(printStyles(&w))
-	a.True(strings.Contains(w.String(), blogit.FullVersion()))
+	a.True(strings.Contains(w.String(), "solarized-dark256"))
 }
