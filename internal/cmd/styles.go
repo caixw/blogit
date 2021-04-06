@@ -17,9 +17,10 @@ const stylesUsage = `显示可用的代码高亮名称
 其中 {id} 是主题名称，面 {name} 则是当前命令列的值。`
 
 func initStyles(opt *cmdopt.CmdOpt) {
-	opt.New("styles", stylesUsage, func(w io.Writer) error {
-		names := styles.Names()
-		_, err := fmt.Println(names)
-		return err
-	})
+	opt.New("styles", stylesUsage, printStyles)
+}
+
+func printStyles(w io.Writer) error {
+	_, err := fmt.Fprintln(w, styles.Names())
+	return err
 }

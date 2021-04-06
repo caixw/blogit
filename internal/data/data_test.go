@@ -25,6 +25,7 @@ func TestLoad(t *testing.T) {
 	a.NotNil(data.Posts[1].License)
 	a.NotNil(data.License)
 	a.NotNil(data.Author)
+	a.Equal(2, len(data.Indexes)) // 3 篇文章，每页 2 篇，可分为 2 个索引页
 	a.Equal(data.URL, "https://example.com")
 
 	a.True(data.Builded.After(time.Time{}))
