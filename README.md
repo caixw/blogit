@@ -46,14 +46,11 @@ cd blogit
 
 ## 使用
 
-`blogit init dir` 可以直接生成一个完整的博客系统。
+`blogit init dir` 可以直接生成一个完整的博客系统。具体使用，要参考 [USAGE](USAGE.md)。
 
-在预览模式下，文件类型的值取决于文件的后缀名或是在没有后缀名的情况下由内容决定。
-而文件后缀名与文件类型的关联数据库，由操作系统决定，在不同系统下会有所偏差。
+## github action
 
 如果你的网站部署在 github 的话，可以直接使用 action 实现全程自动化编译上传代码。
-
-### github action
 
 ```yaml
 jobs:
