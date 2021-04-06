@@ -169,12 +169,10 @@ func (conf *Config) sanitize() *FieldError {
 	}
 
 	// robots.txt
-	if conf.Robots != nil {
-		for index, agent := range conf.Robots {
-			if err := agent.sanitize(); err != nil {
-				err.Field = "robots.[" + strconv.Itoa(index) + "]." + err.Field
-				return err
-			}
+	for index, agent := range conf.Robots {
+		if err := agent.sanitize(); err != nil {
+			err.Field = "robots.[" + strconv.Itoa(index) + "]." + err.Field
+			return err
 		}
 	}
 

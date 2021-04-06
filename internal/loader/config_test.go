@@ -5,6 +5,7 @@ package loader
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/issue9/assert"
 
@@ -22,6 +23,35 @@ func TestLoadConfig(t *testing.T) {
 
 	conf, err = LoadConfig(testdata.Source, "not-exists.yaml")
 	a.ErrorIs(err, os.ErrNotExist).Nil(conf)
+}
+
+func TestConfig_sanitize(t *testing.T) {
+	a := assert.New(t)
+
+	conf := &Config{}
+	err := conf.sanitize()
+	a.Error(err).Equal(err.Field, "url")
+
+	conf = &Config{URL: "https://example.com"}
+	err = conf.sanitize()
+	a.Error(err).Equal(err.Field, "uptime")
+
+	conf = &Config{
+		URL:     "https://example.com",
+		Uptime:  time.Now(),
+		Title:   "title",
+		Theme:   "default",
+		Author:  &Author{Name: "example", URL: "https://example.com"},
+		Index:   &Index{Title: "%d page", Size: 5},
+		Archive: &Archive{Title: "archive"},
+		License: &Link{Text: "MIT", URL: "https://example.com"},
+	}
+	err = conf.sanitize()
+	a.NotError(err).Equal(conf.Language, "cmn-Hans")
+
+	conf.Atom = &RSS{}
+	err = conf.sanitize()
+	a.Error(err).Equal(err.Field, "atom.title")
 }
 
 func TestRSS_sanitize(t *testing.T) {

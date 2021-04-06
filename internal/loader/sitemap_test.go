@@ -25,4 +25,8 @@ func TestSitemap_sanitize(t *testing.T) {
 	s.Changefreq = "never"
 	s.PostChangefreq = "never"
 	a.NotError(s.sanitize())
+
+	s.PostChangefreq = "not-exists"
+	err := s.sanitize()
+	a.Equal(err.Field, "postChangefreq")
 }

@@ -18,17 +18,34 @@ type Sitemap struct {
 }
 
 func (s *Sitemap) sanitize() *FieldError {
-	switch {
-	case s.Title == "":
+	chkPriority := func(v float64, field string) *FieldError {
+		if v > 1 || v < 0 {
+			return &FieldError{Message: "介于[0,1]之间的浮点数", Field: field, Value: v}
+		}
+		return nil
+	}
+	chkChangefreq := func(v, field string) *FieldError {
+		if !inStrings(v, changereqs) {
+			return &FieldError{Message: "取值不正确", Field: field, Value: v}
+		}
+		return nil
+	}
+
+	if s.Title == "" {
 		return &FieldError{Message: "不能为空", Field: "title"}
-	case s.Priority > 1 || s.Priority < 0:
-		return &FieldError{Message: "介于[0,1]之间的浮点数", Field: "priority", Value: s.Priority}
-	case s.PostPriority > 1 || s.PostPriority < 0:
-		return &FieldError{Message: "介于[0,1]之间的浮点数", Field: "postPriority", Value: s.PostPriority}
-	case !inStrings(s.Changefreq, changereqs):
-		return &FieldError{Message: "取值不正确", Field: "changefreq", Value: s.Changefreq}
-	case !inStrings(s.PostChangefreq, changereqs):
-		return &FieldError{Message: "取值不正确", Field: "postChangefreq", Value: s.PostChangefreq}
+	}
+
+	if err := chkPriority(s.Priority, "priority"); err != nil {
+		return err
+	}
+	if err := chkPriority(s.PostPriority, "postPriority"); err != nil {
+		return err
+	}
+	if err := chkChangefreq(s.Changefreq, "changefreq"); err != nil {
+		return err
+	}
+	if err := chkChangefreq(s.PostChangefreq, "postChangefreq"); err != nil {
+		return err
 	}
 
 	return nil

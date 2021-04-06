@@ -69,25 +69,19 @@ func (t *Theme) sanitize(fs fs.FS, dir, id string) *FieldError {
 	}
 	indexes = sliceutil.Dup(t.Screenshots, func(i, j int) bool { return t.Screenshots[i] == t.Screenshots[j] })
 	if len(indexes) > 0 {
-		return &FieldError{Message: "重复的值示例图", Field: "screenshots[" + strconv.Itoa(indexes[0]) + "]"}
+		return &FieldError{Message: "重复的示例图", Field: "screenshots[" + strconv.Itoa(indexes[0]) + "]"}
 	}
 
-	if t.Sitemap != "" {
-		if !filesystem.Exists(fs, path.Join(dir, t.Sitemap)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "sitemap", Value: t.Sitemap}
-		}
+	if t.Sitemap != "" && !filesystem.Exists(fs, path.Join(dir, t.Sitemap)) {
+		return &FieldError{Message: "不存在该模板文件", Field: "sitemap", Value: t.Sitemap}
 	}
 
-	if t.RSS != "" {
-		if !filesystem.Exists(fs, path.Join(dir, t.RSS)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "rss", Value: t.RSS}
-		}
+	if t.RSS != "" && !filesystem.Exists(fs, path.Join(dir, t.RSS)) {
+		return &FieldError{Message: "不存在该模板文件", Field: "rss", Value: t.RSS}
 	}
 
-	if t.Atom != "" {
-		if !filesystem.Exists(fs, path.Join(dir, t.Atom)) {
-			return &FieldError{Message: "不存在该模板文件", Field: "atom", Value: t.Atom}
-		}
+	if t.Atom != "" && !filesystem.Exists(fs, path.Join(dir, t.Atom)) {
+		return &FieldError{Message: "不存在该模板文件", Field: "atom", Value: t.Atom}
 	}
 
 	var mediaIsEmpty bool
