@@ -3,7 +3,7 @@
 package vars
 
 // Version 主版本号
-const Version = "1.5.0" // NOTE: 应该保持与 tag 同值
+const Version = "1.5.1" // NOTE: 应该保持与 tag 同值
 
 var (
 	metadata    string
