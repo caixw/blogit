@@ -48,7 +48,7 @@ cd blogit
 
 `blogit init dir` 可以直接生成一个完整的博客系统。具体使用可参考 [USAGE](USAGE.md)。
 
-## github action
+## GitHub action
 
 如果你的网站部署在 github 的话，可以直接使用 action 实现全程自动化编译上传代码。
 
