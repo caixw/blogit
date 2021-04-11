@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: MIT
 
-cd `dirname $0`
-builddate=`date -u '+%Y%m%d'`
-commithash=`git rev-parse HEAD`
-go build -ldflags "-X github.com/caixw/blogit/internal/vars.metadata=${builddate}.${commithash}" -v -o ./cmd/blogit/blogit ./cmd/blogit
+cd $(dirname $0)
+date=$(date -u '+%Y%m%d')
+hash=$(git rev-parse HEAD)
+go build -ldflags "-X github.com/caixw/blogit/internal/vars.metadata=${date}.${hash}" -v -o ./cmd/blogit/blogit ./cmd/blogit
