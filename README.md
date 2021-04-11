@@ -22,8 +22,8 @@
 macOS 和 linux 用户可以直接使用 brew 进行安装：
 
 ```shell
-brew tap caixw/caixw
-brew install caixw/caixw/blogit
+brew tap caixw/brew
+brew install caixw/brew/blogit
 ```
 
 常用平台也可以从 <https://github.com/caixw/blogit/releases> 下载，并将二进制文件放入 `PATH` 即可。

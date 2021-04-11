@@ -38,7 +38,7 @@ builds:
 brews:
 - tap:
     owner: caixw
-    name: homebrew-caixw
+    name: homebrew-brew
   url_template: "https://github.com/caixw/blogit/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
 
   commit_author:
