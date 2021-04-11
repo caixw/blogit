@@ -14,7 +14,6 @@ import (
 	"net/http"
 	"path"
 	"strings"
-	"time"
 
 	"github.com/issue9/errwrap"
 
@@ -69,16 +68,11 @@ func (b *Builder) Rebuild(src fs.FS, base string) error {
 	}
 
 	for _, p := range paths {
-		stat, err := fs.Stat(src, p)
+		bs, err := fs.ReadFile(src, p)
 		if err != nil {
 			return err
 		}
-
-		data, err := fs.ReadFile(src, p)
-		if err != nil {
-			return err
-		}
-		if err = b.appendFile(loader.Slug(p), stat.ModTime(), data); err != nil {
+		if err = b.appendFile(loader.Slug(p), bs); err != nil {
 			return err
 		}
 	}
@@ -143,8 +137,8 @@ func isIgnore(src string) bool {
 
 // path 表示输出的文件路径，相对于源目录；
 // xsl 表示关联的 xsl，如果不需要则可能为空；
-func (b *Builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) error {
-	data, err := xml.MarshalIndent(v, "", "\t")
+func (b *Builder) appendXMLFile(path, xsl string, v interface{}) error {
+	bs, err := xml.MarshalIndent(v, "", "\t")
 	if err != nil {
 		return err
 	}
@@ -154,17 +148,17 @@ func (b *Builder) appendXMLFile(d *data.Data, path, xsl string, v interface{}) e
 	if xsl != "" {
 		buf.Printf(`<?xml-stylesheet type="text/xsl" href="%s"?>`, xsl).WByte('\n')
 	}
-	buf.WBytes(data)
+	buf.WBytes(bs)
 
 	if buf.Err != nil {
 		return buf.Err
 	}
 
-	return b.appendFile(path, time.Now(), buf.Bytes())
+	return b.appendFile(path, buf.Bytes())
 }
 
 // 如果 path 以 / 开头，则会自动去除 /
-func (b *Builder) appendFile(p string, mod time.Time, data []byte) error {
+func (b *Builder) appendFile(p string, data []byte) error {
 	b.info.Println("添加：", p)
 	return b.wfs.WriteFile(p, data, fs.ModePerm)
 }
@@ -185,12 +179,10 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if errors.Is(err, fs.ErrNotExist) {
 		http.NotFound(w, r)
 		return
-	}
-	if errors.Is(err, fs.ErrPermission) {
+	} else if errors.Is(err, fs.ErrPermission) {
 		errStatus(w, http.StatusForbidden)
 		return
-	}
-	if err != nil {
+	} else if err != nil {
 		b.erro.Println(err)
 		errStatus(w, http.StatusInternalServerError)
 		return
@@ -203,14 +195,14 @@ func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := io.ReadAll(f)
+	bs, err := io.ReadAll(f)
 	if err != nil {
 		b.erro.Println(err)
 		errStatus(w, http.StatusInternalServerError)
 		return
 	}
 
-	http.ServeContent(w, r, p, stat.ModTime(), bytes.NewReader(data))
+	http.ServeContent(w, r, p, stat.ModTime(), bytes.NewReader(bs))
 }
 
 func errStatus(w http.ResponseWriter, status int) {

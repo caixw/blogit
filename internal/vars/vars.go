@@ -34,7 +34,7 @@ const (
 	Ext         = ".html" // 生成后的文件后缀名
 	MarkdownExt = ".md"
 
-	// 默认的高亮主题色
+	// HighlightClassPrefix 默认的高亮主题色
 	// 值可以从 github.com/alecthomas/chroma/styles 获取
 	HighlightClassPrefix = "hl-" // 语法高亮的统一类名前缀
 )

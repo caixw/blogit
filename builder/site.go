@@ -118,17 +118,17 @@ func (b *Builder) page(t string) *page {
 	}
 }
 
-var cssFormater = html.New(
+var cssFormatter = html.New(
 	html.ClassPrefix(vars.HighlightClassPrefix),
 )
 
 func (b *Builder) buildHighlights(d *data.Data) error {
 	for _, h := range d.Highlights {
 		buf := &bytes.Buffer{}
-		if err := cssFormater.WriteCSS(buf, styles.Get(h.Name)); err != nil {
+		if err := cssFormatter.WriteCSS(buf, styles.Get(h.Name)); err != nil {
 			return err
 		}
-		if err := b.appendFile(h.Path, time.Now(), buf.Bytes()); err != nil {
+		if err := b.appendFile(h.Path, buf.Bytes()); err != nil {
 			return err
 		}
 	}

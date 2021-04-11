@@ -7,8 +7,9 @@ import (
 	"io"
 	"runtime"
 
-	"github.com/caixw/blogit"
 	"github.com/issue9/cmdopt"
+
+	"github.com/caixw/blogit"
 )
 
 // initVersion 注册 version 子命令

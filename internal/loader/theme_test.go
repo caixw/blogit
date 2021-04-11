@@ -53,7 +53,7 @@ func TestTheme_sanitize(t *testing.T) {
 	err = theme.sanitize(testdata.Source, "themes/default", "default")
 	a.Error(err).Equal(err.Field, "screenshots[0]")
 
-	// hightlight.name 为空
+	// highlight.name 为空
 	theme = &Theme{Templates: []string{"style.xsl"}, Highlights: []*Highlight{{}}}
 	err = theme.sanitize(testdata.Source, "themes/default", "default")
 	a.Error(err).Equal(err.Field, "highlight[0].name")

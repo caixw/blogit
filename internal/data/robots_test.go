@@ -5,8 +5,9 @@ package data
 import (
 	"testing"
 
-	"github.com/caixw/blogit/internal/loader"
 	"github.com/issue9/assert"
+
+	"github.com/caixw/blogit/internal/loader"
 )
 
 func TestRobots(t *testing.T) {

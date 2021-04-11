@@ -25,7 +25,7 @@ func initBuild(opt *cmdopt.CmdOpt) {
 	fs.StringVar(&buildDest, "dest", "./dest", "指定输出目录")
 }
 
-func build(w io.Writer) error {
+func build(io.Writer) error {
 	start := time.Now()
 
 	info.Println("开始编译内容")

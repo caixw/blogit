@@ -73,9 +73,9 @@ type Header struct {
 }
 
 // LoadPosts 加载所有的文章
-func LoadPosts(fsys fs.FS) ([]*Post, error) {
+func LoadPosts(f fs.FS) ([]*Post, error) {
 	paths := make([]string, 0, 10)
-	err := fs.WalkDir(fsys, vars.PostsDir, func(p string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(f, vars.PostsDir, func(p string, d fs.DirEntry, err error) error {
 		if err == nil && !d.IsDir() && strings.ToLower(path.Ext(p)) == vars.MarkdownExt {
 			paths = append(paths, p)
 		}
@@ -91,8 +91,8 @@ func LoadPosts(fsys fs.FS) ([]*Post, error) {
 
 	posts := make([]*Post, 0, len(paths))
 
-	for _, path := range paths {
-		post, err := loadPost(fsys, path)
+	for _, p := range paths {
+		post, err := loadPost(f, p)
 		if err != nil {
 			return nil, err
 		}
@@ -111,8 +111,8 @@ func LoadPosts(fsys fs.FS) ([]*Post, error) {
 	return posts, nil
 }
 
-func loadPost(fsys fs.FS, path string) (*Post, error) {
-	post, err := convert(fsys, path)
+func loadPost(f fs.FS, path string) (*Post, error) {
+	post, err := convert(f, path)
 	if err != nil {
 		return nil, err
 	}

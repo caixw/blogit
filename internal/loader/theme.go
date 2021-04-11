@@ -119,15 +119,15 @@ func (h *Highlight) sanitize() *FieldError {
 // LoadTheme 加载指定主题
 func LoadTheme(fs fs.FS, id string) (*Theme, error) {
 	dir := path.Join(vars.ThemesDir, id)
-	path := path.Join(dir, vars.ThemeYAML)
+	p := path.Join(dir, vars.ThemeYAML)
 
 	theme := &Theme{}
-	if err := loadYAML(fs, path, &theme); err != nil {
+	if err := loadYAML(fs, p, &theme); err != nil {
 		return nil, err
 	}
 
 	if err := theme.sanitize(fs, dir, id); err != nil {
-		err.File = path
+		err.File = p
 		return nil, err
 	}
 	return theme, nil

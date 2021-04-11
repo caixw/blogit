@@ -3,8 +3,6 @@
 package builder
 
 import (
-	"time"
-
 	"github.com/issue9/errwrap"
 
 	"github.com/caixw/blogit/internal/data"
@@ -45,6 +43,5 @@ func (b *Builder) buildRobots(d *data.Data) error {
 		return buf.Err
 	}
 
-	b.appendFile(d.Robots.Path, time.Now(), buf.Bytes())
-	return nil
+	return b.appendFile(d.Robots.Path, buf.Bytes())
 }

@@ -118,7 +118,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
 
 	go func() {
-		if err := o.serve(info, erro); !errors.Is(err, http.ErrServerClosed) {
+		if err := o.serve(info); !errors.Is(err, http.ErrServerClosed) {
 			erro.Println(err)
 		}
 		o.stop <- struct{}{}
@@ -167,7 +167,7 @@ func (o *options) close() error {
 	return o.srv.Close()
 }
 
-func (o *options) serve(info, erro *console.Logger) error {
+func (o *options) serve(info *console.Logger) error {
 	info.Println("启动服务：", o.addr)
 
 	if o.cert != "" && o.key != "" {

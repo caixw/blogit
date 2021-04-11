@@ -22,11 +22,11 @@ const initUsage = `初始化博客内容
 var initFS *flag.FlagSet
 
 // InitInit 注册 init 子命令
-func InitInit(opt *cmdopt.CmdOpt, succ, erro *console.Logger) {
-	initFS = opt.New("init", initUsage, initF(succ, erro))
+func InitInit(opt *cmdopt.CmdOpt, erro *console.Logger) {
+	initFS = opt.New("init", initUsage, initF(erro))
 }
 
-func initF(succ, erro *console.Logger) cmdopt.DoFunc {
+func initF(erro *console.Logger) cmdopt.DoFunc {
 	return func(w io.Writer) error {
 		if initFS.NArg() != 1 {
 			erro.Println("必须指定目录")

@@ -61,8 +61,8 @@ var changereqs = []string{
 	"always",
 }
 
-func inStrings(val string, vals []string) bool {
-	return sliceutil.Count(vals, func(i int) bool {
-		return vals[i] == val
+func inStrings(val string, values []string) bool {
+	return sliceutil.Count(values, func(i int) bool {
+		return values[i] == val
 	}) > 0
 }

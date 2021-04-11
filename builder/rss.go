@@ -62,5 +62,5 @@ func (b *Builder) buildRSS(d *data.Data) error {
 		})
 	}
 
-	return b.appendXMLFile(d, d.RSS.Path, d.RSS.XSLPermalink, r)
+	return b.appendXMLFile(d.RSS.Path, d.RSS.XSLPermalink, r)
 }

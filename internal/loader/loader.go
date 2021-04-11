@@ -58,8 +58,8 @@ func (err *FieldError) Error() string {
 	return fmt.Sprintf("%s 位于 %s:%s，实际值为:%#v", err.Message, err.File, err.Field, err.Value)
 }
 
-func loadYAML(fsys fs.FS, path string, v interface{}) error {
-	data, err := fs.ReadFile(fsys, path)
+func loadYAML(f fs.FS, path string, v interface{}) error {
+	data, err := fs.ReadFile(f, path)
 	if err != nil {
 		return err
 	}

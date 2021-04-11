@@ -29,8 +29,7 @@ func (msg *Logger) Println(v ...interface{}) {
 
 func (msg *Logger) Write(bs []byte) (int, error) {
 	msg.Fprint(msg.Out, msg.Prefix)
-	colors.Fprint(msg.Out, colors.Normal, colors.Default, colors.Default, string(bs))
-	return 0, nil
+	return colors.Fprint(msg.Out, colors.Normal, colors.Default, colors.Default, string(bs))
 }
 
 func (msg *Logger) AsLogger() *log.Logger {

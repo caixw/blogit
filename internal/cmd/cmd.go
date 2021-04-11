@@ -56,7 +56,7 @@ func Exec(args []string) error {
 	initStyles(opt)
 	serve.Init(opt, info, erro)
 	preview.Init(opt, succ, info, erro)
-	create.InitInit(opt, succ, erro)
+	create.InitInit(opt, erro)
 	create.InitPost(opt, succ, erro)
 	opt.Help("help", "显示当前内容\n")
 

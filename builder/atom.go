@@ -9,7 +9,6 @@ import (
 )
 
 const (
-	atomVersion    = "1.0"
 	atomDateFormat = time.RFC3339
 	atomNamespace  = "http://www.w3.org/2005/Atom"
 )
@@ -75,5 +74,5 @@ func (b *Builder) buildAtom(d *data.Data) error {
 		})
 	}
 
-	return b.appendXMLFile(d, d.Atom.Path, d.Atom.XSLPermalink, a)
+	return b.appendXMLFile(d.Atom.Path, d.Atom.XSLPermalink, a)
 }

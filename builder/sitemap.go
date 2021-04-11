@@ -9,7 +9,7 @@ import (
 	"github.com/caixw/blogit/internal/data"
 )
 
-const sitempaNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9"
+const sitemapNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9"
 
 type urlset struct {
 	XMLName struct{} `xml:"urlset"`
@@ -30,7 +30,7 @@ func (b *Builder) buildSitemap(d *data.Data) error {
 	}
 
 	s := &urlset{
-		XMLNS:  sitempaNamespace,
+		XMLNS:  sitemapNamespace,
 		URLSet: make([]*url, 0, len(d.Tags.Tags)+len(d.Posts)),
 	}
 
@@ -47,7 +47,7 @@ func (b *Builder) buildSitemap(d *data.Data) error {
 		s.append(p.Permalink, p.Modified, conf.PostChangefreq, conf.PostPriority)
 	}
 
-	return b.appendXMLFile(d, conf.Path, conf.XSLPermalink, s)
+	return b.appendXMLFile(conf.Path, conf.XSLPermalink, s)
 }
 
 func (us *urlset) append(loc string, lastmod time.Time, changefreq string, priority float64) {

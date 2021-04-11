@@ -18,12 +18,11 @@ import (
 func TestCmd_Init(t *testing.T) {
 	a := assert.New(t)
 	opt := &cmdopt.CmdOpt{}
-	succ := &console.Logger{Out: os.Stdout}
 	erro := &console.Logger{Out: os.Stderr}
 	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)
 
-	InitInit(opt, succ, erro)
+	InitInit(opt, erro)
 	a.NotError(opt.Exec([]string{"init", dir}))
 
 	fs := os.DirFS(dir)

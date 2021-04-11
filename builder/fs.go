@@ -14,14 +14,14 @@ import (
 type WritableFS interface {
 	fs.FS
 
-	// 将内容写入文件
+	// WriteFile 将内容写入文件
 	//
 	// path 遵守 fs.FS.Open 中有关 path 参数的处理规则。
 	// 整个函数处理逻辑应该与 os.WriteFile 相同。
 	// 如果文件父目录不存在，应该要自动创建。
 	WriteFile(path string, data []byte, perm fs.FileMode) error
 
-	// 重置系统
+	// Reset 重置内容
 	//
 	// 该操作会删除通过 WriteFile 添加的文件。
 	// 原来已经存在的内容，则依然会存在，比如 Dir() 创建的实例，
@@ -57,7 +57,7 @@ func (dir *dirFS) Open(name string) (fs.File, error) {
 	if !fs.ValidPath(name) {
 		return nil, &fs.PathError{Op: "open", Path: name, Err: os.ErrInvalid}
 	}
-	return os.Open(string(dir.dir) + "/" + name)
+	return os.Open(dir.dir + "/" + name)
 }
 
 func (dir *dirFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
@@ -65,7 +65,7 @@ func (dir *dirFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
 		return &fs.PathError{Op: "close", Path: name, Err: os.ErrInvalid}
 	}
 
-	p := string(dir.dir) + "/" + name
+	p := dir.dir + "/" + name
 	if err := os.MkdirAll(path.Dir(p), perm); err != nil {
 		return err
 	}

@@ -7,8 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/caixw/blogit"
 	"github.com/issue9/assert"
+
+	"github.com/caixw/blogit"
 )
 
 func TestPrintVersion(t *testing.T) {

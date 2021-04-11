@@ -22,7 +22,7 @@ func (b *Builder) appendTemplateFile(path string, p *page) error {
 		return err
 	}
 
-	return b.appendFile(path, time.Now(), buf.Bytes())
+	return b.appendFile(path, buf.Bytes())
 }
 
 func newTemplate(d *data.Data, src fs.FS) (*template.Template, error) {

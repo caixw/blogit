@@ -47,8 +47,8 @@ var (
 	)
 )
 
-func convert(fsys fs.FS, path string) (*Post, error) {
-	bs, err := fs.ReadFile(fsys, path)
+func convert(f fs.FS, path string) (*Post, error) {
+	bs, err := fs.ReadFile(f, path)
 	if err != nil {
 		return nil, err
 	}
@@ -79,16 +79,16 @@ func convert(fsys fs.FS, path string) (*Post, error) {
 		}
 	}
 
-	toc := make([]Header, 0, len(headers))
+	hs := make([]Header, 0, len(headers))
 	for _, h := range headers {
-		toc = append(toc, Header{
+		hs = append(hs, Header{
 			Indent: h.Level - start,
 			Level:  h.Level,
 			ID:     h.ID,
 			Text:   h.Text,
 		})
 	}
-	post.TOC = toc
+	post.TOC = hs
 
 	return post, nil
 }
