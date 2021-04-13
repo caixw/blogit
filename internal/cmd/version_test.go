@@ -17,5 +17,5 @@ func TestPrintVersion(t *testing.T) {
 
 	w := bytes.Buffer{}
 	a.NotError(printVersion(&w))
-	a.True(strings.Contains(w.String(), blogit.FullVersion()))
+	a.True(strings.Contains(w.String(), blogit.Version(false)))
 }

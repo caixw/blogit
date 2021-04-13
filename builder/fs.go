@@ -74,6 +74,8 @@ func (dir *dirFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
 		return err
 	}
 
+	// BUG(caixw): 仅记录了文件，但是并未记录文件的父目录结构。
+	// 在 Reset 删除时，可能会留下一堆空目录。
 	dir.files = append(dir.files, p) // 文件写入成功之后，记录添加的文件
 
 	return nil

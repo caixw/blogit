@@ -8,7 +8,6 @@ import (
 	"github.com/issue9/assert"
 	"github.com/issue9/version"
 
-	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/filesystem"
 	"github.com/caixw/blogit/internal/testdata"
 	"github.com/caixw/blogit/internal/vars"
@@ -17,8 +16,8 @@ import (
 func TestVersion(t *testing.T) {
 	a := assert.New(t)
 
-	a.True(version.SemVerValid(Version))
-	a.True(version.SemVerValid(FullVersion()))
+	a.True(version.SemVerValid(Version(true)))
+	a.True(version.SemVerValid(Version(false)))
 }
 
 func TestBuild(t *testing.T) {
@@ -27,7 +26,7 @@ func TestBuild(t *testing.T) {
 	// Dir
 	destDir, err := testdata.Temp()
 	a.NotError(err)
-	dest := builder.DirFS(destDir)
+	dest := DirFS(destDir)
 	a.NotError(Build(testdata.Source, dest, nil))
 	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags"+vars.Ext)).
@@ -35,7 +34,7 @@ func TestBuild(t *testing.T) {
 		True(filesystem.Exists(dest, "posts/p1"+vars.Ext))
 
 	// Memory
-	dest = builder.MemoryFS()
+	dest = MemoryFS()
 	a.NotError(Build(testdata.Source, dest, nil))
 	a.True(filesystem.Exists(dest, "index"+vars.Ext)).
 		True(filesystem.Exists(dest, "tags"+vars.Ext)).

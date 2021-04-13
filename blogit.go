@@ -16,13 +16,15 @@ type (
 	WritableFS = builder.WritableFS
 )
 
-// Version 当前的版本号
-const Version = vars.Version
-
-// FullVersion 返回完整的版本号
+// Version 返回版本号
 //
-// 完整版本号包含了编译日期，提交的 hash 等额外的值。
-func FullVersion() string { return vars.FullVersion() }
+// full 表示是否返回完整版本号，包含了编译日期，提交的 hash 等额外的值。
+func Version(full bool) string {
+	if full {
+		return vars.FullVersion()
+	}
+	return vars.Version
+}
 
 // Build 编译并输出内容
 //
@@ -35,4 +37,12 @@ func Build(src fs.FS, dest WritableFS, info *log.Logger) error {
 
 func NewBuilder(dest WritableFS, info, erro *log.Logger) *Builder {
 	return builder.New(dest, info, erro)
+}
+
+func DirFS(dir string) WritableFS {
+	return builder.DirFS(dir)
+}
+
+func MemoryFS() WritableFS {
+	return builder.MemoryFS()
 }
