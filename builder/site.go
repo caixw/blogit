@@ -73,7 +73,7 @@ func newSite(d *data.Data) *site {
 	s := &site{
 		AppName:    vars.Name,
 		AppURL:     vars.URL,
-		AppVersion: vars.Version,
+		AppVersion: vars.Version(),
 		Theme:      d.Theme,
 		Highlights: make([]*styleLink, 0, len(d.Highlights)),
 		Menus:      d.Menus,

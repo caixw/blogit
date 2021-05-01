@@ -23,7 +23,7 @@ var (
 func testWritableFS(wfs WritableFS, a *assert.Assertion) {
 	// 文件不存在
 	file, err := wfs.Open("dir1/dir2/file.png")
-	a.ErrorIs(err, os.ErrNotExist).Nil(file)
+	a.ErrorIs(err, fs.ErrNotExist).Nil(file)
 
 	// 写入文件，父目录不存在，内容为空
 	a.NotError(wfs.WriteFile("dir1/dir2/file.png", nil, fs.ModePerm))

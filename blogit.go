@@ -23,7 +23,7 @@ func Version(full bool) string {
 	if full {
 		return vars.FullVersion()
 	}
-	return vars.Version
+	return vars.Version()
 }
 
 // Build 编译并输出内容

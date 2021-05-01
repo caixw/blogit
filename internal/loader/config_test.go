@@ -3,7 +3,7 @@
 package loader
 
 import (
-	"os"
+	"io/fs"
 	"testing"
 	"time"
 
@@ -22,7 +22,7 @@ func TestLoadConfig(t *testing.T) {
 	a.Equal(conf.Language, "cmn-Hans")
 
 	conf, err = LoadConfig(testdata.Source, "not-exists.yaml")
-	a.ErrorIs(err, os.ErrNotExist).Nil(conf)
+	a.ErrorIs(err, fs.ErrNotExist).Nil(conf)
 }
 
 func TestConfig_sanitize(t *testing.T) {
