@@ -32,8 +32,7 @@ type options struct {
 	dest   string
 	destFS builder.WritableFS
 
-	// 如果指定了此值，那么表示要替换 conf.yaml 中的 url
-	url  string
+	url  string // 如果指定了此值，那么表示要替换 conf.yaml 中的 url
 	addr string
 	path string
 
