@@ -29,20 +29,23 @@ func Version(full bool) string {
 // Build 编译并输出内容
 //
 // dir 表示源码目录，直接读该文件系统根目录下的内容；
-// dest 表示输出的目录；
+// dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
 // info 输出编译的进度信息，如果为空，会采用 log.Default()；
 func Build(src fs.FS, dest WritableFS, info *log.Logger) error {
 	return NewBuilder(dest, info, nil).Rebuild(src, "")
 }
 
+// NewBuilder 声明 Builder
+//
+// dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
+// info 输出编译的进度信息，如果为空，会采用 log.Default()；
+// erro 表示的是在把 Builder 当作 http.Handler 处理时，在出错时的日志输出通道。
 func NewBuilder(dest WritableFS, info, erro *log.Logger) *Builder {
 	return builder.New(dest, info, erro)
 }
 
-func DirFS(dir string) WritableFS {
-	return builder.DirFS(dir)
-}
+// DirFS 以普通目录结构作为保存对象的文件系统
+func DirFS(dir string) WritableFS { return builder.DirFS(dir) }
 
-func MemoryFS() WritableFS {
-	return builder.MemoryFS()
-}
+// MemoryFS 以内在作为保存实体的文件系统
+func MemoryFS() WritableFS { return builder.MemoryFS() }

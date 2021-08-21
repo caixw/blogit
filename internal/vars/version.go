@@ -3,7 +3,7 @@
 package vars
 
 var (
-	version     = "1.5.1"
+	version     = "1.5.4" // 版本号，由 goreleaser 负责在编译时更新到最新的 git tag
 	metadata    string
 	fullVersion = version
 )
@@ -15,11 +15,7 @@ func init() {
 }
 
 // FullVersion 获取完整的版本号
-func FullVersion() string {
-	return fullVersion
-}
+func FullVersion() string { return fullVersion }
 
 // Version 返回版本信息
-func Version() string {
-	return version
-}
+func Version() string { return version }
