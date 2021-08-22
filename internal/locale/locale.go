@@ -19,10 +19,7 @@ var locales embed.FS
 var b *catalog.Builder
 
 func NewPrinter() (*message.Printer, error) {
-	systag, err := localeutil.SystemLanguageTag()
-	if err != nil {
-		return nil, err
-	}
+	systag, _ := localeutil.SystemLanguageTag() // 即使出错，依然会返回 language.Tag
 
 	if b == nil {
 		matchs, err := fs.Glob(locales, "*.yaml")
