@@ -12,14 +12,18 @@ import (
 	"github.com/issue9/assert/rest"
 
 	"github.com/caixw/blogit/internal/cmd/console"
+	"github.com/caixw/blogit/internal/locale"
 	"github.com/caixw/blogit/internal/vars"
 )
 
 func TestOptions_sanitize(t *testing.T) {
 	a := assert.New(t)
 
+	p, err := locale.NewPrinter()
+	a.NotError(err).NotNil(p)
+
 	// 都采用默认值
-	o := &options{}
+	o := &options{p: p}
 	a.NotError(o.sanitize()).
 		Equal(o.path, "/").
 		Equal(o.source, "./").NotNil(o.srcFS).
@@ -27,6 +31,7 @@ func TestOptions_sanitize(t *testing.T) {
 		Equal(o.addr, ":80")
 
 	o = &options{
+		p:   p,
 		url: "https://localhost:8080/path/",
 	}
 	a.NotError(o.sanitize()).
@@ -34,6 +39,7 @@ func TestOptions_sanitize(t *testing.T) {
 		Equal(o.addr, ":8080")
 
 	o = &options{
+		p:   p,
 		url: "https://localhost/path/",
 	}
 	a.NotError(o.sanitize()).
@@ -42,6 +48,7 @@ func TestOptions_sanitize(t *testing.T) {
 
 	// 有证书，也有 url
 	o = &options{
+		p:    p,
 		url:  "http://localhost/path/",
 		cert: "./cert",
 		key:  "./key",
@@ -51,12 +58,14 @@ func TestOptions_sanitize(t *testing.T) {
 		Equal(o.addr, ":80")
 
 	o = &options{
+		p:   p,
 		url: "ftp://localhost/path/",
 	}
-	a.ErrorString(o.sanitize(), "不支持")
+	a.ErrorString(o.sanitize(), "未支持的协议")
 
 	// url 格式错误
 	o = &options{
+		p:   p,
 		url: "http://localh%2%ost/path/",
 	}
 	a.Error(o.sanitize())
@@ -65,11 +74,15 @@ func TestOptions_sanitize(t *testing.T) {
 func TestOptions_watch(t *testing.T) {
 	a := assert.New(t)
 
+	p, err := locale.NewPrinter()
+	a.NotError(err).NotNil(p)
+
 	succ := &console.Logger{Out: os.Stdout}
 	info := &console.Logger{Out: os.Stdout}
 	erro := &console.Logger{Out: os.Stderr}
 
 	o := &options{
+		p:      p,
 		source: "../../testdata",
 		url:    "http://localhost:8080",
 	}

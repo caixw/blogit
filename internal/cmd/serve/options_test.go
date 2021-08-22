@@ -12,6 +12,7 @@ import (
 	"github.com/issue9/assert/rest"
 
 	"github.com/caixw/blogit/internal/cmd/console"
+	"github.com/caixw/blogit/internal/locale"
 	"github.com/caixw/blogit/internal/vars"
 )
 
@@ -22,8 +23,11 @@ func (o *options) close() error {
 func TestOptions_sanitize(t *testing.T) {
 	a := assert.New(t)
 
+	p, err := locale.NewPrinter()
+	a.NotError(err).NotNil(p)
+
 	// 都采用默认值
-	o := &options{}
+	o := &options{p: p}
 	a.NotError(o.sanitize()).
 		Equal(o.path, "/").
 		Equal(o.source, "./").
@@ -31,6 +35,7 @@ func TestOptions_sanitize(t *testing.T) {
 		Equal(o.addr, ":80")
 
 	o = &options{
+		p:    p,
 		cert: "./cert",
 		key:  "./key",
 	}
@@ -42,7 +47,11 @@ func TestOptions_sanitize(t *testing.T) {
 func TestOptions_serve(t *testing.T) {
 	a := assert.New(t)
 
+	p, err := locale.NewPrinter()
+	a.NotError(err).NotNil(p)
+
 	o := &options{
+		p:      p,
 		source: "../../testdata",
 		addr:   ":8081",
 	}
