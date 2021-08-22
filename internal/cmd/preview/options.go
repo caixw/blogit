@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit"
 	"github.com/caixw/blogit/builder"
@@ -22,6 +23,8 @@ import (
 
 // options 启动服务的参数选项
 type options struct {
+	p *message.Printer
+
 	// 项目的源码目录
 	// 如果为空，则会采用 ./ 作为默认值。
 	source string
@@ -82,7 +85,7 @@ func (o *options) parseURL() error {
 		case "http", "":
 			o.addr = ":80"
 		default:
-			return fmt.Errorf("不支持协议：%s", scheme)
+			return fmt.Errorf(o.p.Sprintf("preview unknown protocol", scheme))
 		}
 	} else {
 		o.addr = ":" + o.addr
@@ -111,7 +114,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 	o.b = blogit.NewBuilder(o.destFS, info.AsLogger(), erro.AsLogger())
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		info.Println("访问 ", r.URL.String())
+		info.Println(o.p.Sprintf("visit url", r.URL.String()))
 		o.b.ServeHTTP(w, r)
 	})
 	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
@@ -140,18 +143,18 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 			}
 
 			if time.Since(o.builded) <= time.Second {
-				info.Println("watcher.Events:更新太频繁，该监控事件被忽略:", event)
+				info.Println(o.p.Sprintf("preview ignore", event))
 				continue
 			}
 
-			info.Println("触发事件：", event, "，开始重新编译！")
+			info.Println(o.p.Sprintf("preview trigger event", event))
 
 			go func() {
 				if err = o.build(); err != nil {
 					erro.Println(err)
 					return
 				}
-				succ.Println("重新编译成功")
+				succ.Println(o.p.Sprintf("preview rebuild success"))
 			}()
 		case err := <-watcher.Errors:
 			erro.Println(err)
@@ -167,7 +170,7 @@ func (o *options) close() error {
 }
 
 func (o *options) serve(info *console.Logger) error {
-	info.Println("启动服务：", o.addr)
+	info.Println(o.p.Sprintf("start server", o.addr))
 
 	if o.cert != "" && o.key != "" {
 		return o.srv.ListenAndServeTLS(o.cert, o.key)

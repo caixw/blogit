@@ -3,7 +3,7 @@
 package vars
 
 var (
-	version     = "1.5.4" // 版本号，由 goreleaser 负责在编译时更新到最新的 git tag
+	version     = "1.6.0" // 版本号，由 goreleaser 负责在编译时更新到最新的 git tag
 	metadata    string
 	fullVersion = version
 )

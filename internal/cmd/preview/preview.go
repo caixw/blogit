@@ -12,10 +12,11 @@ import (
 	"github.com/caixw/blogit/internal/cmd/console"
 )
 
-var opt = &options{}
+var opt *options
 
 // Init 注册 preview 子命令
 func Init(o *cmdopt.CmdOpt, succ, info, erro *console.Logger, p *message.Printer) {
+	opt = &options{p: p}
 	fs := o.New("preview", p.Sprintf("preview usage"), func(w io.Writer) error {
 		if err := opt.watch(succ, info, erro); err != nil {
 			erro.Println(err)

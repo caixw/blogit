@@ -1,5 +1,7 @@
 
-language: cmn-hans
+languages:
+- cmn-hans
+- und # 作为默认语言
 
 messages:
 - key: cmd title
@@ -135,7 +137,6 @@ messages:
   message:
     msg: 服务基地址
 
-
 - key: preview http cert
   message:
     msg: cert 证书
@@ -144,6 +145,21 @@ messages:
   message:
     msg: key 证书
 
+- key: preview rebuild success
+  message:
+    msg: 重新编译成功
+
+- key: preview trigger event
+  message:
+    msg: 触发事件 %[1]s，开始重新编译！
+
+- key: preview unknown protocol
+  message:
+    msg: 未支持的协议 %[1]s
+
+- key: preview ignore
+  message:
+    msg: 'watcher.Events: 更新太频繁，该监控事件 %[1]s 被忽略！'
 
 ## create 
 
@@ -173,3 +189,15 @@ messages:
 - key: create file
   message:
     msg: 创建文件 %[1]s
+
+
+
+## common
+
+- key: visit url
+  message:
+    msg: 访问 URL %[1]s
+
+- key: start server
+  message:
+    msg: 启动服务：%[1]s

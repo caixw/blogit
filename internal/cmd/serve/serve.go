@@ -12,10 +12,12 @@ import (
 	"github.com/caixw/blogit/internal/cmd/console"
 )
 
-var opt = &options{}
+var opt *options
 
 // Init 注册 serve 子命令
 func Init(o *cmdopt.CmdOpt, info, erro *console.Logger, p *message.Printer) {
+	opt = &options{p: p}
+
 	fs := o.New("serve", p.Sprintf("serve usage"), func(w io.Writer) error {
 		if err := opt.serve(info, erro); err != nil {
 			erro.Println(err)

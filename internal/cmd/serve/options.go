@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"golang.org/x/text/message"
+
 	"github.com/caixw/blogit"
 	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/cmd/console"
@@ -13,6 +15,8 @@ import (
 
 // options 启动服务的参数选项
 type options struct {
+	p *message.Printer
+
 	// 项目的源码目录
 	// 如果为空，采用 ./ 作为默认值。
 	source string
@@ -53,12 +57,12 @@ func (o *options) serve(info, erro *console.Logger) error {
 	}
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		info.Println("访问 ", r.URL.String())
+		info.Println(o.p.Sprintf("visit url", r.URL.String()))
 		b.ServeHTTP(w, r)
 	})
 	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
 
-	info.Println("启动服务：", o.addr)
+	info.Println(o.p.Sprintf("start server", o.addr))
 	if o.cert != "" && o.key != "" {
 		return o.srv.ListenAndServeTLS(o.cert, o.key)
 	}

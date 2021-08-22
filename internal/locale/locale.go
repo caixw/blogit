@@ -19,24 +19,24 @@ var locales embed.FS
 var b *catalog.Builder
 
 func NewPrinter() (*message.Printer, error) {
-	if b == nil {
-		b = catalog.NewBuilder()
+	systag, err := localeutil.SystemLanguageTag()
+	if err != nil {
+		return nil, err
+	}
 
+	if b == nil {
 		matchs, err := fs.Glob(locales, "*.yaml")
 		if err != nil {
 			return nil, err
 		}
+
+		b = catalog.NewBuilder()
 
 		for _, file := range matchs {
 			if err := localeutil.LoadMessageFromFS(b, locales, file, yaml.Unmarshal); err != nil {
 				return nil, err
 			}
 		}
-	}
-
-	systag, err := localeutil.SystemLanguageTag()
-	if err != nil {
-		return nil, err
 	}
 
 	return message.NewPrinter(systag, message.Catalog(b)), nil
