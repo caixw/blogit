@@ -3,25 +3,28 @@
 package cmd
 
 import (
-	"fmt"
 	"io"
 	"runtime"
 
 	"github.com/issue9/cmdopt"
+	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 var versionFull bool
 
 // initVersion 注册 version 子命令
-func initVersion(opt *cmdopt.CmdOpt) {
-	fs := opt.New("version", "显示版本号\n", printVersion)
-	fs.BoolVar(&versionFull, "full", false, "显示完整的版本号信息")
+func initVersion(opt *cmdopt.CmdOpt, p *message.Printer) {
+	fs := opt.New("version", p.Sprintf("version usage"), printVersion(p))
+	fs.BoolVar(&versionFull, "full", false, p.Sprintf("show full version"))
 }
 
-func printVersion(w io.Writer) error {
-	v := blogit.Version(versionFull)
-	_, err := fmt.Fprintf(w, "blogit %s\nbuild with %s\n", v, runtime.Version())
-	return err
+func printVersion(p *message.Printer) func(io.Writer) error {
+	return func(w io.Writer) error {
+		v := blogit.Version(versionFull)
+		_, err := p.Fprintf(w, "version content", vars.Name, v, runtime.Version())
+		return err
+	}
 }

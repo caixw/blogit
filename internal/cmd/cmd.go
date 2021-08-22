@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"flag"
-	"fmt"
 	"os"
 
 	"github.com/issue9/cmdopt"
@@ -15,6 +14,8 @@ import (
 	"github.com/caixw/blogit/internal/cmd/create"
 	"github.com/caixw/blogit/internal/cmd/preview"
 	"github.com/caixw/blogit/internal/cmd/serve"
+	"github.com/caixw/blogit/internal/locale"
+	"github.com/caixw/blogit/internal/vars"
 )
 
 var (
@@ -39,26 +40,31 @@ var (
 
 // Exec 执行命令行
 func Exec(args []string) error {
+	p, err := locale.NewPrinter()
+	if err != nil {
+		return err
+	}
+
 	opt := &cmdopt.CmdOpt{
 		Output:        os.Stdout,
 		ErrorHandling: flag.ExitOnError,
-		Header:        "静态博客工具\n",
-		Footer:        "源码以 MIT 许可发布于 https://github.com/caixw/blogit\n",
-		CommandsTitle: "子命令",
-		OptionsTitle:  "参数",
+		Header:        p.Sprintf("cmd title"),
+		Footer:        p.Sprintf("cmd footer", vars.URL),
+		CommandsTitle: p.Sprintf("sub command"),
+		OptionsTitle:  p.Sprintf("cmd argument"),
 		NotFound: func(name string) string {
-			return fmt.Sprintf("未找到子命令 %s\n", name)
+			return p.Sprintf("sub command not found", name)
 		},
 	}
 
-	initBuild(opt)
-	initVersion(opt)
-	initStyles(opt)
-	serve.Init(opt, info, erro)
-	preview.Init(opt, succ, info, erro)
-	create.InitInit(opt, erro)
-	create.InitPost(opt, succ, erro)
-	opt.Help("help", "显示当前内容\n")
+	initBuild(opt, p)
+	initVersion(opt, p)
+	initStyles(opt, p)
+	serve.Init(opt, info, erro, p)
+	preview.Init(opt, succ, info, erro, p)
+	create.InitInit(opt, erro, p)
+	create.InitPost(opt, succ, erro, p)
+	opt.Help("help", p.Sprintf("help usage"))
 
 	return opt.Exec(args)
 }

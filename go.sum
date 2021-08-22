@@ -32,6 +32,8 @@ github.com/issue9/cmdopt v0.7.0/go.mod h1:I5NRZX40jVzM/zJPx8fkHqwv2+b5knyD8roJjE
 github.com/issue9/errwrap v0.1.1/go.mod h1:H9mdt7KifDebeRecMn5yt7F25f+4N0V2sqIqyZnNjzQ=
 github.com/issue9/errwrap v0.2.0 h1:EPisAVHfGj8ZnR3aNlLFpih/ahDWdMXTOOA+3QaELpk=
 github.com/issue9/errwrap v0.2.0/go.mod h1:yudSKP/VtwvbW8hD9riNxJd8sAAzgJUgjllibgHqdJg=
+github.com/issue9/localeutil v0.2.1 h1:NXnp3fgVHyzoZwmRQtWnRIEkYs8sfOQv6MlqLLZOrqw=
+github.com/issue9/localeutil v0.2.1/go.mod h1:1hx4Qo57RAQgRSy0zihp6XKTkTbaAVu26Qc0bz/770s=
 github.com/issue9/sliceutil v0.6.0/go.mod h1:FUxZQC4oEw6V46afC+JOdCjOv84BA6WBNQRYGS9V4Dg=
 github.com/issue9/sliceutil v0.7.0 h1:PN2W75vYZeJir/cte+H5KBdfYz03hYcmdtSM8Wp0PdM=
 github.com/issue9/sliceutil v0.7.0/go.mod h1:FUxZQC4oEw6V46afC+JOdCjOv84BA6WBNQRYGS9V4Dg=
@@ -77,6 +79,7 @@ golang.org/x/sys v0.0.0-20200413165638-669c56c373c4/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20201126233918-771906719818/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c h1:F1jZWGFhYfh0Ci55sIpILtKKK8p3i2/krTr0H1rg74I=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/text v0.3.7 h1:olpwvP2KacW1ZWvsR7uQhoyTYvKAupfQrRGBFM352Gk=
 golang.org/x/text v0.3.7/go.mod h1:u+2+/6zg+i71rQMx5EYifcz6MCKuco9NR6JIITiCfzQ=
 golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=

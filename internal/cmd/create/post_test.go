@@ -9,6 +9,8 @@ import (
 
 	"github.com/issue9/assert"
 	"github.com/issue9/cmdopt"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/filesystem"
@@ -25,7 +27,7 @@ func TestCmd_Post(t *testing.T) {
 	a.NotError(os.Chdir(dir))
 
 	p := "2010/01/p1.md"
-	InitPost(opt, succ, erro)
+	InitPost(opt, succ, erro, message.NewPrinter(language.Chinese))
 	a.NotError(opt.Exec([]string{"post", p}))
 
 	fs := os.DirFS(dir)

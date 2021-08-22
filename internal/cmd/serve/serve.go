@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/issue9/cmdopt"
+	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/internal/cmd/console"
 )
@@ -14,18 +15,18 @@ import (
 var opt = &options{}
 
 // Init 注册 serve 子命令
-func Init(o *cmdopt.CmdOpt, info, erro *console.Logger) {
-	fs := o.New("serve", "以 HTTP 服务运行\n", func(w io.Writer) error {
+func Init(o *cmdopt.CmdOpt, info, erro *console.Logger, p *message.Printer) {
+	fs := o.New("serve", p.Sprintf("serve usage"), func(w io.Writer) error {
 		if err := opt.serve(info, erro); err != nil {
 			erro.Println(err)
 		}
 		return nil
 	})
 
-	fs.StringVar(&opt.source, "src", "./", "指定源码目录")
-	fs.StringVar(&opt.dest, "dest", "", "指定输出目录，如果为空表示采用内存保存。")
-	fs.StringVar(&opt.addr, "addr", ":8080", "服务端口")
-	fs.StringVar(&opt.path, "path", "/", "项目的访问路径")
-	fs.StringVar(&opt.cert, "cert", "", "http 证书")
-	fs.StringVar(&opt.key, "key", "", "http 证书")
+	fs.StringVar(&opt.source, "src", "./", p.Sprintf("serve src"))
+	fs.StringVar(&opt.dest, "dest", "", p.Sprintf("serve dest"))
+	fs.StringVar(&opt.addr, "addr", ":8080", p.Sprintf("serve port"))
+	fs.StringVar(&opt.path, "path", "/", p.Sprintf("serve path"))
+	fs.StringVar(&opt.cert, "cert", "", p.Sprintf("serve http cert"))
+	fs.StringVar(&opt.key, "key", "", p.Sprintf("serve http key"))
 }

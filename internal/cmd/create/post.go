@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/issue9/cmdopt"
+	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/cmd/console"
@@ -32,24 +33,15 @@ state: draft
 
 var postFS *flag.FlagSet
 
-const postUsage = `创建新文章
-
-执行该命令会在 posts 目录下创建一个同名的文件，如果未指定扩展名，
-则自动添加 .md 作为扩展名，可以带目录结构，比如：blogit post 2021/03/31/file
-会在项目上目录下添加 posts/2021/03/31.file.md 文件，并在文件内添加必要的字段内容。
-
-执行命令时，当前工作目录必须为项目的根目录。
-`
-
 // InitPost 注册 post 子命令
-func InitPost(opt *cmdopt.CmdOpt, succ, erro *console.Logger) {
-	postFS = opt.New("post", postUsage, post(succ, erro))
+func InitPost(opt *cmdopt.CmdOpt, succ, erro *console.Logger, p *message.Printer) {
+	postFS = opt.New("post", p.Sprintf("init post usage"), post(succ, erro, p))
 }
 
-func post(succ, erro *console.Logger) cmdopt.DoFunc {
+func post(succ, erro *console.Logger, localePrinter *message.Printer) cmdopt.DoFunc {
 	return func(w io.Writer) error {
 		if postFS.NArg() != 1 {
-			erro.Println("必须指定路径")
+			erro.Println(localePrinter.Printf("miss argument"))
 			return nil
 		}
 
@@ -71,7 +63,7 @@ func post(succ, erro *console.Logger) cmdopt.DoFunc {
 			erro.Println(err)
 			return nil
 		}
-		succ.Println("创建文件:", p)
+		succ.Println(localePrinter.Sprintf("create file", p))
 
 		return nil
 	}

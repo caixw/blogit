@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: MIT
+
+// Package locale 提供本地化相关操作
+package locale
+
+import (
+	"embed"
+	"io/fs"
+
+	"github.com/issue9/localeutil"
+	"golang.org/x/text/message"
+	"golang.org/x/text/message/catalog"
+	"gopkg.in/yaml.v2"
+)
+
+//go:embed *.yaml
+var locales embed.FS
+
+var b *catalog.Builder
+
+func NewPrinter() (*message.Printer, error) {
+	if b == nil {
+		b = catalog.NewBuilder()
+
+		matchs, err := fs.Glob(locales, "*.yaml")
+		if err != nil {
+			return nil, err
+		}
+
+		for _, file := range matchs {
+			if err := localeutil.LoadMessageFromFS(b, locales, file, yaml.Unmarshal); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	systag, err := localeutil.SystemLanguageTag()
+	if err != nil {
+		return nil, err
+	}
+
+	return message.NewPrinter(systag, message.Catalog(b)), nil
+}

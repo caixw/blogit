@@ -1,0 +1,175 @@
+
+language: cmn-hans
+
+messages:
+- key: cmd title
+  message:
+    msg: >
+      静态博客工具
+
+- key: cmd footer
+  message:
+    msg: >
+      源码以 MIT 许可发布于 %[1]s
+
+- key: sub command
+  message:
+    msg: 子命令
+
+- key: cmd argument
+  message:
+    msg: 参数
+
+- key: sub command not found
+  message:
+    msg: >
+      子命令 %[1]s 未找到
+
+- key: help usage
+  message:
+    msg: >
+      显示当前内容
+
+
+## build
+
+- key: build usage
+  message:
+    msg: >
+      编译内容
+
+- key: build dest
+  message:
+    msg: 指定输出目录
+
+- key: build src
+  message:
+    msg: 指定源码目录
+
+- key: start build
+  message:
+    msg: 开始编译
+
+- key: build complete
+  message:
+    msg: 完成编译，用时：%[1]s
+
+
+## version
+
+- key: version usage
+  message:
+    msg: >
+      显示版本号
+
+- key: show full version
+  message:
+    msg: 显示完整的版本号信息
+
+- key: version content
+  message:
+    msg: >
+      %[1]s %[2]s build with %[3]s
+
+
+## styles
+
+- key: styles usage
+  message:
+    msg: |
+      显示可用的代码高亮名称
+
+      代码高亮的相关样式表是以文件的方式关联到 HTML 的，
+      这些文件将以 themes/{id}/{name}.css 格式出现，
+      其中 {id} 是主题名称，面 {name} 则是当前命令列的值。
+
+
+## serve
+
+- key: serve usage
+  message:
+    msg: >
+      以 HTTP 服务运行
+
+- key: serve src
+  message:
+    msg: 指定源码目录
+
+- key: serve dest
+  message:
+    msg: 指定输出目录，如果为空表示采用内存保存。
+
+- key: serve port
+  message:
+    msg: 服务端口
+
+- key: serve path
+  message:
+    msg: 项目的访问路径
+
+- key: serve http cert
+  message:
+    msg: cert 证书
+
+- key: serve http key
+  message:
+    msg: key 证书
+
+
+## preview
+
+- key: preview usage
+  message:
+    msg: >
+      以预览的方式运行 HTTP 服务
+
+- key: preview src
+  message:
+    msg: 指定源码目录
+
+- key: preview dest
+  message:
+    msg: 指定保存了对象，为空表示保存在内存。
+
+- key: preview base url
+  message:
+    msg: 服务基地址
+
+
+- key: preview http cert
+  message:
+    msg: cert 证书
+
+- key: preview http key
+  message:
+    msg: key 证书
+
+
+## create 
+
+- key: init usage
+  message:
+    msg: |
+      初始化博客内容
+
+      在指定目录下初始化项目的必须文件，比如 conf.yaml、tags.yaml 等文件。
+
+
+- key: init post usage
+  message:
+    msg: |
+      创建新文章
+
+      执行该命令会在 posts 目录下创建一个同名的文件，如果未指定扩展名，
+      则自动添加 .md 作为扩展名，可以带目录结构，比如：blogit post 2021/03/31/file
+      会在项目上目录下添加 posts/2021/03/31.file.md 文件，并在文件内添加必要的字段内容。
+
+      执行命令时，当前工作目录必须为项目的根目录。
+
+- key: miss argument
+  message:
+    msg: 缺少参数
+
+- key: create file
+  message:
+    msg: 创建文件 %[1]s

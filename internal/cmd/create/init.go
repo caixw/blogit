@@ -8,28 +8,24 @@ import (
 	"io/fs"
 
 	"github.com/issue9/cmdopt"
+	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/builder"
 	"github.com/caixw/blogit/internal/cmd/console"
 	"github.com/caixw/blogit/internal/testdata"
 )
 
-const initUsage = `初始化博客内容
-
-在指定目录下初始化项目的必须文件，比如 conf.yaml、tags.yaml 等文件。
-`
-
 var initFS *flag.FlagSet
 
 // InitInit 注册 init 子命令
-func InitInit(opt *cmdopt.CmdOpt, erro *console.Logger) {
-	initFS = opt.New("init", initUsage, initF(erro))
+func InitInit(opt *cmdopt.CmdOpt, erro *console.Logger, p *message.Printer) {
+	initFS = opt.New("init", p.Sprintf("init usage"), initF(erro, p))
 }
 
-func initF(erro *console.Logger) cmdopt.DoFunc {
+func initF(erro *console.Logger, p *message.Printer) cmdopt.DoFunc {
 	return func(w io.Writer) error {
 		if initFS.NArg() != 1 {
-			erro.Println("必须指定目录")
+			erro.Println(p.Sprintf("miss argument"))
 			return nil
 		}
 

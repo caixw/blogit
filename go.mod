@@ -8,6 +8,7 @@ require (
 	github.com/issue9/assert v1.4.1
 	github.com/issue9/cmdopt v0.7.0
 	github.com/issue9/errwrap v0.2.0
+	github.com/issue9/localeutil v0.2.1
 	github.com/issue9/sliceutil v0.7.0
 	github.com/issue9/term/v2 v2.1.4
 	github.com/issue9/validation v0.4.0
@@ -17,5 +18,6 @@ require (
 	github.com/yuin/goldmark v1.4.0
 	github.com/yuin/goldmark-highlighting v0.0.0-20210516132338-9216f9c5aa01
 	github.com/yuin/goldmark-meta v1.0.0
+	golang.org/x/text v0.3.7
 	gopkg.in/yaml.v2 v2.4.0
 )

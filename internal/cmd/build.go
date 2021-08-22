@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/issue9/cmdopt"
+	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit"
 	"github.com/caixw/blogit/builder"
@@ -19,21 +20,23 @@ var (
 )
 
 // initBuild 注册 build 子命令
-func initBuild(opt *cmdopt.CmdOpt) {
-	fs := opt.New("build", "编译内容\n", build)
-	fs.StringVar(&buildSrc, "src", "./", "指定源码目录")
-	fs.StringVar(&buildDest, "dest", "./dest", "指定输出目录")
+func initBuild(opt *cmdopt.CmdOpt, p *message.Printer) {
+	fs := opt.New("build", p.Sprintf("build usage"), build(p))
+	fs.StringVar(&buildSrc, "src", "./", p.Sprintf("build src"))
+	fs.StringVar(&buildDest, "dest", "./dest", p.Sprintf("build dest"))
 }
 
-func build(io.Writer) error {
-	start := time.Now()
+func build(p *message.Printer) func(io.Writer) error {
+	return func(w io.Writer) error {
+		start := time.Now()
 
-	info.Println("开始编译内容")
-	if err := blogit.Build(os.DirFS(buildSrc), builder.DirFS(buildDest), info.AsLogger()); err != nil {
-		erro.Println(err)
+		info.Println(p.Sprintf("start build"))
+		if err := blogit.Build(os.DirFS(buildSrc), builder.DirFS(buildDest), info.AsLogger()); err != nil {
+			erro.Println(err)
+			return nil
+		}
+
+		succ.Println(p.Sprintf("build complete", time.Since(start)))
 		return nil
 	}
-
-	succ.Println("完成编译，用时：", time.Since(start))
-	return nil
 }
