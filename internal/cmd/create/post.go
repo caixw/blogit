@@ -14,9 +14,9 @@ import (
 	"github.com/issue9/cmdopt"
 	"golang.org/x/text/message"
 
-	"github.com/caixw/blogit/builder"
-	"github.com/caixw/blogit/internal/cmd/console"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/builder"
+	"github.com/caixw/blogit/v2/internal/cmd/console"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 const postContent = `---

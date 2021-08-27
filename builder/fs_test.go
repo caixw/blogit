@@ -12,7 +12,7 @@ import (
 
 	"github.com/issue9/assert"
 
-	"github.com/caixw/blogit/internal/filesystem"
+	"github.com/caixw/blogit/v2/internal/filesystem"
 )
 
 var (

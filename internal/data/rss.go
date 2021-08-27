@@ -2,7 +2,7 @@
 
 package data
 
-import "github.com/caixw/blogit/internal/loader"
+import "github.com/caixw/blogit/v2/internal/loader"
 
 // RSS 整理后的 RSS 和 Atom 数据
 type RSS struct {

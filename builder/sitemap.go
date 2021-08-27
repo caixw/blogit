@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/v2/internal/data"
 )
 
 const sitemapNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9"

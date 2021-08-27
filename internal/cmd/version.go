@@ -9,8 +9,8 @@ import (
 	"github.com/issue9/cmdopt"
 	"golang.org/x/text/message"
 
-	"github.com/caixw/blogit"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 var versionFull bool

@@ -6,7 +6,7 @@ package vars
 // 各个配置项
 const (
 	Name = "blogit"
-	URL  = "https://github.com/caixw/blogit"
+	URL  = "https://github.com/caixw/blogit/v2"
 
 	ConfYAML  = "conf.yaml"
 	TagsYAML  = "tags.yaml"

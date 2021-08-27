@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/caixw/blogit/internal/loader"
+	"github.com/caixw/blogit/v2/internal/loader"
 )
 
 type ldBlogPosting struct {

@@ -2,7 +2,7 @@
 
 package data
 
-import "github.com/caixw/blogit/internal/loader"
+import "github.com/caixw/blogit/v2/internal/loader"
 
 // Robots robots.txt 的相关内容
 type Robots struct {

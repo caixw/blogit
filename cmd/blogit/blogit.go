@@ -8,7 +8,7 @@ package main
 import (
 	"os"
 
-	"github.com/caixw/blogit/internal/cmd"
+	"github.com/caixw/blogit/v2/internal/cmd"
 )
 
 func main() {

@@ -17,9 +17,9 @@ import (
 
 	"github.com/issue9/errwrap"
 
-	"github.com/caixw/blogit/internal/data"
-	"github.com/caixw/blogit/internal/loader"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/data"
+	"github.com/caixw/blogit/v2/internal/loader"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 // Builder 提供了一个可重复生成 HTML 内容的对象
@@ -35,7 +35,8 @@ type Builder struct {
 
 // New 声明 Builder 实例
 //
-// wfs 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
+// src 需要编译的源码目录；
+// dest 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
 // 以及任何实现了 WritableFS 接口都可以；
 // info 在运行过程中的一些提示信息通过此输出，如果为空，则会采用 log.Default()；
 func New(src fs.FS, dest WritableFS, info *log.Logger) *Builder {
@@ -154,7 +155,7 @@ func (b *Builder) appendXMLFile(path, xsl string, v interface{}) error {
 
 // 如果 path 以 / 开头，则会自动去除 /
 func (b *Builder) appendFile(p string, data []byte) error {
-	b.info.Println("添加：", p)
+	b.info.Println(" >>", p)
 	return b.dest.WriteFile(p, data, fs.ModePerm)
 }
 

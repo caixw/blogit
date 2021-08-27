@@ -3,9 +3,9 @@
 package builder
 
 import (
-	"github.com/caixw/blogit/internal/data"
-	"github.com/caixw/blogit/internal/loader"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/data"
+	"github.com/caixw/blogit/v2/internal/loader"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 func (b *Builder) buildTags(d *data.Data) error {

@@ -10,12 +10,12 @@ import (
 	"github.com/issue9/cmdopt"
 	"github.com/issue9/term/v2/colors"
 
-	"github.com/caixw/blogit/internal/cmd/console"
-	"github.com/caixw/blogit/internal/cmd/create"
-	"github.com/caixw/blogit/internal/cmd/preview"
-	"github.com/caixw/blogit/internal/cmd/serve"
-	"github.com/caixw/blogit/internal/locale"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/cmd/console"
+	"github.com/caixw/blogit/v2/internal/cmd/create"
+	"github.com/caixw/blogit/v2/internal/cmd/preview"
+	"github.com/caixw/blogit/v2/internal/cmd/serve"
+	"github.com/caixw/blogit/v2/internal/locale"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 var (

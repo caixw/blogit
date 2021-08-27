@@ -17,7 +17,7 @@ import (
 	"github.com/yuin/goldmark/text"
 	"gopkg.in/yaml.v2"
 
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 var (

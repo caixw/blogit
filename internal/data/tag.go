@@ -10,8 +10,8 @@ import (
 
 	"github.com/issue9/sliceutil"
 
-	"github.com/caixw/blogit/internal/loader"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/loader"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 // Tags 标签列表及相关设置项

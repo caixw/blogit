@@ -13,7 +13,7 @@ import (
 
 	"github.com/issue9/sliceutil"
 
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 // 表示 Post.State 的各类值

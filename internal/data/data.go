@@ -8,8 +8,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/caixw/blogit/internal/loader"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/loader"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 type (

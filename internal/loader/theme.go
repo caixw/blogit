@@ -10,8 +10,8 @@ import (
 	"github.com/alecthomas/chroma/styles"
 	"github.com/issue9/sliceutil"
 
-	"github.com/caixw/blogit/internal/filesystem"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/filesystem"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 // Theme 主题

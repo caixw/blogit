@@ -11,8 +11,8 @@ import (
 
 	"github.com/issue9/sliceutil"
 
-	"github.com/caixw/blogit/internal/loader"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/loader"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 // Index 索引页内容

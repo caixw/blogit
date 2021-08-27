@@ -12,9 +12,9 @@ import (
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 
-	"github.com/caixw/blogit/internal/cmd/console"
-	"github.com/caixw/blogit/internal/filesystem"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/cmd/console"
+	"github.com/caixw/blogit/v2/internal/filesystem"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 func TestCmd_Post(t *testing.T) {

@@ -1,4 +1,4 @@
-module github.com/caixw/blogit
+module github.com/caixw/blogit/v2
 
 go 1.16
 

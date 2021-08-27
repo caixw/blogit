@@ -9,7 +9,7 @@ import (
 	"github.com/issue9/cmdopt"
 	"golang.org/x/text/message"
 
-	"github.com/caixw/blogit/internal/cmd/console"
+	"github.com/caixw/blogit/v2/internal/cmd/console"
 )
 
 var opt *options

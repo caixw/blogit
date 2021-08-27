@@ -30,7 +30,7 @@ builds:
   - -trimpath
 
   ldflags:
-  - -s -w -X github.com/caixw/blogit/internal/vars.metadata={{time "20060102"}}.{{.FullCommit}} -X github.com/caixw/blogit/internal/vars.version={{.Tag}}
+  - -s -w -X github.com/caixw/blogit/v2/internal/vars.metadata={{time "20060102"}}.{{.FullCommit}} -X github.com/caixw/blogit/v2/internal/vars.version={{.Tag}}
 
   env:
   - CGO_ENABLED=0

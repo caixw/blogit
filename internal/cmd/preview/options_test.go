@@ -11,9 +11,9 @@ import (
 	"github.com/issue9/assert"
 	"github.com/issue9/assert/rest"
 
-	"github.com/caixw/blogit/internal/cmd/console"
-	"github.com/caixw/blogit/internal/locale"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/cmd/console"
+	"github.com/caixw/blogit/v2/internal/locale"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 func TestOptions_sanitize(t *testing.T) {

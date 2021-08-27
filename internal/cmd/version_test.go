@@ -9,8 +9,8 @@ import (
 
 	"github.com/issue9/assert"
 
-	"github.com/caixw/blogit"
-	"github.com/caixw/blogit/internal/locale"
+	"github.com/caixw/blogit/v2"
+	"github.com/caixw/blogit/v2/internal/locale"
 )
 
 func TestPrintVersion(t *testing.T) {

@@ -16,9 +16,9 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"golang.org/x/text/message"
 
-	"github.com/caixw/blogit"
-	"github.com/caixw/blogit/builder"
-	"github.com/caixw/blogit/internal/cmd/console"
+	"github.com/caixw/blogit/v2"
+	"github.com/caixw/blogit/v2/builder"
+	"github.com/caixw/blogit/v2/internal/cmd/console"
 )
 
 // options 启动服务的参数选项

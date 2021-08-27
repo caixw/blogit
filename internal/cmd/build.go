@@ -10,8 +10,8 @@ import (
 	"github.com/issue9/cmdopt"
 	"golang.org/x/text/message"
 
-	"github.com/caixw/blogit"
-	"github.com/caixw/blogit/builder"
+	"github.com/caixw/blogit/v2"
+	"github.com/caixw/blogit/v2/builder"
 )
 
 var (

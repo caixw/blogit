@@ -8,8 +8,8 @@ import (
 
 	"github.com/issue9/assert"
 
-	"github.com/caixw/blogit/internal/filesystem"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/filesystem"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 func TestCmd_Build(t *testing.T) {

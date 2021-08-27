@@ -9,8 +9,8 @@ import (
 	"github.com/issue9/assert"
 	"github.com/issue9/assert/rest"
 
-	"github.com/caixw/blogit/internal/testdata"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/testdata"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 func TestIsIgnore(t *testing.T) {

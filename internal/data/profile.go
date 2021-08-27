@@ -2,7 +2,7 @@
 
 package data
 
-import "github.com/caixw/blogit/internal/loader"
+import "github.com/caixw/blogit/v2/internal/loader"
 
 // Profile github.com 下与账号同名仓库的 README.md 文件管理
 type Profile struct {

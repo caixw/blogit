@@ -5,8 +5,8 @@ package builder
 import (
 	"github.com/issue9/errwrap"
 
-	"github.com/caixw/blogit/internal/data"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/data"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 func (b *Builder) buildProfile(d *data.Data) error {

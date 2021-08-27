@@ -7,7 +7,7 @@ import (
 
 	"github.com/issue9/assert"
 
-	"github.com/caixw/blogit/internal/loader"
+	"github.com/caixw/blogit/v2/internal/loader"
 )
 
 func TestSortTags(t *testing.T) {

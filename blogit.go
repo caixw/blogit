@@ -7,8 +7,8 @@ import (
 	"io/fs"
 	"log"
 
-	"github.com/caixw/blogit/builder"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/builder"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 type (
@@ -28,7 +28,7 @@ func Version(full bool) string {
 
 // Build 编译并输出内容
 //
-// dir 表示源码目录，直接读该文件系统根目录下的内容；
+// src 表示源码目录，直接读该文件系统根目录下的内容；
 // dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
 // info 输出编译的进度信息，如果为空，会采用 log.Default()；
 func Build(src fs.FS, dest WritableFS, info *log.Logger) error {
@@ -37,6 +37,7 @@ func Build(src fs.FS, dest WritableFS, info *log.Logger) error {
 
 // NewBuilder 声明 Builder
 //
+// src 表示源码目录，直接读该文件系统根目录下的内容；
 // dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
 // info 输出编译的进度信息，如果为空，会采用 log.Default()；
 func NewBuilder(src fs.FS, dest WritableFS, info *log.Logger) *Builder {

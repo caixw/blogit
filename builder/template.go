@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/caixw/blogit/internal/data"
-	"github.com/caixw/blogit/internal/vars"
+	"github.com/caixw/blogit/v2/internal/data"
+	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 // path 表示输出的文件路径，相对于源目录；

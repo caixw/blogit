@@ -5,7 +5,7 @@ package builder
 import (
 	"time"
 
-	"github.com/caixw/blogit/internal/data"
+	"github.com/caixw/blogit/v2/internal/data"
 )
 
 const (
