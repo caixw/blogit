@@ -100,7 +100,7 @@ func (o *options) parseURL() error {
 }
 
 func (o *options) build() (err error) {
-	if err = o.b.Rebuild(o.srcFS, o.url); err == nil {
+	if err = o.b.Rebuild(o.url); err == nil {
 		o.builded = time.Now()
 	}
 	return err
@@ -111,7 +111,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 		return err
 	}
 
-	o.b = blogit.NewBuilder(o.destFS, info.AsLogger())
+	o.b = blogit.NewBuilder(o.srcFS, o.destFS, info.AsLogger())
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		info.Println(o.p.Sprintf("visit url", r.URL.String()))

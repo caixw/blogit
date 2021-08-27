@@ -29,13 +29,13 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 
 	// MemoryFS
 
-	b := New(MemoryFS(), nil)
+	b := New(testdata.Source, MemoryFS(), nil)
 	srv := rest.NewServer(t, b.Handler(nil), nil)
 
 	// b 未加载任何数据。返回都是 404
 	srv.Get("/robots.txt").Do().Status(http.StatusNotFound)
 
-	a.NotError(b.Rebuild(testdata.Source, "http://localhost:8080"))
+	a.NotError(b.Rebuild("http://localhost:8080"))
 	srv.Get("/robots.txt").Do().Status(http.StatusOK)
 	srv.Get("/posts/p1" + vars.Ext).Do().Status(http.StatusOK)
 	srv.Get("/posts/not-exists.html").Do().Status(http.StatusNotFound)
@@ -50,13 +50,13 @@ func TestBuilder_ServeHTTP(t *testing.T) {
 
 	destDir, err := testdata.Temp()
 	a.NotError(err)
-	b = New(DirFS(destDir), nil)
+	b = New(testdata.Source, DirFS(destDir), nil)
 	srv = rest.NewServer(t, b.Handler(nil), nil)
 
 	// b 未加载任何数据。返回都是 404
 	srv.Get("/robots.txt").Do().Status(http.StatusNotFound)
 
-	a.NotError(b.Rebuild(testdata.Source, "http://localhost:8080"))
+	a.NotError(b.Rebuild("http://localhost:8080"))
 	srv.Get("/robots.txt").Do().Status(http.StatusOK)
 	srv.Get("/posts/p1" + vars.Ext).Do().Status(http.StatusOK)
 	srv.Get("/posts/not-exists.html").Do().Status(http.StatusNotFound)

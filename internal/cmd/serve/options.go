@@ -51,8 +51,8 @@ func (o *options) serve(info, erro *console.Logger) error {
 	}
 	src := os.DirFS(o.source)
 
-	b := blogit.NewBuilder(dest, info.AsLogger())
-	if err := b.Rebuild(src, ""); err != nil {
+	b := blogit.NewBuilder(src, dest, info.AsLogger())
+	if err := b.Rebuild(""); err != nil {
 		return err
 	}
 

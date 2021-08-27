@@ -25,7 +25,8 @@ import (
 // Builder 提供了一个可重复生成 HTML 内容的对象
 type Builder struct {
 	info *log.Logger
-	wfs  WritableFS
+	src  fs.FS
+	dest WritableFS
 
 	// 以下内容在 ReBuild 之后会重新生成
 	site *site
@@ -37,21 +38,21 @@ type Builder struct {
 // wfs 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
 // 以及任何实现了 WritableFS 接口都可以；
 // info 在运行过程中的一些提示信息通过此输出，如果为空，则会采用 log.Default()；
-func New(wfs WritableFS, info *log.Logger) *Builder {
+func New(src fs.FS, dest WritableFS, info *log.Logger) *Builder {
 	if info == nil {
 		info = log.Default()
 	}
-	return &Builder{wfs: wfs, info: info}
+	return &Builder{dest: dest, src: src, info: info}
 }
 
 // Rebuild 重新生成数据
-func (b *Builder) Rebuild(src fs.FS, base string) error {
-	if err := b.wfs.Reset(); err != nil {
+func (b *Builder) Rebuild(base string) error {
+	if err := b.dest.Reset(); err != nil {
 		return err
 	}
 
 	paths := make([]string, 0, 100)
-	err := fs.WalkDir(src, ".", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(b.src, ".", func(path string, d fs.DirEntry, err error) error {
 		if err == nil && !d.IsDir() && !isIgnore(path) {
 			paths = append(paths, path)
 		}
@@ -62,7 +63,7 @@ func (b *Builder) Rebuild(src fs.FS, base string) error {
 	}
 
 	for _, p := range paths {
-		bs, err := fs.ReadFile(src, p)
+		bs, err := fs.ReadFile(b.src, p)
 		if err != nil {
 			return err
 		}
@@ -71,16 +72,16 @@ func (b *Builder) Rebuild(src fs.FS, base string) error {
 		}
 	}
 
-	return b.buildData(src, base)
+	return b.buildData(base)
 }
 
-func (b *Builder) buildData(src fs.FS, base string) (err error) {
-	d, err := data.Load(src, base)
+func (b *Builder) buildData(base string) (err error) {
+	d, err := data.Load(b.src, base)
 	if err != nil {
 		return err
 	}
 
-	b.tpl, err = newTemplate(d, src)
+	b.tpl, err = newTemplate(d, b.src)
 	if err != nil {
 		return err
 	}
@@ -154,7 +155,7 @@ func (b *Builder) appendXMLFile(path, xsl string, v interface{}) error {
 // 如果 path 以 / 开头，则会自动去除 /
 func (b *Builder) appendFile(p string, data []byte) error {
 	b.info.Println("添加：", p)
-	return b.wfs.WriteFile(p, data, fs.ModePerm)
+	return b.dest.WriteFile(p, data, fs.ModePerm)
 }
 
 // Handler 将当前对象转换成 http.Handler 接口对象
@@ -176,7 +177,7 @@ func (b *Builder) Handler(erro *log.Logger) http.Handler {
 			p += vars.IndexFilename
 		}
 
-		f, err := b.wfs.Open(p)
+		f, err := b.dest.Open(p)
 		if errors.Is(err, fs.ErrNotExist) {
 			http.NotFound(w, r)
 			return
