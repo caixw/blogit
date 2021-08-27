@@ -32,16 +32,15 @@ func Version(full bool) string {
 // dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
 // info 输出编译的进度信息，如果为空，会采用 log.Default()；
 func Build(src fs.FS, dest WritableFS, info *log.Logger) error {
-	return NewBuilder(dest, info, nil).Rebuild(src, "")
+	return NewBuilder(dest, info).Rebuild(src, "")
 }
 
 // NewBuilder 声明 Builder
 //
 // dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
 // info 输出编译的进度信息，如果为空，会采用 log.Default()；
-// erro 表示的是在把 Builder 当作 http.Handler 处理时，在出错时的日志输出通道。
-func NewBuilder(dest WritableFS, info, erro *log.Logger) *Builder {
-	return builder.New(dest, info, erro)
+func NewBuilder(dest WritableFS, info *log.Logger) *Builder {
+	return builder.New(dest, info)
 }
 
 // DirFS 以普通目录结构作为保存对象的文件系统

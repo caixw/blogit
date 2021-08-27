@@ -51,14 +51,14 @@ func (o *options) serve(info, erro *console.Logger) error {
 	}
 	src := os.DirFS(o.source)
 
-	b := blogit.NewBuilder(dest, info.AsLogger(), erro.AsLogger())
+	b := blogit.NewBuilder(dest, info.AsLogger())
 	if err := b.Rebuild(src, ""); err != nil {
 		return err
 	}
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		info.Println(o.p.Sprintf("visit url", r.URL.String()))
-		b.ServeHTTP(w, r)
+		b.Handler(erro.AsLogger()).ServeHTTP(w, r)
 	})
 	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
 

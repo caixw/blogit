@@ -25,7 +25,6 @@ import (
 // Builder 提供了一个可重复生成 HTML 内容的对象
 type Builder struct {
 	info *log.Logger
-	erro *log.Logger
 	wfs  WritableFS
 
 	// 以下内容在 ReBuild 之后会重新生成
@@ -38,16 +37,11 @@ type Builder struct {
 // wfs 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
 // 以及任何实现了 WritableFS 接口都可以；
 // info 在运行过程中的一些提示信息通过此输出，如果为空，则会采用 log.Default()；
-// erro 表示的是在把 Builder 当作 http.Handler 处理时，在出错时的日志输出通道。
-// 如果为空，则会采用 log.Default()。如果不准备其当作 http.Handler 使用，则此值是无用；
-func New(wfs WritableFS, info, erro *log.Logger) *Builder {
-	if erro == nil {
-		erro = log.Default()
-	}
+func New(wfs WritableFS, info *log.Logger) *Builder {
 	if info == nil {
 		info = log.Default()
 	}
-	return &Builder{wfs: wfs, info: info, erro: erro}
+	return &Builder{wfs: wfs, info: info}
 }
 
 // Rebuild 重新生成数据
@@ -163,46 +157,54 @@ func (b *Builder) appendFile(p string, data []byte) error {
 	return b.wfs.WriteFile(p, data, fs.ModePerm)
 }
 
-// ServeHTTP 作为 HTTP 服务接口使用
-func (b *Builder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// NOTE: 为了自定义 index 的功能，没有采用 http.ServeFile 方法
-
-	p := r.URL.Path
-	if p != "" && p[0] == '/' {
-		p = p[1:]
-	}
-	if p == "" || p[len(p)-1] == '/' {
-		p += vars.IndexFilename
+// Handler 将当前对象转换成 http.Handler 接口对象
+//
+// erro 在出错时日志的输出通道，可以为空，表示输出到 log.Default()；
+func (b *Builder) Handler(erro *log.Logger) http.Handler {
+	if erro == nil {
+		erro = log.Default()
 	}
 
-	f, err := b.wfs.Open(p)
-	if errors.Is(err, fs.ErrNotExist) {
-		http.NotFound(w, r)
-		return
-	} else if errors.Is(err, fs.ErrPermission) {
-		errStatus(w, http.StatusForbidden)
-		return
-	} else if err != nil {
-		b.erro.Println(err)
-		errStatus(w, http.StatusInternalServerError)
-		return
-	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// NOTE: 为了自定义 index 的功能，没有采用 http.ServeFile 方法
 
-	stat, err := f.Stat()
-	if err != nil {
-		b.erro.Println(err)
-		errStatus(w, http.StatusInternalServerError)
-		return
-	}
+		p := r.URL.Path
+		if p != "" && p[0] == '/' {
+			p = p[1:]
+		}
+		if p == "" || p[len(p)-1] == '/' {
+			p += vars.IndexFilename
+		}
 
-	bs, err := io.ReadAll(f)
-	if err != nil {
-		b.erro.Println(err)
-		errStatus(w, http.StatusInternalServerError)
-		return
-	}
+		f, err := b.wfs.Open(p)
+		if errors.Is(err, fs.ErrNotExist) {
+			http.NotFound(w, r)
+			return
+		} else if errors.Is(err, fs.ErrPermission) {
+			errStatus(w, http.StatusForbidden)
+			return
+		} else if err != nil {
+			erro.Println(err)
+			errStatus(w, http.StatusInternalServerError)
+			return
+		}
 
-	http.ServeContent(w, r, p, stat.ModTime(), bytes.NewReader(bs))
+		stat, err := f.Stat()
+		if err != nil {
+			erro.Println(err)
+			errStatus(w, http.StatusInternalServerError)
+			return
+		}
+
+		bs, err := io.ReadAll(f)
+		if err != nil {
+			erro.Println(err)
+			errStatus(w, http.StatusInternalServerError)
+			return
+		}
+
+		http.ServeContent(w, r, p, stat.ModTime(), bytes.NewReader(bs))
+	})
 }
 
 func errStatus(w http.ResponseWriter, status int) {
