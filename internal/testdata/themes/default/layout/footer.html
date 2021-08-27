@@ -3,12 +3,12 @@
             <div class="pages-nav">
                 {{if .Prev -}}
                     <span class="prev">
-                        <a rel="prev" href="{{.Prev.URL}}" aria-label="前一页"><span aria-hidden>&#171;&#160;</span>{{.Prev.Text}}</a>
+                        <a rel="prev" href="{{.Prev.URL}}" aria-label="前一页"><span aria-hidden="true">&#171;&#160;</span>{{.Prev.Text}}</a>
                     </span>
                 {{- end}}
                 {{if .Next -}}
                     <span class="next">
-                        <a rel="next" href="{{.Next.URL}}" aria-label="后一页">{{.Next.Text}}<span aria-hidden>&#160;&#187;</span></a>
+                        <a rel="next" href="{{.Next.URL}}" aria-label="后一页">{{.Next.Text}}<span aria-hidden="true">&#160;&#187;</span></a>
                     </span>
                 {{- end}}
             </div>
@@ -35,7 +35,7 @@
             </div>
         </footer>
 
-        <span role="button" id="goto-top" class="nav-button"><a href="#" class="css-icon icon-arrow-up"></a></span>
+        <span role="button" aria-label="go to top" id="goto-top" class="nav-button"><a href="#" class="css-icon icon-arrow-up"></a></span>
         <script src="{{"default/nav.js"|themeURL}}"></script>
     </body>
 </html>

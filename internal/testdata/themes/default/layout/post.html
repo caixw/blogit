@@ -35,7 +35,7 @@
 
 {{- if .Post.TOC -}}
 <nav id="toc-button" class="nav-button">
-    <i role="button" class="css-icon icon-menu"></i>
+    <i role="button" aria-label="TOC" class="css-icon icon-menu"></i>
     <ul id="toc" role="menu">
     {{- range .Post.TOC -}}
     <li role="menuitem" class="toc-h{{.Indent}}"><a href="#{{.ID}}">{{.Text}}</a></li>

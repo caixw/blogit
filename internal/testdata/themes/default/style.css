@@ -104,6 +104,10 @@ ul.tags li:last-child {
     flex-wrap: wrap;
 }
 
+.post p {
+    text-indent: 2em;
+}
+
 .post .meta .item {
     margin-right: 1rem;
 }
