@@ -8,6 +8,7 @@ import (
 
 	"github.com/issue9/assert"
 
+	"github.com/caixw/blogit/v2/internal/locale"
 	"github.com/caixw/blogit/v2/internal/testdata"
 )
 
@@ -25,7 +26,11 @@ func TestTag_sanitize(t *testing.T) {
 	tag.Content = "c1"
 	a.NotError(tag.sanitize(nil))
 	a.NotError(tag.sanitize(&Tags{Tags: []*Tag{tag}}))
-	a.ErrorString(tag.sanitize(&Tags{Tags: []*Tag{tag, tag}}), "重复的值")
+
+	p, err := locale.NewPrinter()
+	a.NotError(err).NotNil(p)
+	e := tag.sanitize(&Tags{Tags: []*Tag{tag, tag}})
+	a.ErrorString(e.LocaleString(p), p.Sprintf("duplicate value"))
 }
 
 func TestLoadTags(t *testing.T) {
