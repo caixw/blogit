@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"path"
 	"strings"
+	"sync"
 
 	"github.com/issue9/errwrap"
 	"github.com/issue9/sliceutil"
@@ -23,15 +24,25 @@ import (
 	"github.com/caixw/blogit/v2/internal/vars"
 )
 
+// ErrBuilding 另一个 Rebuild 正在执行
+//
+// 当多次快速调用 Builder.Rebuild 时，可能返回此值，
+// 表示另一个调用还未返回，新的调用又开始。
+var ErrBuilding = errors.New("正在编译中")
+
 // Builder 提供了一个可重复生成 HTML 内容的对象
 type Builder struct {
 	info *log.Logger
 	src  fs.FS
 	dest WritableFS
 
+	rebuildMux *sync.Mutex // 防止多次调用 Rebuild
+
 	// 以下内容在 Rebuild 之后会重新生成
-	site *site
-	tpl  *template.Template
+
+	site     *site
+	tpl      *template.Template
+	building bool
 }
 
 // New 声明 Builder 实例
@@ -44,11 +55,27 @@ func New(src fs.FS, dest WritableFS, info *log.Logger) *Builder {
 	if info == nil {
 		info = log.Default()
 	}
-	return &Builder{dest: dest, src: src, info: info}
+	return &Builder{
+		src:  src,
+		dest: dest,
+		info: info,
+
+		rebuildMux: &sync.Mutex{},
+	}
 }
 
 // Rebuild 重新生成数据
 func (b *Builder) Rebuild(base string) error {
+	b.rebuildMux.Lock()
+	defer b.rebuildMux.Unlock()
+
+	if b.building {
+		return ErrBuilding
+	}
+
+	defer func() { b.building = false }()
+	b.building = true
+
 	if err := b.dest.Reset(); err != nil {
 		return err
 	}
