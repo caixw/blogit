@@ -165,9 +165,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 	}
 }
 
-func (o *options) close() error {
-	return o.srv.Close()
-}
+func (o *options) close() error { return o.srv.Close() }
 
 func (o *options) serve(info *console.Logger) error {
 	info.Println(o.p.Sprintf("start server", o.addr))

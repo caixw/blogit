@@ -28,7 +28,7 @@ type Builder struct {
 	src  fs.FS
 	dest WritableFS
 
-	// 以下内容在 ReBuild 之后会重新生成
+	// 以下内容在 Rebuild 之后会重新生成
 	site *site
 	tpl  *template.Template
 }

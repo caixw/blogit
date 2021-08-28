@@ -24,7 +24,7 @@ func TestIsIgnore(t *testing.T) {
 	a.False(isIgnore("themes/layout/header.html")) // 不符合 themes/xx/layout 的格式
 }
 
-func TestBuilder_ServeHTTP(t *testing.T) {
+func TestBuilder_Handler(t *testing.T) {
 	a := assert.New(t)
 
 	// MemoryFS
