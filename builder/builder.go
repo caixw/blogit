@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/issue9/errwrap"
+	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/v2/internal/data"
 	"github.com/caixw/blogit/v2/internal/loader"
@@ -112,6 +113,12 @@ func (b *Builder) buildData(base string) (err error) {
 var (
 	layoutPattern = path.Join(vars.ThemesDir, "*", vars.LayoutDir, "*")
 	themePattern  = path.Join(vars.ThemesDir, "*", vars.ThemeYAML)
+
+	ignoreExts = []string{
+		vars.MarkdownExt,
+		".yaml", ".yml",
+		".gitignore", ".git",
+	}
 )
 
 func isIgnore(src string) bool {
@@ -124,11 +131,7 @@ func isIgnore(src string) bool {
 	}
 
 	ext := strings.ToLower(path.Ext(src))
-	return ext == vars.MarkdownExt ||
-		ext == ".yaml" ||
-		ext == ".yml" ||
-		ext == ".gitignore" ||
-		ext == ".git"
+	return sliceutil.Index(ignoreExts, func(i int) bool { return ignoreExts[i] == ext }) >= 0
 }
 
 // path 表示输出的文件路径，相对于源目录；
