@@ -20,31 +20,29 @@ import (
 	"github.com/caixw/blogit/v2/internal/vars"
 )
 
-var (
-	markdown = goldmark.New(
-		goldmark.WithExtensions(
-			extension.GFM,
-			extension.Strikethrough,
-			extension.Footnote,
-			meta.Meta,
-			highlighting.NewHighlighting(
-				highlighting.WithFormatOptions(
-					fh.WithLineNumbers(true),
-					fh.WithClasses(true),
-					fh.ClassPrefix(vars.HighlightClassPrefix),
-				),
+var markdown = goldmark.New(
+	goldmark.WithExtensions(
+		extension.GFM,
+		extension.Strikethrough,
+		extension.Footnote,
+		meta.Meta,
+		highlighting.NewHighlighting(
+			highlighting.WithFormatOptions(
+				fh.WithLineNumbers(true),
+				fh.WithClasses(true),
+				fh.ClassPrefix(vars.HighlightClassPrefix),
 			),
 		),
+	),
 
-		goldmark.WithParserOptions(
-			parser.WithAttribute(),
-			parser.WithAutoHeadingID(),
-		),
+	goldmark.WithParserOptions(
+		parser.WithAttribute(),
+		parser.WithAutoHeadingID(),
+	),
 
-		goldmark.WithRendererOptions(
-			html.WithUnsafe(),
-		),
-	)
+	goldmark.WithRendererOptions(
+		html.WithUnsafe(),
+	),
 )
 
 func convert(f fs.FS, path string) (*Post, error) {

@@ -30,9 +30,7 @@ type WritableFS interface {
 }
 
 // MemoryFS 返回以内存作为保存对象的文件系统
-func MemoryFS() WritableFS {
-	return &memoryFS{FS: memfs.New()}
-}
+func MemoryFS() WritableFS { return &memoryFS{FS: memfs.New()} }
 
 // DirFS 返回以普通目录作为保存对象的文件系统
 func DirFS(dir string) WritableFS {
