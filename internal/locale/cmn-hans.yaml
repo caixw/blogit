@@ -192,6 +192,66 @@ messages:
     msg: 创建文件 %[1]s
 
 
+## error
+
+- key: can not be empty
+  message:
+    msg: 不能为空
+
+- key: invalid url
+  message:
+    msg: 无效的 URL 格式
+
+- key: invalid value
+  message:
+    msg: 无效的值
+
+- key: invalid format
+  message:
+    msg: 无效的格式
+
+- key: should great than zero
+  message:
+    msg: 必须大于零
+
+- key: duplicate value
+  message:
+    msg: 重复的值
+
+- key: not found
+  message:
+    msg: 不存在
+
+- key: template not found in
+  message:
+    msg: 模板不存在于 %[1]s
+
+- key: can not contain spaces
+  message:
+    msg: 不能包含空格
+
+- key: post must in
+  message:
+    msg: 文章必须包含在 %[1]s 目录之下
+
+- key: should be float
+  message:
+    msg: 必须为一个有效的浮点数
+
+# 1 message
+# 2 file
+# 3 field
+- key: field error without value
+  message:
+    msg: '%[1]s 位于 %[2]s:%[3]s'
+
+# 1 message
+# 2 file
+# 3 field
+# 4 value
+- key: field error with value
+  message:
+    msg: '%[1]s 位于 %[2]s:%[3]s，实际值为 %[4]s'
 
 ## common
 

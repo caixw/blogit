@@ -2,7 +2,10 @@
 
 package loader
 
-import "github.com/issue9/sliceutil"
+import (
+	"github.com/issue9/localeutil"
+	"github.com/issue9/sliceutil"
+)
 
 // Sitemap sitemap 相关的配置
 type Sitemap struct {
@@ -20,19 +23,19 @@ type Sitemap struct {
 func (s *Sitemap) sanitize() *FieldError {
 	chkPriority := func(v float64, field string) *FieldError {
 		if v > 1 || v < 0 {
-			return &FieldError{Message: "介于[0,1]之间的浮点数", Field: field, Value: v}
+			return &FieldError{Message: localeutil.Phrase("should be float"), Field: field, Value: v}
 		}
 		return nil
 	}
 	chkChangefreq := func(v, field string) *FieldError {
 		if !inStrings(v, changereqs) {
-			return &FieldError{Message: "取值不正确", Field: field, Value: v}
+			return &FieldError{Message: localeutil.Phrase("invalid value"), Field: field, Value: v}
 		}
 		return nil
 	}
 
 	if s.Title == "" {
-		return &FieldError{Message: "不能为空", Field: "title"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
 	}
 
 	if err := chkPriority(s.Priority, "priority"); err != nil {

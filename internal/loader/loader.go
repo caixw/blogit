@@ -7,12 +7,14 @@
 package loader
 
 import (
-	"fmt"
 	"io/fs"
 	"mime"
 	"path"
 
+	"github.com/issue9/localeutil"
 	"github.com/issue9/validation/is"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 	"gopkg.in/yaml.v2"
 )
 
@@ -26,7 +28,7 @@ const (
 type FieldError struct {
 	File    string
 	Field   string
-	Message string
+	Message localeutil.LocaleStringer
 	Value   interface{}
 }
 
@@ -52,10 +54,14 @@ type Author struct {
 }
 
 func (err *FieldError) Error() string {
+	return err.LocaleString(message.NewPrinter(language.Und))
+}
+
+func (err *FieldError) LocaleString(p *message.Printer) string {
 	if err.Value == nil {
-		return fmt.Sprintf("%s 位于 %s:%s", err.Message, err.File, err.Field)
+		return p.Sprintf("field error without value", err.Message.LocaleString(p), err.File, err.Field)
 	}
-	return fmt.Sprintf("%s 位于 %s:%s，实际值为:%#v", err.Message, err.File, err.Field, err.Value)
+	return p.Sprintf("field error with value", err.Message.LocaleString(p), err.File, err.Field, err.Value)
 }
 
 func loadYAML(f fs.FS, path string, v interface{}) error {
@@ -68,7 +74,7 @@ func loadYAML(f fs.FS, path string, v interface{}) error {
 
 func (icon *Icon) sanitize() *FieldError {
 	if len(icon.URL) == 0 {
-		return &FieldError{Field: "url", Message: "不能为空"}
+		return &FieldError{Field: "url", Message: localeutil.Phrase("can not be empty")}
 	}
 
 	if icon.Type == "" {
@@ -80,11 +86,11 @@ func (icon *Icon) sanitize() *FieldError {
 
 func (l *Link) sanitize() *FieldError {
 	if len(l.Text) == 0 {
-		return &FieldError{Field: "text", Message: "不能为空"}
+		return &FieldError{Field: "text", Message: localeutil.Phrase("can not be empty")}
 	}
 
 	if len(l.URL) == 0 {
-		return &FieldError{Field: "url", Message: "不能为空"}
+		return &FieldError{Field: "url", Message: localeutil.Phrase("can not be empty")}
 	}
 
 	return nil
@@ -92,19 +98,19 @@ func (l *Link) sanitize() *FieldError {
 
 func (author *Author) sanitize() *FieldError {
 	if len(author.Name) == 0 {
-		return &FieldError{Field: "name", Message: "不能为空"}
+		return &FieldError{Field: "name", Message: localeutil.Phrase("can not be empty")}
 	}
 
 	if len(author.URL) > 0 && !is.URL(author.URL) {
-		return &FieldError{Field: "url", Message: "不是一个正确的 URL", Value: author.URL}
+		return &FieldError{Field: "url", Message: localeutil.Phrase("invalid url"), Value: author.URL}
 	}
 
 	if len(author.Avatar) > 0 && !is.URL(author.Avatar) {
-		return &FieldError{Field: "avatar", Message: "不是一个正确的 URL", Value: author.Avatar}
+		return &FieldError{Field: "avatar", Message: localeutil.Phrase("invalid url"), Value: author.Avatar}
 	}
 
 	if len(author.Email) > 0 && !is.Email(author.Email) {
-		return &FieldError{Field: "email", Message: "不是一个正确的 Email", Value: author.Email}
+		return &FieldError{Field: "email", Message: localeutil.Phrase("invalid url"), Value: author.Email}
 	}
 
 	return nil

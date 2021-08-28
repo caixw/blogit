@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/issue9/localeutil"
 	"github.com/issue9/validation/is"
 )
 
@@ -68,7 +69,7 @@ func LoadConfig(fs fs.FS, path string) (*Config, error) {
 
 func (conf *Config) sanitize() *FieldError {
 	if len(conf.URL) == 0 || !is.URL(conf.URL) {
-		return &FieldError{Message: "格式不正确", Field: "url", Value: conf.URL}
+		return &FieldError{Message: localeutil.Phrase("invalid format"), Field: "url", Value: conf.URL}
 	}
 
 	if len(conf.Language) == 0 {
@@ -76,7 +77,7 @@ func (conf *Config) sanitize() *FieldError {
 	}
 
 	if conf.Uptime.IsZero() {
-		return &FieldError{Message: "不能为空", Field: "uptime"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "uptime"}
 	}
 
 	// icon
@@ -89,7 +90,7 @@ func (conf *Config) sanitize() *FieldError {
 
 	// Authors
 	if conf.Author == nil {
-		return &FieldError{Message: "不能为空", Field: "authors"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "authors"}
 	}
 	if err := conf.Author.sanitize(); err != nil {
 		err.Field = "author." + err.Field
@@ -97,12 +98,12 @@ func (conf *Config) sanitize() *FieldError {
 	}
 
 	if len(conf.Title) == 0 {
-		return &FieldError{Message: "不能为空", Field: "title"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
 	}
 
 	// theme
 	if len(conf.Theme) == 0 {
-		return &FieldError{Message: "不能为空", Field: "theme"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "theme"}
 	}
 
 	// menus
@@ -114,12 +115,12 @@ func (conf *Config) sanitize() *FieldError {
 	}
 
 	if conf.TOC < 0 {
-		return &FieldError{Message: "必须大于 0", Field: "toc", Value: conf.TOC}
+		return &FieldError{Message: localeutil.Phrase("should great than zero"), Field: "toc", Value: conf.TOC}
 	}
 
 	// index
 	if conf.Index == nil {
-		return &FieldError{Message: "不能为空", Field: "index"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "index"}
 	}
 	if err := conf.Index.sanitize(); err != nil {
 		err.Field = "index." + err.Field
@@ -128,7 +129,7 @@ func (conf *Config) sanitize() *FieldError {
 
 	// archive
 	if conf.Archive == nil {
-		return &FieldError{Message: "不能为空", Field: "archive"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "archive"}
 	}
 	if err := conf.Archive.sanitize(); err != nil {
 		err.Field = "archive." + err.Field
@@ -137,7 +138,7 @@ func (conf *Config) sanitize() *FieldError {
 
 	// license
 	if conf.License == nil {
-		return &FieldError{Message: "不能为空", Field: "license"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "license"}
 	}
 	if err := conf.License.sanitize(); err != nil {
 		err.Field = "license." + err.Field
@@ -189,11 +190,11 @@ func (conf *Config) sanitize() *FieldError {
 
 func (rss *RSS) sanitize() *FieldError {
 	if rss.Title == "" {
-		return &FieldError{Message: "不能为空", Field: "title"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
 	}
 
 	if rss.Size <= 0 {
-		return &FieldError{Message: "必须大于 0", Field: "size", Value: rss.Size}
+		return &FieldError{Message: localeutil.Phrase("should great than zero"), Field: "size", Value: rss.Size}
 	}
 
 	return nil
@@ -201,11 +202,11 @@ func (rss *RSS) sanitize() *FieldError {
 
 func (index *Index) sanitize() *FieldError {
 	if index.Size < 1 {
-		return &FieldError{Message: "必须大于 0", Field: "size", Value: index.Size}
+		return &FieldError{Message: localeutil.Phrase("should great than zero"), Field: "size", Value: index.Size}
 	}
 
 	if index.Title == "" {
-		return &FieldError{Message: "不能为空", Field: "title"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
 	}
 
 	return nil

@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/issue9/localeutil"
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/v2/internal/loader"
@@ -123,7 +124,7 @@ func relationTagsPosts(tags []*Tag, posts []*Post) (created, modified time.Time,
 		for _, tag := range p.tags {
 			t := findTagByName(tags, tag)
 			if t == nil {
-				return time.Time{}, time.Time{}, &loader.FieldError{File: p.Slug, Message: "不存在", Field: "tags." + tag}
+				return time.Time{}, time.Time{}, &loader.FieldError{File: p.Slug, Message: localeutil.Phrase("not found"), Field: "tags." + tag}
 			}
 			t.Posts = append(t.Posts, p)
 			p.Tags = append(p.Tags, t)

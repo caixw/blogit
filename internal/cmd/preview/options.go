@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/v2"
@@ -100,11 +101,18 @@ func (o *options) parseURL() error {
 	return nil
 }
 
-func (o *options) build(info *log.Logger) (err error) {
-	if err = o.b.Rebuild(info, o.url); err == nil {
-		o.builded = time.Now()
+func (o *options) build(info *log.Logger, erro *console.Logger) (ok bool) {
+	if err := o.b.Rebuild(info, o.url); err != nil {
+		if ls, ok := err.(localeutil.LocaleStringer); ok {
+			erro.Println(ls.LocaleString(o.p))
+		} else {
+			erro.Println(err)
+		}
+		return false
 	}
-	return err
+
+	o.builded = time.Now()
+	return true
 }
 
 func (o *options) watch(succ, info, erro *console.Logger) error {
@@ -127,9 +135,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 		o.stop <- struct{}{}
 	}()
 
-	if err := o.build(info.AsLogger()); err != nil {
-		erro.Println(err)
-	}
+	o.build(info.AsLogger(), erro)
 
 	watcher, err := o.getWatcher()
 	if err != nil {
@@ -151,8 +157,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 			info.Println(o.p.Sprintf("preview trigger event", event))
 
 			go func() {
-				if err = o.build(info.AsLogger()); err != nil {
-					erro.Println(err)
+				if !o.build(info.AsLogger(), erro) {
 					return
 				}
 				succ.Println(o.p.Sprintf("preview rebuild success"))

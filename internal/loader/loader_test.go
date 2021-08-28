@@ -6,7 +6,10 @@ import (
 	"testing"
 
 	"github.com/issue9/assert"
+	"github.com/issue9/localeutil"
 )
+
+var _ localeutil.LocaleStringer = &FieldError{}
 
 func TestLicense_sanitize(t *testing.T) {
 	a := assert.New(t)

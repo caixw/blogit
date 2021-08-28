@@ -11,6 +11,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/issue9/localeutil"
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/v2/internal/vars"
@@ -104,7 +105,7 @@ func LoadPosts(f fs.FS) ([]*Post, error) {
 			return p.Slug == posts[i].Slug && p.Slug != posts[i].Slug
 		})
 		if cnt > 1 {
-			return nil, &FieldError{Message: "存在重复的值", Field: "slug"}
+			return nil, &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "slug"}
 		}
 	}
 
@@ -126,7 +127,7 @@ func loadPost(f fs.FS, path string) (*Post, error) {
 
 func (p *Post) sanitize(path string) *FieldError {
 	if p.Title == "" {
-		return &FieldError{Field: "title", Message: "不能为空"}
+		return &FieldError{Field: "title", Message: localeutil.Phrase("can not be empty")}
 	}
 
 	slug := Slug(path)
@@ -134,20 +135,20 @@ func (p *Post) sanitize(path string) *FieldError {
 		slug = slug[:len(slug)-len(vars.MarkdownExt)] // 不能用 strings.TrimSuffix，后缀名可能是大写的
 	}
 	if strings.IndexFunc(slug, func(r rune) bool { return unicode.IsSpace(r) }) >= 0 {
-		return &FieldError{Field: "slug", Message: "不能包含空格", Value: slug}
+		return &FieldError{Field: "slug", Message: localeutil.Phrase("can not contain spaces"), Value: slug}
 	}
 	if !strings.HasPrefix(slug, vars.PostsDir+"/") {
-		return &FieldError{Field: "slug", Message: fmt.Sprintf("文章必须位于 %s 目录之下", vars.PostsDir), Value: slug}
+		return &FieldError{Field: "slug", Message: localeutil.Phrase("post must in", vars.PostsDir), Value: slug}
 	}
 	p.Slug = slug
 
 	if len(p.Tags) == 0 {
-		return &FieldError{Field: "tags", Message: "不能为空"}
+		return &FieldError{Field: "tags", Message: localeutil.Phrase("can not be empty")}
 	}
 
 	// state
 	if p.State != StateDefault && p.State != StateLast && p.State != StateTop {
-		return &FieldError{Message: "无效的值", Field: "state", Value: p.State}
+		return &FieldError{Message: localeutil.Phrase("invalid value"), Field: "state", Value: p.State}
 	}
 
 	// template

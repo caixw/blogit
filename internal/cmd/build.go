@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/issue9/cmdopt"
+	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/v2"
@@ -32,7 +33,11 @@ func build(p *message.Printer) func(io.Writer) error {
 
 		info.Println(p.Sprintf("start build"))
 		if err := blogit.Build(os.DirFS(buildSrc), builder.DirFS(buildDest), info.AsLogger()); err != nil {
-			erro.Println(err)
+			if ls, ok := err.(localeutil.LocaleStringer); ok {
+				erro.Println(ls.LocaleString(p))
+			} else {
+				erro.Println(err)
+			}
 			return nil
 		}
 

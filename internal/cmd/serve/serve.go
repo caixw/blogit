@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/issue9/cmdopt"
+	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/v2/internal/cmd/console"
@@ -20,7 +21,11 @@ func Init(o *cmdopt.CmdOpt, info, erro *console.Logger, p *message.Printer) {
 
 	fs := o.New("serve", p.Sprintf("serve usage"), func(w io.Writer) error {
 		if err := opt.serve(info, erro); err != nil {
-			erro.Println(err)
+			if ls, ok := err.(localeutil.LocaleStringer); ok {
+				erro.Println(ls.LocaleString(p))
+			} else {
+				erro.Println(err)
+			}
 		}
 		return nil
 	})

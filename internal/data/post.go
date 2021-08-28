@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/issue9/localeutil"
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/v2/internal/loader"
@@ -139,7 +140,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 
 	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 0 {
 		return nil, &loader.FieldError{
-			Message: "模板不存在于 " + vars.ThemeYAML,
+			Message: localeutil.Phrase("template not found in", vars.ThemeYAML),
 			Field:   "template",
 			File:    p.Slug + vars.MarkdownExt,
 			Value:   p.Template,

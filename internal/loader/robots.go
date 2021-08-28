@@ -2,6 +2,8 @@
 
 package loader
 
+import "github.com/issue9/localeutil"
+
 // Agent 表示 robots.txt 每个代理项的内容
 type Agent struct {
 	Agent    []string `yaml:"agent"`
@@ -11,11 +13,11 @@ type Agent struct {
 
 func (a *Agent) sanitize() *FieldError {
 	if len(a.Agent) == 0 {
-		return &FieldError{Message: "不能为空", Field: "agent"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "agent"}
 	}
 
 	if len(a.Disallow) == 0 && len(a.Allow) == 0 {
-		return &FieldError{Message: "不能为空", Field: "disallow"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "disallow"}
 	}
 
 	return nil

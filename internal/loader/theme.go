@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/alecthomas/chroma/styles"
+	"github.com/issue9/localeutil"
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/v2/internal/filesystem"
@@ -59,29 +60,29 @@ func (t *Theme) sanitize(fs fs.FS, dir, id string) *FieldError {
 	}
 	indexes := sliceutil.Dup(t.Templates, func(i, j int) bool { return t.Templates[i] == t.Templates[j] })
 	if len(indexes) > 0 {
-		return &FieldError{Message: "重复的值模板列表", Field: "templates." + t.Templates[indexes[0]]}
+		return &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "templates." + t.Templates[indexes[0]]}
 	}
 
 	for index, s := range t.Screenshots {
 		if !filesystem.Exists(fs, path.Join(dir, s)) {
-			return &FieldError{Message: "不存在的示例图", Field: "screenshots[" + strconv.Itoa(index) + "]"}
+			return &FieldError{Message: localeutil.Phrase("not found"), Field: "screenshots[" + strconv.Itoa(index) + "]"}
 		}
 	}
 	indexes = sliceutil.Dup(t.Screenshots, func(i, j int) bool { return t.Screenshots[i] == t.Screenshots[j] })
 	if len(indexes) > 0 {
-		return &FieldError{Message: "重复的示例图", Field: "screenshots[" + strconv.Itoa(indexes[0]) + "]"}
+		return &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "screenshots[" + strconv.Itoa(indexes[0]) + "]"}
 	}
 
 	if t.Sitemap != "" && !filesystem.Exists(fs, path.Join(dir, t.Sitemap)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "sitemap", Value: t.Sitemap}
+		return &FieldError{Message: localeutil.Phrase("not found"), Field: "sitemap", Value: t.Sitemap}
 	}
 
 	if t.RSS != "" && !filesystem.Exists(fs, path.Join(dir, t.RSS)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "rss", Value: t.RSS}
+		return &FieldError{Message: localeutil.Phrase("not found"), Field: "rss", Value: t.RSS}
 	}
 
 	if t.Atom != "" && !filesystem.Exists(fs, path.Join(dir, t.Atom)) {
-		return &FieldError{Message: "不存在该模板文件", Field: "atom", Value: t.Atom}
+		return &FieldError{Message: localeutil.Phrase("not found"), Field: "atom", Value: t.Atom}
 	}
 
 	var mediaIsEmpty bool
@@ -96,7 +97,7 @@ func (t *Theme) sanitize(fs fs.FS, dir, id string) *FieldError {
 
 		if h.Media == "" {
 			if mediaIsEmpty {
-				return &FieldError{Message: "只能一个为空", Field: prefix + "media"}
+				return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: prefix + "media"}
 			}
 			mediaIsEmpty = true
 		}
@@ -110,7 +111,7 @@ var highlightCSSName = styles.Names()
 func (h *Highlight) sanitize() *FieldError {
 	names := highlightCSSName
 	if sliceutil.Count(names, func(i int) bool { return names[i] == h.Name }) == 0 {
-		return &FieldError{Message: "不存在", Field: "name", Value: h.Name}
+		return &FieldError{Message: localeutil.Phrase("not found"), Field: "name", Value: h.Name}
 	}
 
 	return nil

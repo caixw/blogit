@@ -2,6 +2,8 @@
 
 package loader
 
+import "github.com/issue9/localeutil"
+
 // 归档的类型
 const (
 	ArchiveTypeYear  = "year"
@@ -25,14 +27,14 @@ type Archive struct {
 
 func (a *Archive) sanitize() *FieldError {
 	if a.Title == "" {
-		return &FieldError{Message: "不能为空", Field: "title"}
+		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
 	}
 
 	if a.Type == "" {
 		a.Type = ArchiveTypeYear
 	} else {
 		if a.Type != ArchiveTypeMonth && a.Type != ArchiveTypeYear {
-			return &FieldError{Message: "取值不正确", Field: "type", Value: a.Type}
+			return &FieldError{Message: localeutil.Phrase("invalid value"), Field: "type", Value: a.Type}
 		}
 	}
 
@@ -40,14 +42,14 @@ func (a *Archive) sanitize() *FieldError {
 		a.Order = OrderDesc
 	} else {
 		if a.Order != OrderAsc && a.Order != OrderDesc {
-			return &FieldError{Message: "取值不正确", Field: "order", Value: a.Order}
+			return &FieldError{Message: localeutil.Phrase("invalid value"), Field: "order", Value: a.Order}
 		}
 	}
 
 	if a.Format == "" {
 		a.Format = defaultArchiveFormats[a.Type]
 		if a.Format == "" {
-			panic(&FieldError{Message: "取值不正确", Field: "type"})
+			panic(&FieldError{Message: localeutil.Phrase("invalid value"), Field: "type"})
 		}
 	}
 

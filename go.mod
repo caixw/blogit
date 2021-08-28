@@ -8,7 +8,7 @@ require (
 	github.com/issue9/assert v1.4.1
 	github.com/issue9/cmdopt v0.7.0
 	github.com/issue9/errwrap v0.2.0
-	github.com/issue9/localeutil v0.4.0
+	github.com/issue9/localeutil v0.5.0
 	github.com/issue9/sliceutil v0.7.0
 	github.com/issue9/term/v2 v2.1.4
 	github.com/issue9/validation v0.4.0
