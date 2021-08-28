@@ -30,19 +30,16 @@ func Version(full bool) string {
 //
 // src 表示源码目录，直接读该文件系统根目录下的内容；
 // dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
-// info 输出编译的进度信息，如果为空，会采用 log.Default()；
+// info 输出编译的进度信息，可以为空；
 func Build(src fs.FS, dest WritableFS, info *log.Logger) error {
-	return NewBuilder(src, dest, info).Rebuild("")
+	return NewBuilder(src, dest).Rebuild(info, "")
 }
 
 // NewBuilder 声明 Builder
 //
 // src 表示源码目录，直接读该文件系统根目录下的内容；
 // dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
-// info 输出编译的进度信息，如果为空，会采用 log.Default()；
-func NewBuilder(src fs.FS, dest WritableFS, info *log.Logger) *Builder {
-	return builder.New(src, dest, info)
-}
+func NewBuilder(src fs.FS, dest WritableFS) *Builder { return builder.New(src, dest) }
 
 // DirFS 以普通目录结构作为保存对象的文件系统
 func DirFS(dir string) WritableFS { return builder.DirFS(dir) }

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -99,8 +100,8 @@ func (o *options) parseURL() error {
 	return nil
 }
 
-func (o *options) build() (err error) {
-	if err = o.b.Rebuild(o.url); err == nil {
+func (o *options) build(info *log.Logger) (err error) {
+	if err = o.b.Rebuild(info, o.url); err == nil {
 		o.builded = time.Now()
 	}
 	return err
@@ -111,7 +112,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 		return err
 	}
 
-	o.b = blogit.NewBuilder(o.srcFS, o.destFS, info.AsLogger())
+	o.b = blogit.NewBuilder(o.srcFS, o.destFS)
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		info.Println(o.p.Sprintf("visit url", r.URL.String()))
@@ -126,7 +127,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 		o.stop <- struct{}{}
 	}()
 
-	if err := o.build(); err != nil {
+	if err := o.build(info.AsLogger()); err != nil {
 		erro.Println(err)
 	}
 
@@ -150,7 +151,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 			info.Println(o.p.Sprintf("preview trigger event", event))
 
 			go func() {
-				if err = o.build(); err != nil {
+				if err = o.build(info.AsLogger()); err != nil {
 					erro.Println(err)
 					return
 				}

@@ -32,10 +32,8 @@ var ErrBuilding = errors.New("正在编译中")
 
 // Builder 提供了一个可重复生成 HTML 内容的对象
 type Builder struct {
-	info *log.Logger
-	src  fs.FS
-	dest WritableFS
-
+	src        fs.FS
+	dest       WritableFS
 	rebuildMux *sync.Mutex // 防止多次调用 Rebuild
 
 	// 以下内容在 Rebuild 之后会重新生成
@@ -43,6 +41,7 @@ type Builder struct {
 	site     *site
 	tpl      *template.Template
 	building bool
+	info     *log.Logger
 }
 
 // New 声明 Builder 实例
@@ -50,22 +49,19 @@ type Builder struct {
 // src 需要编译的源码目录；
 // dest 表示用于保存编译后的 HTML 文件的系统。可以是内存或是文件系统，
 // 以及任何实现了 WritableFS 接口都可以；
-// info 在运行过程中的一些提示信息通过此输出，如果为空，则会采用 log.Default()；
-func New(src fs.FS, dest WritableFS, info *log.Logger) *Builder {
-	if info == nil {
-		info = log.Default()
-	}
+func New(src fs.FS, dest WritableFS) *Builder {
 	return &Builder{
-		src:  src,
-		dest: dest,
-		info: info,
-
+		src:        src,
+		dest:       dest,
 		rebuildMux: &sync.Mutex{},
 	}
 }
 
 // Rebuild 重新生成数据
-func (b *Builder) Rebuild(base string) error {
+//
+// info 在运行过程中的一些提示信息通过此输出，如果为空，则会将内容写入到 io.Discard；
+// base 如果不为空，则会替换 conf.yaml 配置项中的 url 字段，在预览模式下，该配置项经常会被需要修改；
+func (b *Builder) Rebuild(info *log.Logger, base string) error {
 	b.rebuildMux.Lock()
 	defer b.rebuildMux.Unlock()
 
@@ -75,6 +71,11 @@ func (b *Builder) Rebuild(base string) error {
 
 	defer func() { b.building = false }()
 	b.building = true
+
+	if info == nil {
+		info = log.New(io.Discard, "", 0)
+	}
+	b.info = info
 
 	if err := b.dest.Reset(); err != nil {
 		return err
