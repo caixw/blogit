@@ -45,7 +45,6 @@ type memoryFS struct {
 	*memfs.FS
 }
 
-// 文件系统可能是创建在一个非目录
 type dirFS struct {
 	dir   string
 	files []string

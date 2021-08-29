@@ -1,6 +1,25 @@
 // SPDX-License-Identifier: MIT
 
 // Package blogit 静态博客生成工具
+//
+//
+// 本地化
+//
+// 在 internal/locale 提供了本地化的翻译内容，可以通过 github.com/issue9/localeutil
+// 加载相应的翻译内容。
+//
+// 返回的错误信息，也提供了本地化支持，只要判断该错误对象是否实现了 localeutil.LocaleStringer
+// 接口即可，如果实现了，调用 LocaleString() 方法会输出本地的错误信息。
+//  b := catalog.NewBuilder()
+//  localeutil.LoadMessageFromFile(b, "internal/locale/*.yaml", yaml.Unmarshal)
+//  p := message.NewPrinter(language.Chinese, message.Catalog(b))
+//
+//  err := Build(...)
+//  if ls, ok := err.(localeutil.LocaleStringer); ok {
+//      println(ls.LocaleString(p)) // 输出本地化内容
+//  } else {
+//      println(err.Error())
+//  }
 package blogit
 
 import (

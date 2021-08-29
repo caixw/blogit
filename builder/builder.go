@@ -62,7 +62,7 @@ func New(src fs.FS, dest WritableFS) *Builder {
 // info 在运行过程中的一些提示信息通过此输出，如果为空，则会将内容写入到 io.Discard；
 // base 如果不为空，则会替换 conf.yaml 配置项中的 url 字段，在预览模式下，该配置项经常会被需要修改；
 //
-// 返回的 error 可能也实现了 localeutil.LocaleStringer 接口。
+// 返回的 error 可能实现了 localeutil.LocaleStringer 接口。
 func (b *Builder) Rebuild(info *log.Logger, base string) error {
 	b.rebuildMux.Lock()
 	defer b.rebuildMux.Unlock()
