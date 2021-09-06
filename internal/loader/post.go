@@ -97,7 +97,9 @@ func LoadPosts(f fs.FS) ([]*Post, error) {
 		if err != nil {
 			return nil, err
 		}
-		posts = append(posts, post)
+		if post.State != StateDraft {
+			posts = append(posts, post)
+		}
 	}
 
 	for _, p := range posts {
@@ -147,7 +149,7 @@ func (p *Post) sanitize(path string) *FieldError {
 	}
 
 	// state
-	if p.State != StateDefault && p.State != StateLast && p.State != StateTop {
+	if p.State != StateDefault && p.State != StateLast && p.State != StateTop && p.State != StateDraft {
 		return &FieldError{Message: localeutil.Phrase("invalid value"), Field: "state", Value: p.State}
 	}
 

@@ -9,7 +9,10 @@ import (
 	"github.com/issue9/localeutil"
 )
 
-var _ localeutil.LocaleStringer = &FieldError{}
+var (
+	_ localeutil.LocaleStringer = &FieldError{}
+	_ error                     = &FieldError{}
+)
 
 func TestLicense_sanitize(t *testing.T) {
 	a := assert.New(t)
