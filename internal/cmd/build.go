@@ -12,7 +12,6 @@ import (
 	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/v2"
-	"github.com/caixw/blogit/v2/builder"
 )
 
 var (
@@ -32,7 +31,7 @@ func build(p *message.Printer) func(io.Writer) error {
 		start := time.Now()
 
 		info.Println(p.Sprintf("start build"))
-		if err := blogit.Build(os.DirFS(buildSrc), builder.DirFS(buildDest), info.AsLogger()); err != nil {
+		if err := blogit.Build(os.DirFS(buildSrc), blogit.DirFS(buildDest), info.AsLogger()); err != nil {
 			if ls, ok := err.(localeutil.LocaleStringer); ok {
 				erro.Println(ls.LocaleString(p))
 			} else {

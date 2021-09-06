@@ -4,7 +4,6 @@ package preview
 
 import (
 	"errors"
-	"fmt"
 	"io/fs"
 	"net/http"
 	"net/url"
@@ -21,7 +20,7 @@ import (
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 )
 
-// options 启动服务的参数选项
+// 启动服务的参数选项
 type options struct {
 	p *message.Printer
 
@@ -85,7 +84,7 @@ func (o *options) parseURL() error {
 		case "http", "":
 			o.addr = ":80"
 		default:
-			return fmt.Errorf(o.p.Sprintf("preview unknown protocol", scheme))
+			return errors.New(o.p.Sprintf("preview unknown protocol", scheme))
 		}
 	} else {
 		o.addr = ":" + o.addr

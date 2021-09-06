@@ -26,8 +26,7 @@ import (
 
 // ErrBuilding 另一个 Rebuild 正在执行
 //
-// 当多次快速调用 Builder.Rebuild 时，可能返回此值，
-// 表示另一个调用还未返回，新的调用又开始。
+// 当多次快速调用 Builder.Rebuild 时，可能返回此值， 表示另一个调用还未返回，新的调用又开始。
 var ErrBuilding = errors.New("正在编译中")
 
 // Builder 提供了一个可重复生成 HTML 内容的对象
@@ -48,7 +47,9 @@ type Builder struct {
 	// 预览模式下会加载草稿内容。
 	Preview bool
 
-	// 是否替换 conf.yaml 中的 url 变量
+	// 如果不空则替换 conf.yaml 中的 url 变量
+	//
+	// 一般在预览模式下，需要将其替换成本地的地址。
 	BaseURL string
 
 	rebuildMux sync.Mutex // 防止多次调用 Rebuild

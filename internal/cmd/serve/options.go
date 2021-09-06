@@ -12,7 +12,7 @@ import (
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 )
 
-// options 启动服务的参数选项
+// 启动服务的参数选项
 type options struct {
 	p *message.Printer
 

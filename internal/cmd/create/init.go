@@ -10,7 +10,7 @@ import (
 	"github.com/issue9/cmdopt"
 	"golang.org/x/text/message"
 
-	"github.com/caixw/blogit/v2/builder"
+	"github.com/caixw/blogit/v2"
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 	"github.com/caixw/blogit/v2/internal/testdata"
 )
@@ -29,7 +29,7 @@ func initF(erro *console.Logger, p *message.Printer) cmdopt.DoFunc {
 			return nil
 		}
 
-		wfs := builder.DirFS(initFS.Arg(0))
+		wfs := blogit.DirFS(initFS.Arg(0))
 		return fs.WalkDir(testdata.Source, ".", func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err

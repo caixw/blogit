@@ -14,7 +14,7 @@ import (
 	"github.com/issue9/cmdopt"
 	"golang.org/x/text/message"
 
-	"github.com/caixw/blogit/v2/builder"
+	"github.com/caixw/blogit/v2"
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 	"github.com/caixw/blogit/v2/internal/vars"
 )
@@ -69,10 +69,10 @@ func post(succ, erro *console.Logger, localePrinter *message.Printer) cmdopt.DoF
 	}
 }
 
-func getWD() (builder.WritableFS, error) {
+func getWD() (blogit.WritableFS, error) {
 	dir, err := os.Getwd()
 	if err != nil {
 		return nil, err
 	}
-	return builder.DirFS(dir), nil
+	return blogit.DirFS(dir), nil
 }
