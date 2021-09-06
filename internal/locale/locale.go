@@ -22,14 +22,14 @@ func NewPrinter() (*message.Printer, error) {
 	systag, _ := localeutil.SystemLanguageTag() // 即使出错，依然会返回 language.Tag
 
 	if b == nil {
-		matchs, err := fs.Glob(locales, "*.yaml")
+		matches, err := fs.Glob(locales, "*.yaml")
 		if err != nil {
 			return nil, err
 		}
 
 		b = catalog.NewBuilder()
 
-		for _, file := range matchs {
+		for _, file := range matches {
 			if err := localeutil.LoadMessageFromFS(b, locales, file, yaml.Unmarshal); err != nil {
 				return nil, err
 			}

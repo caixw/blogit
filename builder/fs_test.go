@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	_ WritableFS = MemoryFS()
-	_ WritableFS = DirFS("./")
+	_ WritableFS = &memoryFS{}
+	_ WritableFS = &dirFS{}
 )
 
 func testWritableFS(wfs WritableFS, a *assert.Assertion) {
