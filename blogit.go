@@ -51,13 +51,17 @@ func Version(full bool) string {
 // dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
 // info 输出编译的进度信息，可以为空；
 func Build(src fs.FS, dest WritableFS, info *log.Logger) error {
-	return NewBuilder(src, dest).Rebuild(info, "")
+	b := &Builder{
+		Src:  src,
+		Dest: dest,
+		Info: info,
+	}
+	return b.Rebuild()
 }
 
 // NewBuilder 声明 Builder
 //
-// src 表示源码目录，直接读该文件系统根目录下的内容；
-// dest 表示写入的文件系统，默认提供了 DirFS 和 MemoryFS；
+// Deprecated: 请直接使用 &Builder{} 声明变量
 func NewBuilder(src fs.FS, dest WritableFS) *Builder { return builder.New(src, dest) }
 
 // DirFS 以普通目录结构作为保存对象的文件系统

@@ -13,8 +13,11 @@ import (
 func TestLoadPosts(t *testing.T) {
 	a := assert.New(t)
 
-	posts, err := LoadPosts(testdata.Source)
+	posts, err := LoadPosts(testdata.Source, false)
 	a.NotError(err).Equal(3, len(posts))
+
+	posts, err = LoadPosts(testdata.Source, true)
+	a.NotError(err).Equal(4, len(posts))
 }
 
 func TestLoadPost(t *testing.T) {

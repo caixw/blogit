@@ -47,8 +47,9 @@ type (
 
 // Load 加载并处理数据
 //
+// preview 表示是否为预览模式，在预览模式下会加载草稿同；
 // 如果 baseURL 不为空，则会替换配置文件中的 URL 字段。
-func Load(fs fs.FS, baseURL string) (*Data, error) {
+func Load(fs fs.FS, preview bool, baseURL string) (*Data, error) {
 	conf, err := loader.LoadConfig(fs, vars.ConfYAML)
 	if err != nil {
 		return nil, err
@@ -62,7 +63,7 @@ func Load(fs fs.FS, baseURL string) (*Data, error) {
 		return nil, err
 	}
 
-	posts, err := loader.LoadPosts(fs)
+	posts, err := loader.LoadPosts(fs, preview)
 	if err != nil {
 		return nil, err
 	}

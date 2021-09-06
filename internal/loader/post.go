@@ -74,7 +74,9 @@ type Header struct {
 }
 
 // LoadPosts 加载所有的文章
-func LoadPosts(f fs.FS) ([]*Post, error) {
+//
+// preview 模式下会加载草稿。
+func LoadPosts(f fs.FS, preview bool) ([]*Post, error) {
 	paths := make([]string, 0, 10)
 	err := fs.WalkDir(f, vars.PostsDir, func(p string, d fs.DirEntry, err error) error {
 		if err == nil && !d.IsDir() && strings.ToLower(path.Ext(p)) == vars.MarkdownExt {
@@ -97,7 +99,7 @@ func LoadPosts(f fs.FS) ([]*Post, error) {
 		if err != nil {
 			return nil, err
 		}
-		if post.State != StateDraft {
+		if preview || post.State != StateDraft {
 			posts = append(posts, post)
 		}
 	}

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -19,7 +18,6 @@ import (
 	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/v2"
-	"github.com/caixw/blogit/v2/builder"
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 )
 
@@ -35,7 +33,7 @@ type options struct {
 	// 项目编译后的输出地址
 	// 如果为空，则会要用 builder.Memory() 作为默认值。
 	dest   string
-	destFS builder.WritableFS
+	destFS blogit.WritableFS
 
 	url  string // 如果指定了此值，那么表示要替换 conf.yaml 中的 url
 	addr string
@@ -65,9 +63,9 @@ func (o *options) sanitize() error {
 	}
 
 	if o.dest == "" {
-		o.destFS = builder.MemoryFS()
+		o.destFS = blogit.MemoryFS()
 	} else {
-		o.destFS = builder.DirFS(o.dest)
+		o.destFS = blogit.DirFS(o.dest)
 	}
 
 	return nil
@@ -101,8 +99,8 @@ func (o *options) parseURL() error {
 	return nil
 }
 
-func (o *options) build(info *log.Logger, erro *console.Logger) (ok bool) {
-	if err := o.b.Rebuild(info, o.url); err != nil {
+func (o *options) build(erro *console.Logger) (ok bool) {
+	if err := o.b.Rebuild(); err != nil {
 		if ls, ok := err.(localeutil.LocaleStringer); ok {
 			erro.Println(ls.LocaleString(o.p))
 		} else {
@@ -120,7 +118,13 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 		return err
 	}
 
-	o.b = blogit.NewBuilder(o.srcFS, o.destFS)
+	o.b = &blogit.Builder{
+		Src:     o.srcFS,
+		Dest:    o.destFS,
+		Info:    info.AsLogger(),
+		Preview: true,
+		BaseURL: o.url,
+	}
 
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		info.Println(o.p.Sprintf("visit url", r.URL.String()))
@@ -135,7 +139,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 		o.stop <- struct{}{}
 	}()
 
-	o.build(info.AsLogger(), erro)
+	o.build(erro)
 
 	watcher, err := o.getWatcher()
 	if err != nil {
@@ -157,7 +161,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 			info.Println(o.p.Sprintf("preview trigger event", event))
 
 			go func() {
-				if !o.build(info.AsLogger(), erro) {
+				if !o.build(erro) {
 					return
 				}
 				succ.Println(o.p.Sprintf("preview rebuild success"))

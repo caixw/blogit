@@ -9,7 +9,6 @@ import (
 	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/v2"
-	"github.com/caixw/blogit/v2/builder"
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 )
 
@@ -43,16 +42,20 @@ func (o *options) serve(info, erro *console.Logger) error {
 		return err
 	}
 
-	var dest builder.WritableFS
+	var dest blogit.WritableFS
 	if o.dest == "" {
-		dest = builder.MemoryFS()
+		dest = blogit.MemoryFS()
 	} else {
-		dest = builder.DirFS(o.dest)
+		dest = blogit.DirFS(o.dest)
 	}
 	src := os.DirFS(o.source)
 
-	b := blogit.NewBuilder(src, dest)
-	if err := b.Rebuild(info.AsLogger(), ""); err != nil {
+	b := &blogit.Builder{
+		Src:  src,
+		Dest: dest,
+		Info: info.AsLogger(),
+	}
+	if err := b.Rebuild(); err != nil {
 		return err
 	}
 

@@ -14,7 +14,7 @@ import (
 func TestLoad(t *testing.T) {
 	a := assert.New(t)
 
-	data, err := Load(testdata.Source, "")
+	data, err := Load(testdata.Source, false, "")
 	a.NotError(err).NotNil(data)
 
 	a.Equal(data.Icon.Type, "image/png").Equal(data.Icon.Sizes, "256x256")
@@ -30,9 +30,10 @@ func TestLoad(t *testing.T) {
 
 	a.True(data.Builded.After(time.Time{}))
 
-	data, err = Load(testdata.Source, "https://example.com/v2")
+	data, err = Load(testdata.Source, true, "https://example.com/v2")
 	a.NotError(err).NotNil(data)
 	a.Equal(data.URL, "https://example.com/v2")
+	a.Equal(4, len(data.Posts))
 }
 
 func TestBuildURL(t *testing.T) {

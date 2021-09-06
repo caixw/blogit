@@ -54,7 +54,7 @@ type Author struct {
 }
 
 func (err *FieldError) Error() string {
-	return err.LocaleString(message.NewPrinter(language.Und))
+	return err.Message.LocaleString(message.NewPrinter(language.Und))
 }
 
 func (err *FieldError) LocaleString(p *message.Printer) string {
