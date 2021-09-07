@@ -125,9 +125,10 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 		BaseURL: o.url,
 	}
 
+	httpServer := o.b.Handler(erro.AsLogger())
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		info.Println(o.p.Sprintf("visit url", r.URL.String()))
-		o.b.Handler(erro.AsLogger()).ServeHTTP(w, r)
+		httpServer.ServeHTTP(w, r)
 	})
 	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
 
