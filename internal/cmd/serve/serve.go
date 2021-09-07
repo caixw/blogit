@@ -16,11 +16,11 @@ import (
 var opt *options
 
 // Init 注册 serve 子命令
-func Init(o *cmdopt.CmdOpt, info, erro *console.Logger, p *message.Printer) {
+func Init(o *cmdopt.CmdOpt, succ, info, erro *console.Logger, p *message.Printer) {
 	opt = &options{p: p}
 
 	fs := o.New("serve", p.Sprintf("serve usage"), func(w io.Writer) error {
-		if err := opt.serve(info, erro); err != nil {
+		if err := opt.serve(succ, info, erro); err != nil {
 			if ls, ok := err.(localeutil.LocaleStringer); ok {
 				erro.Println(ls.LocaleString(p))
 			} else {

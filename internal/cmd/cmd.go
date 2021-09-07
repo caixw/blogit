@@ -60,7 +60,7 @@ func Exec(args []string) error {
 	initBuild(opt, p)
 	initVersion(opt, p)
 	initStyles(opt, p)
-	serve.Init(opt, info, erro, p)
+	serve.Init(opt, succ, info, erro, p)
 	preview.Init(opt, succ, info, erro, p)
 	create.InitInit(opt, erro, p)
 	create.InitPost(opt, succ, erro, p)

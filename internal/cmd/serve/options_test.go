@@ -56,12 +56,13 @@ func TestOptions_serve(t *testing.T) {
 		addr:   ":8081",
 	}
 
+	succ := &console.Logger{Out: os.Stdout}
 	info := &console.Logger{Out: os.Stdout}
 	erro := &console.Logger{Out: os.Stderr}
 
 	exit := make(chan struct{}, 1)
 	go func() {
-		a.Equal(o.serve(info, erro), http.ErrServerClosed)
+		a.Equal(o.serve(succ, info, erro), http.ErrServerClosed)
 		exit <- struct{}{}
 	}()
 	time.Sleep(500 * time.Millisecond) // 等待启动完成
