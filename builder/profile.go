@@ -17,8 +17,7 @@ func (b *Builder) buildProfile(d *data.Data) error {
 
 	buf := &errwrap.Buffer{}
 
-	buf.Printf("<!-- 当前文件由 %s 自动生成，请勿手动修改 -->", vars.URL)
-	buf.WByte('\n').WByte('\n')
+	buf.Printf("<!-- %s -->", vars.FileHeader).WByte('\n').WByte('\n')
 
 	buf.WString(p.Title).WByte('\n').WByte('\n')
 

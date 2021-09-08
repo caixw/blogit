@@ -16,8 +16,7 @@ func (b *Builder) buildRobots(d *data.Data) error {
 
 	buf := &errwrap.Buffer{}
 
-	buf.Printf("# 当前文件由 %s 自动生成，请勿手动修改", vars.URL)
-	buf.WByte('\n').WByte('\n')
+	buf.Printf("# %s", vars.FileHeader).WByte('\n').WByte('\n')
 
 	for _, agent := range d.Robots.Agents {
 		for _, a := range agent.Agent {
