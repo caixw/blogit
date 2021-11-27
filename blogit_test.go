@@ -5,7 +5,7 @@ package blogit
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 	"github.com/issue9/version"
 
 	"github.com/caixw/blogit/v2/internal/filesystem"
@@ -14,14 +14,14 @@ import (
 )
 
 func TestVersion(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(version.SemVerValid(Version(true)))
 	a.True(version.SemVerValid(Version(false)))
 }
 
 func TestBuild(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	// Dir
 	destDir, err := testdata.Temp()

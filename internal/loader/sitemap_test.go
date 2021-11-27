@@ -5,11 +5,11 @@ package loader
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestSitemap_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	s := &Sitemap{}
 	a.Error(s.sanitize())

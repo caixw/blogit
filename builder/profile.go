@@ -21,8 +21,8 @@ func (b *Builder) buildProfile(d *data.Data) error {
 
 	buf.WString(p.Title).WByte('\n').WByte('\n')
 
-	for _, p := range p.Posts {
-		buf.Printf("- [%s](%s)\n", p.Title, p.Permalink)
+	for _, post := range p.Posts {
+		buf.Printf("- [%s](%s)\n", post.Title, post.Permalink)
 	}
 	buf.WByte('\n')
 

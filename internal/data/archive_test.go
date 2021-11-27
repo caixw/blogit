@@ -6,13 +6,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/loader"
 )
 
 func TestBuildArchives(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 	const month = 30 * 24 * time.Hour
 
 	as, err := buildArchives(&loader.Config{}, nil)

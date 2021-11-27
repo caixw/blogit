@@ -6,11 +6,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestExists(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 	fs := os.DirFS("./")
 
 	a.True(Exists(fs, "utils.go"))

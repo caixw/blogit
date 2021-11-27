@@ -5,11 +5,11 @@ package builder
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestStripTags(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	tests := map[string]string{
 		"<div>str</div>":        "str",

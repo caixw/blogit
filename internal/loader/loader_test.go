@@ -5,7 +5,7 @@ package loader
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 	"github.com/issue9/localeutil"
 )
 
@@ -15,7 +15,7 @@ var (
 )
 
 func TestLicense_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	l := &Link{}
 	a.Error(l.sanitize())
@@ -28,7 +28,7 @@ func TestLicense_sanitize(t *testing.T) {
 }
 
 func TestAuthor_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	author := &Author{}
 	a.Error(author.sanitize())
@@ -44,7 +44,7 @@ func TestAuthor_sanitize(t *testing.T) {
 }
 
 func TestIcon_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	icon := &Icon{}
 	a.Error(icon.sanitize())

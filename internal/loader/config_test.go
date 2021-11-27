@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/testdata"
 )
 
 func TestLoadConfig(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	conf, err := LoadConfig(testdata.Source, "conf.yaml")
 	a.NotError(err).NotNil(conf)
@@ -26,7 +26,7 @@ func TestLoadConfig(t *testing.T) {
 }
 
 func TestConfig_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	conf := &Config{}
 	err := conf.sanitize()
@@ -55,7 +55,7 @@ func TestConfig_sanitize(t *testing.T) {
 }
 
 func TestRSS_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	rss := &RSS{}
 	err := rss.sanitize()
@@ -75,7 +75,7 @@ func TestRSS_sanitize(t *testing.T) {
 }
 
 func TestIndex_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	i := &Index{}
 	err := i.sanitize()

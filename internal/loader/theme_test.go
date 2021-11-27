@@ -6,13 +6,13 @@ import (
 	"io/fs"
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/testdata"
 )
 
 func TestLoadTheme(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	theme, err := LoadTheme(testdata.Source, "default")
 	a.NotError(err).NotNil(theme)
@@ -25,7 +25,7 @@ func TestLoadTheme(t *testing.T) {
 }
 
 func TestTheme_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	theme := &Theme{Templates: []string{"post"}}
 	a.NotError(theme.sanitize(testdata.Source, "themes/default", "default"))
@@ -68,7 +68,7 @@ func TestTheme_sanitize(t *testing.T) {
 }
 
 func TestHighlight_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	h := &Highlight{}
 	err := h.sanitize()

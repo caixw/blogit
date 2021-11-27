@@ -7,14 +7,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2"
 	"github.com/caixw/blogit/v2/internal/locale"
 )
 
 func TestPrintVersion(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	p, err := locale.NewPrinter()
 	a.NotError(err).NotNil(p)

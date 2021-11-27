@@ -6,14 +6,14 @@ import (
 	"os"
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/filesystem"
 	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 func TestCmd_Build(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 	dest, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)
 

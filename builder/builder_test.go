@@ -7,15 +7,15 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/issue9/assert"
-	"github.com/issue9/assert/rest"
+	"github.com/issue9/assert/v2"
+	"github.com/issue9/assert/v2/rest"
 
 	"github.com/caixw/blogit/v2/internal/testdata"
 	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 func TestIsIgnore(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.True(isIgnore("abc/def/a.md"))
 	a.True(isIgnore("abc/def/.git"))
@@ -26,7 +26,7 @@ func TestIsIgnore(t *testing.T) {
 }
 
 func TestBuilder_Handler(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	// MemoryFS
 
@@ -35,21 +35,21 @@ func TestBuilder_Handler(t *testing.T) {
 		Dest:    MemoryFS(),
 		BaseURL: "http://localhost:8080",
 	}
-	srv := rest.NewServer(t, b.Handler(nil), nil)
+	srv := rest.NewServer(a, b.Handler(nil), nil)
 
 	// b 未加载任何数据。返回都是 404
-	srv.Get("/robots.txt").Do().Status(http.StatusNotFound)
+	srv.Get("/robots.txt").Do(nil).Status(http.StatusNotFound)
 
 	a.NotError(b.Rebuild())
-	srv.Get("/robots.txt").Do().Status(http.StatusOK)
-	srv.Get("/posts/p1" + vars.Ext).Do().Status(http.StatusOK)
-	srv.Get("/posts/not-exists.html").Do().Status(http.StatusNotFound)
-	srv.Get("/themes/default/style.css").Do().Status(http.StatusOK)
+	srv.Get("/robots.txt").Do(nil).Status(http.StatusOK)
+	srv.Get("/posts/p1" + vars.Ext).Do(nil).Status(http.StatusOK)
+	srv.Get("/posts/not-exists.html").Do(nil).Status(http.StatusNotFound)
+	srv.Get("/themes/default/style.css").Do(nil).Status(http.StatusOK)
 
 	// index.html
-	srv.Get("/").Do().Status(http.StatusOK)
-	srv.Get("/index" + vars.Ext).Do().Status(http.StatusOK)
-	srv.Get("/themes/").Do().Status(http.StatusNotFound) // 目录下没有 index.html
+	srv.Get("/").Do(nil).Status(http.StatusOK)
+	srv.Get("/index" + vars.Ext).Do(nil).Status(http.StatusOK)
+	srv.Get("/themes/").Do(nil).Status(http.StatusNotFound) // 目录下没有 index.html
 
 	// DirFS
 
@@ -61,19 +61,19 @@ func TestBuilder_Handler(t *testing.T) {
 		Info:    log.Default(),
 		BaseURL: "http://localhost:8080",
 	}
-	srv = rest.NewServer(t, b.Handler(nil), nil)
+	srv = rest.NewServer(a, b.Handler(nil), nil)
 
 	// b 未加载任何数据。返回都是 404
-	srv.Get("/robots.txt").Do().Status(http.StatusNotFound)
+	srv.Get("/robots.txt").Do(nil).Status(http.StatusNotFound)
 
 	a.NotError(b.Rebuild())
-	srv.Get("/robots.txt").Do().Status(http.StatusOK)
-	srv.Get("/posts/p1" + vars.Ext).Do().Status(http.StatusOK)
-	srv.Get("/posts/not-exists.html").Do().Status(http.StatusNotFound)
-	srv.Get("/themes/default/style.css").Do().Status(http.StatusOK)
+	srv.Get("/robots.txt").Do(nil).Status(http.StatusOK)
+	srv.Get("/posts/p1" + vars.Ext).Do(nil).Status(http.StatusOK)
+	srv.Get("/posts/not-exists.html").Do(nil).Status(http.StatusNotFound)
+	srv.Get("/themes/default/style.css").Do(nil).Status(http.StatusOK)
 
 	// index.html
-	srv.Get("/").Do().Status(http.StatusOK)
-	srv.Get("/index" + vars.Ext).Do().Status(http.StatusOK)
-	srv.Get("/themes/").Do().Status(http.StatusNotFound) // 目录下没有 index.html
+	srv.Get("/").Do(nil).Status(http.StatusOK)
+	srv.Get("/index" + vars.Ext).Do(nil).Status(http.StatusOK)
+	srv.Get("/themes/").Do(nil).Status(http.StatusNotFound) // 目录下没有 index.html
 }

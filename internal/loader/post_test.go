@@ -5,13 +5,13 @@ package loader
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/testdata"
 )
 
 func TestLoadPosts(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	posts, err := LoadPosts(testdata.Source, false)
 	a.NotError(err).Equal(3, len(posts))
@@ -21,7 +21,7 @@ func TestLoadPosts(t *testing.T) {
 }
 
 func TestLoadPost(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	post, err := loadPost(testdata.Source, "posts/2020/12/p3.md")
 	a.NotError(err).NotNil(post)
@@ -36,7 +36,7 @@ func TestLoadPost(t *testing.T) {
 }
 
 func TestSlug(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.Equal(Slug("posts/p1.md"), "posts/p1.md")
 

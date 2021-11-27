@@ -10,7 +10,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/filesystem"
 )
@@ -58,7 +58,7 @@ func testWritableFS(wfs WritableFS, a *assert.Assertion) {
 }
 
 func TestWritableFS(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	testWritableFS(MemoryFS(), a)
 
@@ -68,7 +68,7 @@ func TestWritableFS(t *testing.T) {
 }
 
 func TestDir(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)

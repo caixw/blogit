@@ -7,7 +7,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 	"github.com/issue9/cmdopt"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -18,7 +18,7 @@ import (
 )
 
 func TestCmd_Post(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 	opt := &cmdopt.CmdOpt{}
 	succ := &console.Logger{Out: os.Stdout}
 	erro := &console.Logger{Out: os.Stderr}

@@ -6,13 +6,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/loader"
 )
 
 func TestSortPosts(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 	now := time.Now()
 
 	posts := []*loader.Post{
@@ -39,7 +39,7 @@ func TestSortPosts(t *testing.T) {
 }
 
 func TestSortPostsByCreated(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 	now := time.Now()
 
 	posts := []*Post{

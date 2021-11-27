@@ -8,8 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/issue9/assert"
-	"github.com/issue9/assert/rest"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 	"github.com/caixw/blogit/v2/internal/locale"
@@ -17,7 +16,7 @@ import (
 )
 
 func TestOptions_sanitize(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	p, err := locale.NewPrinter()
 	a.NotError(err).NotNil(p)
@@ -72,7 +71,7 @@ func TestOptions_sanitize(t *testing.T) {
 }
 
 func TestOptions_watch(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	p, err := locale.NewPrinter()
 	a.NotError(err).NotNil(p)
@@ -95,24 +94,20 @@ func TestOptions_watch(t *testing.T) {
 	time.Sleep(500 * time.Millisecond) // 等待启动完成
 
 	// /index.html
-	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8080/index"+vars.Ext).
-		Do().
-		Status(http.StatusOK)
+	resp, err := http.Get("http://localhost:8080/index" + vars.Ext)
+	a.NotError(err).NotNil(resp).Equal(resp.StatusCode, http.StatusOK)
 
 	// /
-	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8080/").
-		Do().
-		Status(http.StatusOK)
+	resp, err = http.Get("http://localhost:8080/")
+	a.NotError(err).NotNil(resp).Equal(resp.StatusCode, http.StatusOK)
 
 	// /themes/default/
-	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8080/themes/default/").
-		Do().
-		Status(http.StatusNotFound)
+	resp, err = http.Get("http://localhost:8080/themes/default/")
+	a.NotError(err).NotNil(resp).Equal(resp.StatusCode, http.StatusNotFound)
 
 	// not-exists.html
-	rest.NewRequest(a, nil, http.MethodGet, "http://localhost:8080/not-exists.html").
-		Do().
-		Status(http.StatusNotFound)
+	resp, err = http.Get("http://localhost:8080/not-exists.html")
+	a.NotError(err).NotNil(resp).Equal(resp.StatusCode, http.StatusNotFound)
 
 	a.NotError(o.close())
 	<-exit

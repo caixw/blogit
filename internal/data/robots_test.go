@@ -5,13 +5,13 @@ package data
 import (
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/loader"
 )
 
 func TestRobots(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	cfg := &loader.Config{
 		Robots: []*loader.Agent{

@@ -6,13 +6,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2/internal/testdata"
 )
 
 func TestLoad(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	data, err := Load(testdata.Source, false, "")
 	a.NotError(err).NotNil(data)
@@ -37,7 +37,7 @@ func TestLoad(t *testing.T) {
 }
 
 func TestBuildURL(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	base := "https://example.com/"
 	a.Equal(BuildURL(base, "/p1/p2.md"), "https://example.com/p1/p2.md")
@@ -59,7 +59,7 @@ func TestBuildURL(t *testing.T) {
 }
 
 func TestBuildThemeURL(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	url := "https://example.com/"
 	id := "def"
