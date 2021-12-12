@@ -1,0 +1,263 @@
+
+languages:
+- cmn-hant
+
+messages:
+- key: cmd title
+  message:
+    msg: >
+      靜態博客工具
+
+- key: cmd footer
+  message:
+    msg: >
+      源碼以 MIT 許可發布於 %[1]s
+
+- key: sub command
+  message:
+    msg: 子命令
+
+- key: cmd argument
+  message:
+    msg: 參數
+
+- key: sub command not found
+  message:
+    msg: >
+      子命令 %[1]s 未找到
+
+- key: help usage
+  message:
+    msg: >
+      顯示當前內容
+
+
+## build
+
+- key: build usage
+  message:
+    msg: >
+      編譯內容
+
+- key: build dest
+  message:
+    msg: 指定輸出目錄
+
+- key: build src
+  message:
+    msg: 指定源碼目錄
+
+- key: start build
+  message:
+    msg: 開始編譯
+
+- key: build complete
+  message:
+    msg: 完成編譯，用時：%[1]s
+
+
+## version
+
+- key: version usage
+  message:
+    msg: >
+      顯示版本號
+
+- key: show full version
+  message:
+    msg: 顯示完整的版本號信息
+
+- key: version content
+  message:
+    msg: |
+      %[1]s %[2]s
+      build with %[3]s
+
+
+## styles
+
+- key: styles usage
+  message:
+    msg: |
+      顯示可用的代碼高亮名稱
+
+      代碼高亮的相關樣式表是以文件的方式關聯到 HTML 的，
+      這些文件將以 themes/{id}/{name}.css 格式出現，
+      其中 {id} 是主題名稱，面 {name} 則是當前命令列的值。
+
+
+## serve
+
+- key: serve usage
+  message:
+    msg: >
+      以 HTTP 服務運行
+
+- key: serve src
+  message:
+    msg: 指定源碼目錄
+
+- key: serve dest
+  message:
+    msg: 指定輸出目錄，如果為空表示采用內存保存。
+
+- key: serve port
+  message:
+    msg: 服務端口
+
+- key: serve path
+  message:
+    msg: 項目的訪問路徑
+
+- key: serve http cert
+  message:
+    msg: cert 證書
+
+- key: serve http key
+  message:
+    msg: key 證書
+
+
+## preview
+
+- key: preview usage
+  message:
+    msg: >
+      以預覽的方式運行 HTTP 服務
+
+- key: preview src
+  message:
+    msg: 指定源碼目錄
+
+- key: preview dest
+  message:
+    msg: 指定保存了對象，為空表示保存在內存。
+
+- key: preview base url
+  message:
+    msg: 服務基地址
+
+- key: preview http cert
+  message:
+    msg: cert 證書
+
+- key: preview http key
+  message:
+    msg: key 證書
+
+- key: preview rebuild success
+  message:
+    msg: 重新編譯成功
+
+- key: preview trigger event
+  message:
+    msg: 觸發事件 %[1]s，開始重新編譯！
+
+- key: preview unknown protocol
+  message:
+    msg: 未支持的協議 %[1]s
+
+- key: preview ignore
+  message:
+    msg: 'watcher.Events: 更新太頻繁，該監控事件 %[1]s 被忽略！'
+
+## create 
+
+- key: init usage
+  message:
+    msg: |
+      初始化博客內容
+
+      在指定目錄下初始化項目的必須文件，比如 conf.yaml、tags.yaml 等文件。
+
+
+- key: init post usage
+  message:
+    msg: |
+      創建新文章
+
+      執行該命令會在 posts 目錄下創建一個同名的文件，如果未指定擴展名，
+      則自動添加 .md 作為擴展名，可以帶目錄結構，比如：blogit post 2021/03/31/file
+      會在項目上目錄下添加 posts/2021/03/31.file.md 文件，並在文件內添加必要的字段內容。
+
+      執行命令時，當前工作目錄必須為項目的根目錄。
+
+- key: miss argument
+  message:
+    msg: 缺少參數
+
+- key: create file
+  message:
+    msg: 創建文件 %[1]s
+
+
+## error
+
+- key: can not be empty
+  message:
+    msg: 不能為空
+
+- key: invalid url
+  message:
+    msg: 無效的 URL 格式
+
+- key: invalid value
+  message:
+    msg: 無效的值
+
+- key: invalid format
+  message:
+    msg: 無效的格式
+
+- key: should great than zero
+  message:
+    msg: 必須大於零
+
+- key: duplicate value
+  message:
+    msg: 重復的值
+
+- key: not found
+  message:
+    msg: 不存在
+
+- key: template not found in
+  message:
+    msg: 模板不存在於 %[1]s
+
+- key: can not contain spaces
+  message:
+    msg: 不能包含空格
+
+- key: post must in
+  message:
+    msg: 文章必須包含在 %[1]s 目錄之下
+
+- key: should be float
+  message:
+    msg: 必須為一個有效的浮點數
+
+# 1 message
+# 2 file
+# 3 field
+- key: field error without value
+  message:
+    msg: '%[1]s 位於 %[2]s:%[3]s'
+
+# 1 message
+# 2 file
+# 3 field
+# 4 value
+- key: field error with value
+  message:
+    msg: '%[1]s 位於 %[2]s:%[3]s，實際值為 %[4]s'
+
+## common
+
+- key: visit url
+  message:
+    msg: 訪問 URL [%[1]d] %[2]s
+
+- key: start server
+  message:
+    msg: 啟動服務：%[1]s

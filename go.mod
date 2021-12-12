@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/alecthomas/chroma v0.9.4
 	github.com/fsnotify/fsnotify v1.5.1
-	github.com/issue9/assert/v2 v2.0.0
+	github.com/issue9/assert/v2 v2.0.1
 	github.com/issue9/cmdopt v0.7.1
 	github.com/issue9/errwrap v0.2.1
 	github.com/issue9/localeutil v0.8.1
