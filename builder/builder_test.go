@@ -40,7 +40,8 @@ func TestBuilder_Handler(t *testing.T) {
 	// b 未加载任何数据。返回都是 404
 	srv.Get("/robots.txt").Do(nil).Status(http.StatusNotFound)
 
-	a.NotError(b.Rebuild())
+	a.NotError(b.Rebuild()).
+		NotZero(b.Builded())
 	srv.Get("/robots.txt").Do(nil).Status(http.StatusOK)
 	srv.Get("/posts/p1" + vars.Ext).Do(nil).Status(http.StatusOK)
 	srv.Get("/posts/not-exists.html").Do(nil).Status(http.StatusNotFound)

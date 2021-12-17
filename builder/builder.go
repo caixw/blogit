@@ -13,6 +13,7 @@ import (
 	"path"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/issue9/errwrap"
 	"github.com/issue9/sliceutil"
@@ -53,6 +54,7 @@ type Builder struct {
 
 	rebuildMux sync.Mutex // 防止多次调用 Rebuild
 	building   bool
+	builded    time.Time // 最后一次编译时间
 
 	// 以下内容在 Rebuild 之后会重新生成
 
@@ -109,7 +111,17 @@ func (b *Builder) Rebuild() error {
 		}
 	}
 
-	return b.buildData()
+	if err := b.buildData(); err != nil {
+		return err
+	}
+
+	b.builded = time.Now()
+	return nil
+}
+
+// Builded 最后的编译时间
+func (b *Builder) Builded() time.Time {
+	return b.builded
 }
 
 func (b *Builder) buildData() (err error) {

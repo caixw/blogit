@@ -42,9 +42,8 @@ type options struct {
 	cert string
 	key  string
 
-	b       *blogit.Builder
-	srv     *http.Server
-	builded time.Time
+	b   *blogit.Builder
+	srv *http.Server
 
 	stop chan struct{}
 }
@@ -107,8 +106,6 @@ func (o *options) build(erro *console.Logger) (ok bool) {
 		}
 		return false
 	}
-
-	o.builded = time.Now()
 	return true
 }
 
@@ -154,7 +151,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 				continue
 			}
 
-			if time.Since(o.builded) <= time.Second {
+			if time.Since(o.b.Builded()) <= time.Second {
 				info.Println(o.p.Sprintf("preview ignore", event))
 				continue
 			}
