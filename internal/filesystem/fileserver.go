@@ -63,6 +63,6 @@ func printError(erro *log.Logger, err error, w http.ResponseWriter) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	case err != nil:
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		erro.Println(err)
 	}
-	erro.Println(err)
 }

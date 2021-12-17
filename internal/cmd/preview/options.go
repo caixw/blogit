@@ -122,12 +122,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 		BaseURL: o.url,
 	}
 
-	httpServer := o.b.Handler(erro.AsLogger())
-	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ww := &console.Response{ResponseWriter: w}
-		httpServer.ServeHTTP(ww, r)
-		ww.WriteVisitLog(o.p, r.URL.String(), succ, erro)
-	})
+	h := console.Visiter(o.b.Handler(erro.AsLogger()), o.p, succ, erro)
 	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
 
 	go func() {

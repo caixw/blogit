@@ -3,6 +3,7 @@
 package filesystem
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -14,7 +15,7 @@ import (
 func TestFileServer(t *testing.T) {
 	a := assert.New(t, false)
 
-	fs := FileServer(os.DirFS("./"), nil)
+	fs := FileServer(os.DirFS("./"), log.Default())
 	a.NotNil(fs)
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 

@@ -65,14 +65,8 @@ func (o *options) serve(succ, info, erro *console.Logger) error {
 		return err
 	}
 
-	httpServer := o.b.Handler(erro.AsLogger())
-	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ww := &console.Response{ResponseWriter: w}
-		httpServer.ServeHTTP(ww, r)
-		ww.WriteVisitLog(o.p, r.URL.String(), succ, erro)
-	})
-
 	mux := http.NewServeMux()
+	h := console.Visiter(o.b.Handler(erro.AsLogger()), o.p, succ, erro)
 	mux.Handle(o.path, http.StripPrefix(o.path, h))
 	if o.hookURL != "" {
 		mux.Handle(o.hookURL, http.HandlerFunc(o.webhook))
