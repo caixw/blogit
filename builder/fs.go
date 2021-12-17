@@ -35,6 +35,7 @@ func MemoryFS() WritableFS { return &memoryFS{FS: memfs.New()} }
 // DirFS 返回以普通目录作为保存对象的文件系统
 func DirFS(dir string) WritableFS {
 	return &dirFS{
+		FS:    os.DirFS(dir),
 		dir:   dir,
 		files: make([]string, 0, 10),
 	}
@@ -46,20 +47,14 @@ type memoryFS struct {
 }
 
 type dirFS struct {
+	fs.FS
 	dir   string
 	files []string
 }
 
-func (dir *dirFS) Open(name string) (fs.File, error) {
-	if !fs.ValidPath(name) {
-		return nil, &fs.PathError{Op: "open", Path: name, Err: os.ErrInvalid}
-	}
-	return os.Open(dir.dir + "/" + name)
-}
-
 func (dir *dirFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
 	if !fs.ValidPath(name) {
-		return &fs.PathError{Op: "close", Path: name, Err: os.ErrInvalid}
+		return &fs.PathError{Op: "close", Path: name, Err: fs.ErrInvalid}
 	}
 
 	p := dir.dir + "/" + name

@@ -8,7 +8,6 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
-	"os"
 	"path"
 	"path/filepath"
 
@@ -59,7 +58,7 @@ func printError(erro *log.Logger, err error, w http.ResponseWriter) {
 	switch {
 	case errors.Is(err, fs.ErrPermission):
 		http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
-	case errors.Is(err, os.ErrNotExist):
+	case errors.Is(err, fs.ErrNotExist):
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	case err != nil:
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
