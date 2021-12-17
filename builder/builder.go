@@ -4,11 +4,9 @@
 package builder
 
 import (
-	"bytes"
 	"encoding/xml"
 	"errors"
 	"html/template"
-	"io"
 	"io/fs"
 	"log"
 	"net/http"
@@ -20,6 +18,7 @@ import (
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/v2/internal/data"
+	"github.com/caixw/blogit/v2/internal/filesystem"
 	"github.com/caixw/blogit/v2/internal/loader"
 	"github.com/caixw/blogit/v2/internal/vars"
 )
@@ -201,55 +200,6 @@ func (b *Builder) appendFile(p string, data []byte) error {
 }
 
 // Handler 将当前对象转换成 http.Handler 接口对象
-//
-// erro 在出错时日志的输出通道，可以为空，表示输出到 log.Default()；
 func (b *Builder) Handler(erro *log.Logger) http.Handler {
-	if erro == nil {
-		erro = log.Default()
-	}
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// NOTE: 为了自定义 index 的功能，没有采用 http.ServeFile 方法
-
-		p := r.URL.Path
-		if p != "" && p[0] == '/' {
-			p = p[1:]
-		}
-		if p == "" || p[len(p)-1] == '/' {
-			p += vars.IndexFilename
-		}
-
-		f, err := b.Dest.Open(p)
-		if errors.Is(err, fs.ErrNotExist) {
-			http.NotFound(w, r)
-			return
-		} else if errors.Is(err, fs.ErrPermission) {
-			errStatus(w, http.StatusForbidden)
-			return
-		} else if err != nil {
-			erro.Println(err)
-			errStatus(w, http.StatusInternalServerError)
-			return
-		}
-
-		stat, err := f.Stat()
-		if err != nil {
-			erro.Println(err)
-			errStatus(w, http.StatusInternalServerError)
-			return
-		}
-
-		bs, err := io.ReadAll(f)
-		if err != nil {
-			erro.Println(err)
-			errStatus(w, http.StatusInternalServerError)
-			return
-		}
-
-		http.ServeContent(w, r, p, stat.ModTime(), bytes.NewReader(bs))
-	})
-}
-
-func errStatus(w http.ResponseWriter, status int) {
-	http.Error(w, http.StatusText(status), status)
+	return filesystem.FileServer(b.Dest, erro)
 }

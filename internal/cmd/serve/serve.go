@@ -16,6 +16,8 @@ import (
 var opt *options
 
 // Init 注册 serve 子命令
+//
+// 与 preview 的区别在于，preview 会显示草稿，且可以修改 baseURL，而 serve 不行。
 func Init(o *cmdopt.CmdOpt, succ, info, erro *console.Logger, p *message.Printer) {
 	opt = &options{p: p}
 
