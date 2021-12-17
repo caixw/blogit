@@ -10,6 +10,7 @@ import (
 
 	"github.com/caixw/blogit/v2"
 	"github.com/caixw/blogit/v2/internal/cmd/console"
+	"github.com/issue9/localeutil"
 )
 
 // 启动服务的参数选项
@@ -34,6 +35,11 @@ type options struct {
 	cert string
 	key  string
 
+	hookMethod string
+	hookURL    string
+	hookAuth   string
+
+	b   *blogit.Builder
 	srv *http.Server
 }
 
@@ -50,28 +56,47 @@ func (o *options) serve(succ, info, erro *console.Logger) error {
 	}
 	src := os.DirFS(o.source)
 
-	b := &blogit.Builder{
+	o.b = &blogit.Builder{
 		Src:  src,
 		Dest: dest,
 		Info: info.AsLogger(),
 	}
-	if err := b.Rebuild(); err != nil {
+	if err := o.b.Rebuild(); err != nil {
 		return err
 	}
 
-	httpServer := b.Handler(erro.AsLogger())
+	httpServer := o.b.Handler(erro.AsLogger())
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ww := &console.Response{ResponseWriter: w}
 		httpServer.ServeHTTP(ww, r)
 		ww.WriteVisitLog(o.p, r.URL.String(), succ, erro)
 	})
-	o.srv = &http.Server{Addr: o.addr, Handler: http.StripPrefix(o.path, h)}
+
+	mux := http.NewServeMux()
+	mux.Handle(o.path, http.StripPrefix(o.path, h))
+	if o.hookURL != "" {
+		mux.Handle(o.hookURL, http.HandlerFunc(o.webhook))
+	}
+	o.srv = &http.Server{Addr: o.addr, Handler: mux}
 
 	info.Println(o.p.Sprintf("start server", o.addr))
 	if o.cert != "" && o.key != "" {
 		return o.srv.ListenAndServeTLS(o.cert, o.key)
 	}
 	return o.srv.ListenAndServe()
+}
+
+func (o *options) webhook(w http.ResponseWriter, r *http.Request) {
+	if o.hookMethod != r.Method {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	if o.hookAuth != r.Header.Get("Authorization") {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	o.b.Rebuild()
 }
 
 func (o *options) sanitize() error {
@@ -89,6 +114,16 @@ func (o *options) sanitize() error {
 
 	if o.path == "" {
 		o.path = "/"
+	}
+
+	if o.hookURL != "" {
+		if o.hookAuth == "" {
+			return localeutil.Error("serve hook url can not be empty")
+		}
+
+		if o.hookMethod == "" {
+			return localeutil.Error("serve hook method can not be empty")
+		}
 	}
 
 	return nil

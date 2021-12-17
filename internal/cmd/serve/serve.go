@@ -5,6 +5,7 @@ package serve
 
 import (
 	"io"
+	"net/http"
 
 	"github.com/issue9/cmdopt"
 	"github.com/issue9/localeutil"
@@ -38,4 +39,7 @@ func Init(o *cmdopt.CmdOpt, succ, info, erro *console.Logger, p *message.Printer
 	fs.StringVar(&opt.path, "path", "/", p.Sprintf("serve path"))
 	fs.StringVar(&opt.cert, "cert", "", p.Sprintf("serve http cert"))
 	fs.StringVar(&opt.key, "key", "", p.Sprintf("serve http key"))
+	fs.StringVar(&opt.hookMethod, "hook.method", http.MethodPost, p.Sprintf("serve web hook method"))
+	fs.StringVar(&opt.hookURL, "hook.url", "", p.Sprintf("serve web hook url"))
+	fs.StringVar(&opt.hookAuth, "hook.auth", "", p.Sprintf("serve web hook auth"))
 }

@@ -118,6 +118,26 @@ messages:
   message:
     msg: key 证书
 
+- key: serve web hook method
+  message:
+    msg: 指定调用编译的 web hook 请求方法
+
+- key: serve web hook url
+  message:
+    msg: 指定调用编译的 web hook 的地址
+
+- key: serve web hook auth
+  message:
+    msg: 指定调用编译的 web hook 时通过 authorization 报头传递的验证数据
+
+- key: serve hook url can not be empty
+  message:
+    msg: hook.url 不能为空
+
+- key: serve hook method can not be empty
+  message:
+    msg: hook.method 不能为空
+
 
 ## preview
 
