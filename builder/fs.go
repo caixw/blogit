@@ -11,6 +11,8 @@ import (
 )
 
 // WritableFS 带有写入功能的文件系统
+//
+// https://github.com/golang/go/issues/45757
 type WritableFS interface {
 	fs.FS
 
@@ -57,7 +59,7 @@ func (dir *dirFS) WriteFile(name string, data []byte, perm fs.FileMode) error {
 		return &fs.PathError{Op: "close", Path: name, Err: fs.ErrInvalid}
 	}
 
-	p := dir.dir + "/" + name
+	p := path.Join(dir.dir, name)
 	if err := os.MkdirAll(path.Dir(p), perm); err != nil {
 		return err
 	}
