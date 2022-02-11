@@ -112,7 +112,7 @@ func sortTags(tags []*Tag, typ, order string) {
 }
 
 // 关联 tags 和 posts 的信息
-func relationTagsPosts(tags []*Tag, posts []*Post) (created, modified time.Time, err error) {
+func (ts *Tags) relationTagsPosts(posts []*Post) (created, modified time.Time, err error) {
 	for _, p := range posts {
 		if created.Before(p.Created) {
 			created = p.Created
@@ -122,7 +122,7 @@ func relationTagsPosts(tags []*Tag, posts []*Post) (created, modified time.Time,
 		}
 
 		for _, tag := range p.tags {
-			t := findTagByName(tags, tag)
+			t := findTagByName(ts.Tags, tag)
 			if t == nil {
 				return time.Time{}, time.Time{}, &loader.FieldError{File: p.Slug, Message: localeutil.Phrase("not found"), Field: "tags." + tag}
 			}
@@ -149,6 +149,8 @@ func relationTagsPosts(tags []*Tag, posts []*Post) (created, modified time.Time,
 		}
 	}
 
+	ts.clearTags() // 清除无文章关联的标签
+
 	if modified.IsZero() {
 		modified = created
 	}
@@ -162,4 +164,11 @@ func findTagByName(tags []*Tag, slug string) *Tag {
 		}
 	}
 	return nil
+}
+
+func (ts *Tags) clearTags() {
+	size := sliceutil.Delete(ts.Tags, func(i int) bool {
+		return len(ts.Tags[i].Posts) == 0
+	})
+	ts.Tags = ts.Tags[:size]
 }

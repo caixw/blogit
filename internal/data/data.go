@@ -97,7 +97,7 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		return nil, err
 	}
 
-	created, modified, err := relationTagsPosts(ts.Tags, ps)
+	created, modified, err := ts.relationTagsPosts(ps)
 	if err != nil {
 		return nil, err
 	}
