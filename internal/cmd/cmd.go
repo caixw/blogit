@@ -14,7 +14,6 @@ import (
 	"github.com/caixw/blogit/v2/internal/cmd/create"
 	"github.com/caixw/blogit/v2/internal/cmd/preview"
 	"github.com/caixw/blogit/v2/internal/cmd/serve"
-	"github.com/caixw/blogit/v2/internal/locale"
 	"github.com/caixw/blogit/v2/internal/vars"
 )
 
@@ -40,7 +39,7 @@ var (
 
 // Exec 执行命令行
 func Exec(args []string) error {
-	p, err := locale.NewPrinter()
+	p, err := console.NewPrinter()
 	if err != nil {
 		return err
 	}

@@ -7,10 +7,25 @@ import (
 	"testing"
 
 	"github.com/issue9/assert/v2"
+	"github.com/issue9/localeutil"
+	"golang.org/x/text/message"
+	"golang.org/x/text/message/catalog"
+	"gopkg.in/yaml.v2"
 
-	"github.com/caixw/blogit/v2/internal/locale"
 	"github.com/caixw/blogit/v2/internal/testdata"
+	"github.com/caixw/blogit/v2/locale"
 )
+
+func newPrinter() (*message.Printer, error) {
+	systag, _ := localeutil.DetectUserLanguageTag() // 即使出错，依然会返回 language.Tag
+
+	b := catalog.NewBuilder()
+	if err := localeutil.LoadMessageFromFSGlob(b, locale.Locales(), "*.yaml", yaml.Unmarshal); err != nil {
+		return nil, err
+	}
+
+	return message.NewPrinter(systag, message.Catalog(b)), nil
+}
 
 func TestTag_sanitize(t *testing.T) {
 	a := assert.New(t, false)
@@ -27,7 +42,7 @@ func TestTag_sanitize(t *testing.T) {
 	a.NotError(tag.sanitize(nil))
 	a.NotError(tag.sanitize(&Tags{Tags: []*Tag{tag}}))
 
-	p, err := locale.NewPrinter()
+	p, err := newPrinter()
 	a.NotError(err).NotNil(p)
 	e := tag.sanitize(&Tags{Tags: []*Tag{tag, tag}})
 	a.Contains(e.LocaleString(p), p.Sprintf("duplicate value"))

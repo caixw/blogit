@@ -10,13 +10,13 @@ import (
 	"github.com/issue9/assert/v2"
 
 	"github.com/caixw/blogit/v2"
-	"github.com/caixw/blogit/v2/internal/locale"
+	"github.com/caixw/blogit/v2/internal/cmd/console"
 )
 
 func TestPrintVersion(t *testing.T) {
 	a := assert.New(t, false)
 
-	p, err := locale.NewPrinter()
+	p, err := console.NewPrinter()
 	a.NotError(err).NotNil(p)
 
 	pv := printVersion(p)
