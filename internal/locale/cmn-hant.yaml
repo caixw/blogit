@@ -85,6 +85,17 @@ messages:
       這些文件將以 themes/{id}/{name}.css 格式出現，
       其中 {id} 是主題名稱，面 {name} 則是當前命令列的值。
 
+## drafts
+
+- key: drafts usage
+  message:
+    msg: >
+      顯示指定目錄下的草稿列表
+
+- key: drafts src
+  message:
+    msg: >
+      指定源碼目錄
 
 ## serve
 

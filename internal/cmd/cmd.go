@@ -57,6 +57,7 @@ func Exec(args []string) error {
 		},
 	}
 
+	initDrafts(opt, p)
 	initBuild(opt, p)
 	initVersion(opt, p)
 	initStyles(opt, p)
