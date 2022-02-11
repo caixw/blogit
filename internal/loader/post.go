@@ -134,7 +134,7 @@ func (p *Post) sanitize(path string) *FieldError {
 		return &FieldError{Field: "title", Message: localeutil.Phrase("can not be empty")}
 	}
 	if p.State == StateDraft { // 对草稿稍微做一下标记
-		p.Title = "**" + p.Title + "**"
+		p.Title = vars.DraftTitleAround + p.Title + vars.DraftTitleAround
 	}
 
 	slug := Slug(path)

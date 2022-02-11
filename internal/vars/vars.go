@@ -31,8 +31,9 @@ const (
 	TagsTemplate    = "tags"
 	ArchiveTemplate = "archive"
 
-	Ext         = ".html" // 生成后的文件后缀名
-	MarkdownExt = ".md"
+	Ext              = ".html" // 生成后的文件后缀名
+	MarkdownExt      = ".md"
+	DraftTitleAround = "**" // 草稿文章的标题围绕的字符
 
 	// HighlightClassPrefix 默认的高亮主题色
 	// 值可以从 github.com/alecthomas/chroma/styles 获取
