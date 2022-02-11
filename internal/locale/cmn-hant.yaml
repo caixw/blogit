@@ -29,7 +29,7 @@ messages:
 - key: help usage
   message:
     msg: >
-      顯示當前內容
+      顯示幫助內容
 
 
 ## build

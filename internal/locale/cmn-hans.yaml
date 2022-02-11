@@ -30,7 +30,7 @@ messages:
 - key: help usage
   message:
     msg: >
-      显示当前内容
+      显示帮助内容
 
 
 ## build
