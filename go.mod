@@ -6,7 +6,7 @@ require (
 	github.com/alecthomas/chroma v0.10.0
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/issue9/assert/v2 v2.2.1
-	github.com/issue9/cmdopt v0.7.1
+	github.com/issue9/cmdopt v0.7.2
 	github.com/issue9/errwrap v0.2.1
 	github.com/issue9/localeutil v0.8.2
 	github.com/issue9/sliceutil v0.7.1
