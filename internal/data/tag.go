@@ -39,7 +39,7 @@ type Tag struct {
 	Modified  time.Time
 }
 
-func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
+func buildTags(conf *loader.Config, tags *loader.Tags, ps []*Post) (*Tags, error) {
 	if tags.Keywords == "" {
 		tags.Keywords = conf.Keywords
 	}
@@ -80,23 +80,14 @@ func buildTags(conf *loader.Config, tags *loader.Tags) (*Tags, error) {
 		ts.Keywords = strings.Join(keys, ",")
 	}
 
+	if err := ts.relationTagsPosts(ps); err != nil {
+		return nil, err
+	}
+	ts.clearTags() // 清除无文章关联的标签
 	sortTags(ts.Tags, tags.OrderType, tags.Order)
 	tagsPrevNext(ts.Tags)
 
 	return ts, nil
-}
-
-func tagsPrevNext(tags []*Tag) {
-	max := len(tags)
-	for i := 0; i < max; i++ {
-		tag := tags[i]
-		if i > 0 {
-			tag.Prev = tags[i-1]
-		}
-		if i < max-1 {
-			tag.Next = tags[i+1]
-		}
-	}
 }
 
 func sortTags(tags []*Tag, typ, order string) {
@@ -112,19 +103,12 @@ func sortTags(tags []*Tag, typ, order string) {
 }
 
 // 关联 tags 和 posts 的信息
-func (ts *Tags) relationTagsPosts(posts []*Post) (created, modified time.Time, err error) {
+func (ts *Tags) relationTagsPosts(posts []*Post) error {
 	for _, p := range posts {
-		if created.Before(p.Created) {
-			created = p.Created
-		}
-		if modified.Before(p.Modified) {
-			modified = p.Modified
-		}
-
 		for _, tag := range p.tags {
 			t := findTagByName(ts.Tags, tag)
 			if t == nil {
-				return time.Time{}, time.Time{}, &loader.FieldError{File: p.Slug, Message: localeutil.Phrase("not found"), Field: "tags." + tag}
+				return &loader.FieldError{File: p.Slug, Message: localeutil.Phrase("not found"), Field: "tags." + tag}
 			}
 			t.Posts = append(t.Posts, p)
 			p.Tags = append(p.Tags, t)
@@ -149,12 +133,7 @@ func (ts *Tags) relationTagsPosts(posts []*Post) (created, modified time.Time, e
 		}
 	}
 
-	ts.clearTags() // 清除无文章关联的标签
-
-	if modified.IsZero() {
-		modified = created
-	}
-	return created, modified, nil
+	return nil
 }
 
 func findTagByName(tags []*Tag, slug string) *Tag {
@@ -171,4 +150,17 @@ func (ts *Tags) clearTags() {
 		return len(ts.Tags[i].Posts) == 0
 	})
 	ts.Tags = ts.Tags[:size]
+}
+
+func tagsPrevNext(tags []*Tag) {
+	max := len(tags)
+	for i := 0; i < max; i++ {
+		tag := tags[i]
+		if i > 0 {
+			tag.Prev = tags[i-1]
+		}
+		if i < max-1 {
+			tag.Next = tags[i+1]
+		}
+	}
 }

@@ -214,3 +214,20 @@ func sortPostsByCreated(posts []*Post) []*Post {
 
 	return sorted
 }
+
+func getPostDate(ps []*Post) (created, modified time.Time) {
+	for _, p := range ps {
+		if created.Before(p.Created) {
+			created = p.Created
+		}
+		if modified.Before(p.Modified) {
+			modified = p.Modified
+		}
+	}
+
+	if modified.IsZero() {
+		modified = created
+	}
+
+	return
+}

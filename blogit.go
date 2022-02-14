@@ -11,7 +11,7 @@
 // 返回的错误信息，也提供了本地化支持，只要判断该错误对象是否实现了 localeutil.LocaleStringer
 // 接口即可，如果实现了，调用 LocaleString() 方法会输出本地的错误信息。
 //  b := catalog.NewBuilder()
-//  localeutil.LoadMessageFromFile(b, "internal/locale/*.yaml", yaml.Unmarshal)
+//  localeutil.LoadMessageFromFSGlob(b, locale.Locale(), "*.yaml", yaml.Unmarshal)
 //  p := message.NewPrinter(language.Chinese, message.Catalog(b))
 //
 //  err := Build(...)

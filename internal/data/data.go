@@ -82,11 +82,6 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		suffix = conf.TitleSeparator + conf.Title
 	}
 
-	ts, err := buildTags(conf, tags)
-	if err != nil {
-		return nil, err
-	}
-
 	ps, err := buildPosts(conf, theme, posts)
 	if err != nil {
 		return nil, err
@@ -97,10 +92,12 @@ func build(conf *loader.Config, tags *loader.Tags, posts []*loader.Post, theme *
 		return nil, err
 	}
 
-	created, modified, err := ts.relationTagsPosts(ps)
+	ts, err := buildTags(conf, tags, ps)
 	if err != nil {
 		return nil, err
 	}
+
+	created, modified := getPostDate(ps)
 
 	data := &Data{
 		URL:         conf.URL,
