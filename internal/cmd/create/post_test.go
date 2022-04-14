@@ -9,6 +9,7 @@ import (
 
 	"github.com/issue9/assert/v2"
 	"github.com/issue9/cmdopt"
+	"github.com/issue9/term/v3/colors"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 
@@ -20,8 +21,8 @@ import (
 func TestCmd_Post(t *testing.T) {
 	a := assert.New(t, false)
 	opt := &cmdopt.CmdOpt{}
-	succ := &console.Logger{Out: os.Stdout}
-	erro := &console.Logger{Out: os.Stderr}
+	succ := &console.Logger{Colorize: colors.New(os.Stdout)}
+	erro := &console.Logger{Colorize: colors.New(os.Stderr)}
 	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)
 	a.NotError(os.Chdir(dir))

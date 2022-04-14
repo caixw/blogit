@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/issue9/assert/v2"
+	"github.com/issue9/term/v3/colors"
 
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 	"github.com/caixw/blogit/v2/internal/vars"
@@ -75,9 +76,9 @@ func TestOptions_watch(t *testing.T) {
 	p, err := console.NewPrinter()
 	a.NotError(err).NotNil(p)
 
-	succ := &console.Logger{Out: os.Stdout}
-	info := &console.Logger{Out: os.Stdout}
-	erro := &console.Logger{Out: os.Stderr}
+	succ := &console.Logger{Colorize: colors.New(os.Stdout)}
+	info := &console.Logger{Colorize: colors.New(os.Stdout)}
+	erro := &console.Logger{Colorize: colors.New(os.Stderr)}
 
 	o := &options{
 		p:      p,
