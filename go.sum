@@ -12,8 +12,9 @@ github.com/google/go-cmp v0.5.4/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/gosimple/slug v1.9.0 h1:r5vDcYrFz9BmfIAMC829un9hq7hKM4cHUrsv36LbEqs=
 github.com/gosimple/slug v1.9.0/go.mod h1:AMZ+sOVe65uByN3kgEyf9WEBKBCSS+dJjMX9x4vDJbg=
 github.com/issue9/assert/v2 v2.0.0/go.mod h1:rKr1eVGzXUhAo2af1thiKAhIA8uiSK9Wyn7mcZ4BzAg=
-github.com/issue9/assert/v2 v2.2.1 h1:XQEnAFrGiT1Z55Tav39muM/Jg9ECiSLm7ehHQWoCHmA=
 github.com/issue9/assert/v2 v2.2.1/go.mod h1:rKr1eVGzXUhAo2af1thiKAhIA8uiSK9Wyn7mcZ4BzAg=
+github.com/issue9/assert/v2 v2.3.0 h1:vx/x3qehCQI17SLITDS+S/AOs9oLt0Ez3cFur4CLeLc=
+github.com/issue9/assert/v2 v2.3.0/go.mod h1:rKr1eVGzXUhAo2af1thiKAhIA8uiSK9Wyn7mcZ4BzAg=
 github.com/issue9/cmdopt v0.7.2 h1:riBT70kOOU00rKmP4vseFI7hfDZBO0l00FosVcexWH8=
 github.com/issue9/cmdopt v0.7.2/go.mod h1:Cw6wK3MUCagL59FWZY7qJBmJA8lGeatF7Haso7wOk1E=
 github.com/issue9/errwrap v0.2.1 h1:hrzBGbOCRs8acitpWSg54xNl2oaLGA/WZEf71bKaiEU=
@@ -22,8 +23,8 @@ github.com/issue9/localeutil v0.9.0 h1:SeNzwzr/t1JfuVGt6xq6NXc/+RyWcLhT7etFIH3gU
 github.com/issue9/localeutil v0.9.0/go.mod h1:VDMtz5Y+YJopG+ibgDvrITYkGYC0WxrH20LOWIgTs9g=
 github.com/issue9/sliceutil v0.7.1 h1:lnzYryF50+mxqvnsPZRZ1on+gxx0Khx5t5G7q0Cf7gU=
 github.com/issue9/sliceutil v0.7.1/go.mod h1:8e+l2bD67pBUtV8cVnGChE/Ltlq8czcDLR1pOGCC2tE=
-github.com/issue9/term/v2 v2.1.5 h1:qU8C5Y7Zbv7amINkUirs/dtFxislNdW7QGHAuzssOX4=
-github.com/issue9/term/v2 v2.1.5/go.mod h1:BA5+fQqPopRYlYfW3+NNmArSsHyPOmrsKksPh34DRdE=
+github.com/issue9/term/v3 v3.0.0 h1:MJ0eavCCqZ9lv2souDyCkSDeVo3XM9auqFVE0s2Esos=
+github.com/issue9/term/v3 v3.0.0/go.mod h1:D/UzioFydVy7DKLRit8ttJdGDkAa1Ni5fA9ZDWVD3lw=
 github.com/issue9/validation v0.5.1 h1:olnraMrm4aKqkT60ILUVIJH3alZNLhEU/8NkCQJ7Ab4=
 github.com/issue9/validation v0.5.1/go.mod h1:xi4eqjEdtwTXi4wepoyi68tvdYpSYzuU4JyVN9piFXA=
 github.com/issue9/version v1.0.5 h1:y4JRHcAM0nXMBju9Vhe13Wv08KP/uNveP4uwg3Wknh8=
@@ -48,8 +49,8 @@ github.com/yuin/goldmark-highlighting v0.0.0-20220208100518-594be1970594/go.mod 
 github.com/yuin/goldmark-meta v1.0.0 h1:ScsatUIT2gFS6azqzLGUjgOnELsBOxMXerM3ogdJhAM=
 github.com/yuin/goldmark-meta v1.0.0/go.mod h1:zsNNOrZ4nLuyHAJeLQEZcQat8dm70SmB2kHbls092Gc=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.0.0-20211123173158-ef496fb156ab h1:rfJ1bsoJQQIAoAxTxB7bme+vHrNkRw8CqfsYh9w54cw=
-golang.org/x/sys v0.0.0-20211123173158-ef496fb156ab/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 h1:OH54vjqzRWmbJ62fjuhxy7AxFFgoHN0/DPc/UrL8cAs=
+golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/text v0.3.7 h1:olpwvP2KacW1ZWvsR7uQhoyTYvKAupfQrRGBFM352Gk=
 golang.org/x/text v0.3.7/go.mod h1:u+2+/6zg+i71rQMx5EYifcz6MCKuco9NR6JIITiCfzQ=
 golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=

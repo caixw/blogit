@@ -5,12 +5,12 @@ go 1.16
 require (
 	github.com/alecthomas/chroma v0.10.0
 	github.com/fsnotify/fsnotify v1.5.1
-	github.com/issue9/assert/v2 v2.2.1
+	github.com/issue9/assert/v2 v2.3.0
 	github.com/issue9/cmdopt v0.7.2
 	github.com/issue9/errwrap v0.2.1
 	github.com/issue9/localeutil v0.9.0
 	github.com/issue9/sliceutil v0.7.1
-	github.com/issue9/term/v2 v2.1.5
+	github.com/issue9/term/v3 v3.0.0
 	github.com/issue9/validation v0.5.1
 	github.com/issue9/version v1.0.5
 	github.com/mdigger/goldmark-toc v0.0.0-20191225162753-7bc0e0d778c3

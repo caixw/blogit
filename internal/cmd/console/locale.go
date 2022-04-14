@@ -3,11 +3,12 @@
 package console
 
 import (
-	"github.com/caixw/blogit/v2/locale"
 	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 	"golang.org/x/text/message/catalog"
 	"gopkg.in/yaml.v2"
+
+	"github.com/caixw/blogit/v2/locale"
 )
 
 func NewPrinter() (*message.Printer, error) {

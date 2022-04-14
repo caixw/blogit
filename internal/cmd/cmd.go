@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/issue9/cmdopt"
-	"github.com/issue9/term/v2/colors"
+	"github.com/issue9/term/v3/colors"
 
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 	"github.com/caixw/blogit/v2/internal/cmd/create"
@@ -20,20 +20,20 @@ import (
 var (
 	erro = &console.Logger{
 		Prefix:   "[ERRO] ",
-		Colorize: colors.New(colors.Normal, colors.Red, colors.Default),
-		Out:      os.Stderr,
+		Colorize: colors.New(os.Stderr),
+		Color:    colors.Red,
 	}
 
 	info = &console.Logger{
 		Prefix:   "[INFO] ",
-		Colorize: colors.New(colors.Normal, colors.Default, colors.Default),
-		Out:      os.Stdout,
+		Colorize: colors.New(os.Stdout),
+		Color:    colors.Yellow,
 	}
 
 	succ = &console.Logger{
 		Prefix:   "[SUCC] ",
-		Colorize: colors.New(colors.Normal, colors.Green, colors.Default),
-		Out:      os.Stdout,
+		Colorize: colors.New(os.Stdout),
+		Color:    colors.Green,
 	}
 )
 

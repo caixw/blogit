@@ -4,34 +4,31 @@
 package console
 
 import (
-	"io"
 	"log"
 
-	"github.com/issue9/term/v2/colors"
+	"github.com/issue9/term/v3/colors"
 )
 
 // Logger 输出到控制台的日志
 type Logger struct {
-	colors.Colorize
-	Prefix string
-	Out    io.Writer
+	Colorize *colors.Colorize
+	Prefix   string
+	Color    colors.Color
 }
 
-func (msg *Logger) Printf(format string, v ...interface{}) {
-	msg.Fprint(msg.Out, msg.Prefix)
-	colors.Fprintf(msg.Out, colors.Normal, colors.Default, colors.Default, format, v...)
+func (l *Logger) printPrefix() *colors.Colorize {
+	return l.Colorize.Color(colors.Normal, l.Color, colors.Default).Print(l.Prefix).Reset()
 }
 
-func (msg *Logger) Println(v ...interface{}) {
-	msg.Fprint(msg.Out, msg.Prefix)
-	colors.Fprintln(msg.Out, colors.Normal, colors.Default, colors.Default, v...)
+func (l *Logger) Printf(format string, v ...interface{}) { l.printPrefix().Printf(format, v...) }
+
+func (l *Logger) Println(v ...interface{}) { l.printPrefix().Println(v...) }
+
+func (l *Logger) Write(bs []byte) (int, error) {
+	l.printPrefix().Print(string(bs))
+	return len(bs), nil
 }
 
-func (msg *Logger) Write(bs []byte) (int, error) {
-	msg.Fprint(msg.Out, msg.Prefix)
-	return colors.Fprint(msg.Out, colors.Normal, colors.Default, colors.Default, string(bs))
-}
-
-func (msg *Logger) AsLogger() *log.Logger {
-	return log.New(msg, "", log.Ldate)
+func (l *Logger) AsLogger() *log.Logger {
+	return log.New(l, "", log.Ldate)
 }
