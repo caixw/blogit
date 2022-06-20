@@ -18,6 +18,7 @@ func (b *Builder) buildPosts(d *data.Data) error {
 		page.Language = d.Language
 		page.Post = p
 		page.JSONLD = p.JSONLD
+		page.License = p.License
 
 		if p.Next != nil {
 			page.Next = &loader.Link{
