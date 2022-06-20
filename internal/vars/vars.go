@@ -35,8 +35,6 @@ const (
 	MarkdownExt      = ".md"
 	DraftTitleAround = "**" // 草稿文章的标题围绕的字符
 
-	// HighlightClassPrefix 默认的高亮主题色
-	// 值可以从 github.com/alecthomas/chroma/styles 获取
 	HighlightClassPrefix = "hl-" // 语法高亮的统一类名前缀
 
 	// FileHeader 自动生成文件的文件头信息
