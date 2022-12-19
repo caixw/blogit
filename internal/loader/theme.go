@@ -7,7 +7,7 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/alecthomas/chroma/styles"
+	"github.com/alecthomas/chroma/v2/styles"
 	"github.com/issue9/localeutil"
 	"github.com/issue9/sliceutil"
 
@@ -27,7 +27,7 @@ type Theme struct {
 
 	// 指定高亮的主题名称
 	//
-	// 名称值可以从 https://pkg.go.dev/github.com/alecthomas/chroma@v0.8.2/styles 获取
+	// 名称值可以从 https://pkg.go.dev/github.com/alecthomas/styles 获取
 	Highlights []*Highlight `yaml:"highlights,omitempty"`
 
 	// 部分可选内容的模板，如果为空，则其输出相应的 xml 文件时不会为其添加 xsl 文件。
@@ -55,10 +55,10 @@ func (t *Theme) sanitize(fs fs.FS, dir, id string) *FieldError {
 		}
 	}
 
-	if sliceutil.Count(t.Templates, func(i int) bool { return t.Templates[i] == vars.DefaultTemplate }) == 0 {
+	if sliceutil.Count(t.Templates, func(s string) bool { return s == vars.DefaultTemplate }) == 0 {
 		t.Templates = append(t.Templates, vars.DefaultTemplate)
 	}
-	indexes := sliceutil.Dup(t.Templates, func(i, j int) bool { return t.Templates[i] == t.Templates[j] })
+	indexes := sliceutil.Dup(t.Templates, func(i, j string) bool { return i == j })
 	if len(indexes) > 0 {
 		return &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "templates." + t.Templates[indexes[0]]}
 	}
@@ -68,7 +68,7 @@ func (t *Theme) sanitize(fs fs.FS, dir, id string) *FieldError {
 			return &FieldError{Message: localeutil.Phrase("not found"), Field: "screenshots[" + strconv.Itoa(index) + "]"}
 		}
 	}
-	indexes = sliceutil.Dup(t.Screenshots, func(i, j int) bool { return t.Screenshots[i] == t.Screenshots[j] })
+	indexes = sliceutil.Dup(t.Screenshots, func(i, j string) bool { return i == j })
 	if len(indexes) > 0 {
 		return &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "screenshots[" + strconv.Itoa(indexes[0]) + "]"}
 	}
@@ -110,7 +110,7 @@ var highlightCSSName = styles.Names()
 
 func (h *Highlight) sanitize() *FieldError {
 	names := highlightCSSName
-	if sliceutil.Count(names, func(i int) bool { return names[i] == h.Name }) == 0 {
+	if sliceutil.Count(names, func(i string) bool { return i == h.Name }) == 0 {
 		return &FieldError{Message: localeutil.Phrase("not found"), Field: "name", Value: h.Name}
 	}
 

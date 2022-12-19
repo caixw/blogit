@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/alecthomas/chroma/styles"
+	"github.com/alecthomas/chroma/v2/styles"
 	"github.com/issue9/cmdopt"
 	"golang.org/x/text/message"
 )

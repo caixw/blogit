@@ -105,8 +105,8 @@ func LoadPosts(f fs.FS, preview bool) ([]*Post, error) {
 	}
 
 	for _, p := range posts {
-		cnt := sliceutil.Count(posts, func(i int) bool {
-			return p.Slug == posts[i].Slug && p.Slug != posts[i].Slug
+		cnt := sliceutil.Count(posts, func(i *Post) bool {
+			return p.Slug == i.Slug && p.Slug != i.Slug
 		})
 		if cnt > 1 {
 			return nil, &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "slug"}

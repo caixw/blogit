@@ -6,16 +6,16 @@ import (
 	"bytes"
 	"io/fs"
 
-	fh "github.com/alecthomas/chroma/formatters/html"
+	fh "github.com/alecthomas/chroma/v2/formatters/html"
 	toc "github.com/mdigger/goldmark-toc"
 	"github.com/yuin/goldmark"
-	highlighting "github.com/yuin/goldmark-highlighting"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/text"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 
 	"github.com/caixw/blogit/v2/internal/vars"
 )

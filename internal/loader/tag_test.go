@@ -6,11 +6,11 @@ import (
 	"io/fs"
 	"testing"
 
-	"github.com/issue9/assert/v2"
+	"github.com/issue9/assert/v3"
 	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 	"golang.org/x/text/message/catalog"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 
 	"github.com/caixw/blogit/v2/internal/testdata"
 	"github.com/caixw/blogit/v2/locale"

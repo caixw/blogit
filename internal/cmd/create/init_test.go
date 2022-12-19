@@ -7,7 +7,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/issue9/assert/v2"
+	"github.com/issue9/assert/v3"
 	"github.com/issue9/cmdopt"
 	"github.com/issue9/term/v3/colors"
 	"golang.org/x/text/language"
@@ -20,7 +20,7 @@ import (
 
 func TestCmd_Init(t *testing.T) {
 	a := assert.New(t, false)
-	opt := &cmdopt.CmdOpt{}
+	opt := &cmdopt.CmdOpt{Output: os.Stdout}
 	erro := &console.Logger{Colorize: colors.New(os.Stderr)}
 	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)

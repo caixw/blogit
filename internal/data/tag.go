@@ -127,8 +127,7 @@ func (ts *Tags) relationTagsPosts(posts []*Post) error {
 			for _, t := range p.Tags {
 				keywords = append(keywords, t.Slug, t.Title)
 			}
-			size := sliceutil.Unique(keywords, func(i, j int) bool { return keywords[i] == keywords[j] })
-			keywords = keywords[:size]
+			keywords = sliceutil.Unique(keywords, func(i, j string) bool { return i == j })
 			p.Keywords = strings.Join(keywords, ",")
 		}
 	}
@@ -146,10 +145,7 @@ func findTagByName(tags []*Tag, slug string) *Tag {
 }
 
 func (ts *Tags) clearTags() {
-	size := sliceutil.Delete(ts.Tags, func(i int) bool {
-		return len(ts.Tags[i].Posts) == 0
-	})
-	ts.Tags = ts.Tags[:size]
+	ts.Tags = sliceutil.Delete(ts.Tags, func(i *Tag) bool { return len(i.Posts) == 0 })
 }
 
 func tagsPrevNext(tags []*Tag) {

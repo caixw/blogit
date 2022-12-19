@@ -98,8 +98,8 @@ func (tag *Tag) sanitize(tags *Tags) *FieldError {
 	tag.Content = buf.String()
 
 	if tags != nil && tags.Tags != nil {
-		cnt := sliceutil.Count(tags.Tags, func(i int) bool {
-			return tags.Tags[i].Slug == tag.Slug
+		cnt := sliceutil.Count(tags.Tags, func(t *Tag) bool {
+			return t.Slug == tag.Slug
 		})
 		if cnt > 1 {
 			return &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "slug", Value: tag.Slug}

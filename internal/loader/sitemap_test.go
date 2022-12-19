@@ -5,7 +5,7 @@ package loader
 import (
 	"testing"
 
-	"github.com/issue9/assert/v2"
+	"github.com/issue9/assert/v3"
 )
 
 func TestSitemap_sanitize(t *testing.T) {

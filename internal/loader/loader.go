@@ -15,7 +15,7 @@ import (
 	"github.com/issue9/validation/is"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 // 排序方式

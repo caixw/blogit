@@ -65,7 +65,5 @@ var changereqs = []string{
 }
 
 func inStrings(val string, values []string) bool {
-	return sliceutil.Count(values, func(i int) bool {
-		return values[i] == val
-	}) > 0
+	return sliceutil.Count(values, func(s string) bool { return s == val }) > 0
 }

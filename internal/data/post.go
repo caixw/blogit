@@ -138,7 +138,7 @@ func buildPost(conf *loader.Config, theme *loader.Theme, p *loader.Post) (*Post,
 		p.TOC = nil
 	}
 
-	if sliceutil.Count(theme.Templates, func(i int) bool { return theme.Templates[i] == p.Template }) == 0 {
+	if sliceutil.Count(theme.Templates, func(i string) bool { return i == p.Template }) == 0 {
 		return nil, &loader.FieldError{
 			Message: localeutil.Phrase("template not found in", vars.ThemeYAML),
 			Field:   "template",

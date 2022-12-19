@@ -6,8 +6,8 @@ import (
 	"bytes"
 	"time"
 
-	"github.com/alecthomas/chroma/formatters/html"
-	"github.com/alecthomas/chroma/styles"
+	"github.com/alecthomas/chroma/v2/formatters/html"
+	"github.com/alecthomas/chroma/v2/styles"
 
 	"github.com/caixw/blogit/v2/internal/data"
 	"github.com/caixw/blogit/v2/internal/loader"
