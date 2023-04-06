@@ -3,6 +3,7 @@
 package cmd
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -15,25 +16,25 @@ import (
 	"github.com/caixw/blogit/v2/internal/vars"
 )
 
-var draftsSrc string
-
 func initDrafts(opt *cmdopt.CmdOpt, p *message.Printer) {
-	fs := opt.New("drafts", p.Sprintf("drafts usage"), printDrafts)
-	fs.StringVar(&draftsSrc, "src", "./", p.Sprintf("drafts src"))
-}
+	opt.New("drafts", p.Sprintf("drafts title"), p.Sprintf("drafts usage"), func(fs *flag.FlagSet) cmdopt.DoFunc {
+		var draftsSrc string
+		fs.StringVar(&draftsSrc, "src", "./", p.Sprintf("drafts src"))
 
-func printDrafts(w io.Writer) error {
-	d, err := data.Load(os.DirFS(draftsSrc), true, "")
-	if err != nil {
-		return err
-	}
+		return func(w io.Writer) error {
+			d, err := data.Load(os.DirFS(draftsSrc), true, "")
+			if err != nil {
+				return err
+			}
 
-	for _, p := range d.Posts {
-		draft := strings.HasPrefix(p.Title, vars.DraftTitleAround) && strings.HasSuffix(p.Title, vars.DraftTitleAround)
-		if draft {
-			fmt.Fprintln(w, p.Title, "\t", p.Slug)
+			for _, p := range d.Posts {
+				draft := strings.HasPrefix(p.Title, vars.DraftTitleAround) && strings.HasSuffix(p.Title, vars.DraftTitleAround)
+				if draft {
+					fmt.Fprintln(w, p.Title, "\t", p.Slug)
+				}
+			}
+
+			return nil
 		}
-	}
-
-	return nil
+	})
 }

@@ -14,7 +14,6 @@ import (
 	"github.com/caixw/blogit/v2/internal/cmd/create"
 	"github.com/caixw/blogit/v2/internal/cmd/preview"
 	"github.com/caixw/blogit/v2/internal/cmd/serve"
-	"github.com/caixw/blogit/v2/internal/vars"
 )
 
 var (
@@ -44,17 +43,10 @@ func Exec(args []string) error {
 		return err
 	}
 
-	opt := &cmdopt.CmdOpt{
-		Output:        os.Stdout,
-		ErrorHandling: flag.ExitOnError,
-		Header:        p.Sprintf("cmd title"),
-		Footer:        p.Sprintf("cmd footer", vars.URL),
-		CommandsTitle: p.Sprintf("sub command"),
-		OptionsTitle:  p.Sprintf("cmd argument"),
-		NotFound: func(name string) string {
-			return p.Sprintf("sub command not found", name)
-		},
-	}
+	usage := "cmd usage"
+	opt := cmdopt.New(os.Stdout, flag.ExitOnError, usage, nil, func(name string) string {
+		return p.Sprintf("sub command not found", name)
+	})
 
 	initDrafts(opt, p)
 	initBuild(opt, p)
@@ -64,7 +56,7 @@ func Exec(args []string) error {
 	preview.Init(opt, succ, info, erro, p)
 	create.InitInit(opt, erro, p)
 	create.InitPost(opt, succ, erro, p)
-	opt.Help("help", p.Sprintf("help usage"))
+	opt.New("help", p.Sprintf("help usage"), p.Sprintf("help usage"), cmdopt.Help(opt))
 
 	return opt.Exec(args)
 }

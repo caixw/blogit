@@ -31,42 +31,38 @@ state: draft
 此处书写文章的具体内容
 `
 
-var postFS *flag.FlagSet
-
 // InitPost 注册 post 子命令
-func InitPost(opt *cmdopt.CmdOpt, succ, erro *console.Logger, p *message.Printer) {
-	postFS = opt.New("post", p.Sprintf("init post usage"), post(succ, erro, p))
-}
+func InitPost(opt *cmdopt.CmdOpt, succ, erro *console.Logger, lp *message.Printer) {
+	opt.New("post", lp.Sprintf("init post usage"), lp.Sprintf("init post usage"), func(fs *flag.FlagSet) cmdopt.DoFunc {
+		return func(w io.Writer) error {
+			if fs.NArg() != 1 {
+				erro.Println(lp.Printf("miss argument"))
+				return nil
+			}
 
-func post(succ, erro *console.Logger, localePrinter *message.Printer) cmdopt.DoFunc {
-	return func(w io.Writer) error {
-		if postFS.NArg() != 1 {
-			erro.Println(localePrinter.Printf("miss argument"))
+			wfs, err := getWD()
+			if err != nil {
+				erro.Println(err)
+				return nil
+			}
+
+			p := fs.Arg(0)
+			if strings.ToLower(path.Ext(p)) != vars.MarkdownExt {
+				p += vars.MarkdownExt
+			}
+			p = path.Clean(path.Join(vars.PostsDir, p))
+
+			now := time.Now().Format(time.RFC3339)
+			c := fmt.Sprintf(postContent, now, now)
+			if err := wfs.WriteFile(p, []byte(c), os.ModePerm); err != nil {
+				erro.Println(err)
+				return nil
+			}
+			succ.Println(lp.Sprintf("create file", p))
+
 			return nil
 		}
-
-		wfs, err := getWD()
-		if err != nil {
-			erro.Println(err)
-			return nil
-		}
-
-		p := postFS.Arg(0)
-		if strings.ToLower(path.Ext(p)) != vars.MarkdownExt {
-			p += vars.MarkdownExt
-		}
-		p = path.Clean(path.Join(vars.PostsDir, p))
-
-		now := time.Now().Format(time.RFC3339)
-		c := fmt.Sprintf(postContent, now, now)
-		if err := wfs.WriteFile(p, []byte(c), os.ModePerm); err != nil {
-			erro.Println(err)
-			return nil
-		}
-		succ.Println(localePrinter.Sprintf("create file", p))
-
-		return nil
-	}
+	})
 }
 
 func getWD() (blogit.WritableFS, error) {

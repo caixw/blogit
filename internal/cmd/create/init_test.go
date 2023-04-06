@@ -3,6 +3,7 @@
 package create
 
 import (
+	"flag"
 	"os"
 	"path"
 	"testing"
@@ -20,7 +21,7 @@ import (
 
 func TestCmd_Init(t *testing.T) {
 	a := assert.New(t, false)
-	opt := &cmdopt.CmdOpt{Output: os.Stdout}
+	opt := cmdopt.New(os.Stdout, flag.ContinueOnError, "", nil, nil)
 	erro := &console.Logger{Colorize: colors.New(os.Stderr)}
 	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)

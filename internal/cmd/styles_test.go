@@ -3,7 +3,6 @@
 package cmd
 
 import (
-	"bytes"
 	"strings"
 	"testing"
 
@@ -13,7 +12,8 @@ import (
 func TestPrintStyles(t *testing.T) {
 	a := assert.New(t, false)
 
-	w := bytes.Buffer{}
-	a.NotError(printStyles(&w))
-	a.True(strings.Contains(w.String(), "solarized-dark256"))
+	opt, buf, p := newCMD(a)
+	initStyles(opt, p)
+	a.NotError(opt.Exec([]string{"styles"}))
+	a.True(strings.Contains(buf.String(), "solarized-dark256"))
 }

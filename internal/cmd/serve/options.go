@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/v2"
 	"github.com/caixw/blogit/v2/internal/cmd/console"
-	"github.com/issue9/localeutil"
 )
 
 // 启动服务的参数选项
