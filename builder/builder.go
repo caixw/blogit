@@ -178,7 +178,7 @@ func isIgnore(src string) bool {
 	}
 
 	ext := strings.ToLower(path.Ext(src))
-	return sliceutil.Index(ignoreExts, func(i string) bool { return i == ext }) >= 0
+	return sliceutil.Index(ignoreExts, func(i string, _ int) bool { return i == ext }) >= 0
 }
 
 // path 表示输出的文件路径，相对于源目录；

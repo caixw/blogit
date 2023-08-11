@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/issue9/cmdopt"
+	"github.com/issue9/localeutil"
 	"github.com/issue9/term/v3/colors"
 
 	"github.com/caixw/blogit/v2/internal/cmd/console"
@@ -36,6 +37,11 @@ var (
 	}
 )
 
+const (
+	cmdUsage  = localeutil.StringPhrase("cmd usage")
+	helpUsage = localeutil.StringPhrase("help usage")
+)
+
 // Exec 执行命令行
 func Exec(args []string) error {
 	p, err := console.NewPrinter()
@@ -43,9 +49,8 @@ func Exec(args []string) error {
 		return err
 	}
 
-	usage := "cmd usage"
-	opt := cmdopt.New(os.Stdout, flag.ExitOnError, usage, nil, func(name string) string {
-		return p.Sprintf("sub command not found", name)
+	opt := cmdopt.New(os.Stdout, flag.ExitOnError, cmdUsage.LocaleString(p), nil, func(name string) string {
+		return localeutil.Phrase("sub command not found %s", name).LocaleString(p)
 	})
 
 	initDrafts(opt, p)
@@ -56,7 +61,7 @@ func Exec(args []string) error {
 	preview.Init(opt, succ, info, erro, p)
 	create.InitInit(opt, erro, p)
 	create.InitPost(opt, succ, erro, p)
-	opt.New("help", p.Sprintf("help usage"), p.Sprintf("help usage"), cmdopt.Help(opt))
+	cmdopt.Help(opt, "help", helpUsage.LocaleString(p), helpUsage.LocaleString(p))
 
 	return opt.Exec(args)
 }

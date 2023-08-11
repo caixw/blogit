@@ -73,7 +73,7 @@ func (o *options) serve(succ, info, erro *console.Logger) error {
 	}
 	o.srv = &http.Server{Addr: o.addr, Handler: mux}
 
-	info.Println(o.p.Sprintf("start server", o.addr))
+	info.Println(localeutil.Phrase("start server %s", o.addr).LocaleString(o.p))
 	if o.cert != "" && o.key != "" {
 		return o.srv.ListenAndServeTLS(o.cert, o.key)
 	}

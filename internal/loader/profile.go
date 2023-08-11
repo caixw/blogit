@@ -5,8 +5,6 @@ package loader
 import (
 	"strings"
 	"unicode"
-
-	"github.com/issue9/localeutil"
 )
 
 // Profile 用于生成 github.com/profile 中的 README.md 内容
@@ -28,12 +26,12 @@ type Profile struct {
 
 func (p *Profile) sanitize() *FieldError {
 	if p.Title == "" {
-		return &FieldError{Field: "title", Message: localeutil.Phrase("can not be empty")}
+		return &FieldError{Field: "title", Message: Required}
 	}
 	p.Title = "### " + trimHeadPrefix(p.Title)
 
 	if p.Size <= 0 {
-		return &FieldError{Field: "size", Message: localeutil.Phrase("should great than zero")}
+		return &FieldError{Field: "size", Message: GreatZero}
 	}
 
 	if p.Footer != "" {

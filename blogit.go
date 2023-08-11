@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 
+//go:generate web locale -l=en-US -m -f=yaml ./
+//go:generate web update-locale -src=./locales/en-US.yaml -dest=./locales/zh-Hans.yaml
+
 // Package blogit 静态博客生成工具
-//
 //
 // 本地化
 //
@@ -10,16 +12,17 @@
 //
 // 返回的错误信息，也提供了本地化支持，只要判断该错误对象是否实现了 localeutil.LocaleStringer
 // 接口即可，如果实现了，调用 LocaleString() 方法会输出本地的错误信息。
-//  b := catalog.NewBuilder()
-//  localeutil.LoadMessageFromFSGlob(b, locale.Locale(), "*.yaml", yaml.Unmarshal)
-//  p := message.NewPrinter(language.Chinese, message.Catalog(b))
 //
-//  err := Build(...)
-//  if ls, ok := err.(localeutil.LocaleStringer); ok {
-//      println(ls.LocaleString(p)) // 输出本地化内容
-//  } else {
-//      println(err.Error())
-//  }
+//	b := catalog.NewBuilder()
+//	localeutil.LoadMessageFromFSGlob(b, locale.Locale(), "*.yaml", yaml.Unmarshal)
+//	p := message.NewPrinter(language.Chinese, message.Catalog(b))
+//
+//	err := Build(...)
+//	if ls, ok := err.(localeutil.LocaleStringer); ok {
+//	    println(ls.LocaleString(p)) // 输出本地化内容
+//	} else {
+//	    println(err.Error())
+//	}
 package blogit
 
 import (

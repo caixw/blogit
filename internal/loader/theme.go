@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/alecthomas/chroma/v2/styles"
-	"github.com/issue9/localeutil"
 	"github.com/issue9/sliceutil"
 
 	"github.com/caixw/blogit/v2/internal/filesystem"
@@ -55,34 +54,34 @@ func (t *Theme) sanitize(fs fs.FS, dir, id string) *FieldError {
 		}
 	}
 
-	if sliceutil.Count(t.Templates, func(s string) bool { return s == vars.DefaultTemplate }) == 0 {
+	if sliceutil.Count(t.Templates, func(s string, _ int) bool { return s == vars.DefaultTemplate }) == 0 {
 		t.Templates = append(t.Templates, vars.DefaultTemplate)
 	}
 	indexes := sliceutil.Dup(t.Templates, func(i, j string) bool { return i == j })
 	if len(indexes) > 0 {
-		return &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "templates." + t.Templates[indexes[0]]}
+		return &FieldError{Message: DupValue, Field: "templates." + t.Templates[indexes[0]]}
 	}
 
 	for index, s := range t.Screenshots {
 		if !filesystem.Exists(fs, path.Join(dir, s)) {
-			return &FieldError{Message: localeutil.Phrase("not found"), Field: "screenshots[" + strconv.Itoa(index) + "]"}
+			return &FieldError{Message: NotFound, Field: "screenshots[" + strconv.Itoa(index) + "]"}
 		}
 	}
 	indexes = sliceutil.Dup(t.Screenshots, func(i, j string) bool { return i == j })
 	if len(indexes) > 0 {
-		return &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "screenshots[" + strconv.Itoa(indexes[0]) + "]"}
+		return &FieldError{Message: DupValue, Field: "screenshots[" + strconv.Itoa(indexes[0]) + "]"}
 	}
 
 	if t.Sitemap != "" && !filesystem.Exists(fs, path.Join(dir, t.Sitemap)) {
-		return &FieldError{Message: localeutil.Phrase("not found"), Field: "sitemap", Value: t.Sitemap}
+		return &FieldError{Message: NotFound, Field: "sitemap", Value: t.Sitemap}
 	}
 
 	if t.RSS != "" && !filesystem.Exists(fs, path.Join(dir, t.RSS)) {
-		return &FieldError{Message: localeutil.Phrase("not found"), Field: "rss", Value: t.RSS}
+		return &FieldError{Message: NotFound, Field: "rss", Value: t.RSS}
 	}
 
 	if t.Atom != "" && !filesystem.Exists(fs, path.Join(dir, t.Atom)) {
-		return &FieldError{Message: localeutil.Phrase("not found"), Field: "atom", Value: t.Atom}
+		return &FieldError{Message: NotFound, Field: "atom", Value: t.Atom}
 	}
 
 	var mediaIsEmpty bool
@@ -97,7 +96,7 @@ func (t *Theme) sanitize(fs fs.FS, dir, id string) *FieldError {
 
 		if h.Media == "" {
 			if mediaIsEmpty {
-				return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: prefix + "media"}
+				return &FieldError{Message: Required, Field: prefix + "media"}
 			}
 			mediaIsEmpty = true
 		}
@@ -110,8 +109,8 @@ var highlightCSSName = styles.Names()
 
 func (h *Highlight) sanitize() *FieldError {
 	names := highlightCSSName
-	if sliceutil.Count(names, func(i string) bool { return i == h.Name }) == 0 {
-		return &FieldError{Message: localeutil.Phrase("not found"), Field: "name", Value: h.Name}
+	if sliceutil.Count(names, func(i string, _ int) bool { return i == h.Name }) == 0 {
+		return &FieldError{Message: NotFound, Field: "name", Value: h.Name}
 	}
 
 	return nil

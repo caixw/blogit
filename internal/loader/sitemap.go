@@ -23,19 +23,19 @@ type Sitemap struct {
 func (s *Sitemap) sanitize() *FieldError {
 	chkPriority := func(v float64, field string) *FieldError {
 		if v > 1 || v < 0 {
-			return &FieldError{Message: localeutil.Phrase("should be float"), Field: field, Value: v}
+			return &FieldError{Message: localeutil.StringPhrase("should be float"), Field: field, Value: v}
 		}
 		return nil
 	}
 	chkChangefreq := func(v, field string) *FieldError {
 		if !inStrings(v, changereqs) {
-			return &FieldError{Message: localeutil.Phrase("invalid value"), Field: field, Value: v}
+			return &FieldError{Message: InvalidValue, Field: field, Value: v}
 		}
 		return nil
 	}
 
 	if s.Title == "" {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
+		return &FieldError{Message: Required, Field: "title"}
 	}
 
 	if err := chkPriority(s.Priority, "priority"); err != nil {
@@ -65,5 +65,5 @@ var changereqs = []string{
 }
 
 func inStrings(val string, values []string) bool {
-	return sliceutil.Count(values, func(s string) bool { return s == val }) > 0
+	return sliceutil.Count(values, func(s string, _ int) bool { return s == val }) > 0
 }

@@ -145,7 +145,7 @@ func findTagByName(tags []*Tag, slug string) *Tag {
 }
 
 func (ts *Tags) clearTags() {
-	ts.Tags = sliceutil.Delete(ts.Tags, func(i *Tag) bool { return len(i.Posts) == 0 })
+	ts.Tags = sliceutil.Delete(ts.Tags, func(i *Tag, _ int) bool { return len(i.Posts) == 0 })
 }
 
 func tagsPrevNext(tags []*Tag) {

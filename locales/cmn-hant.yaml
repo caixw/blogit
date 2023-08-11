@@ -1,6 +1,5 @@
 
-languages:
-- cmn-hant
+id: cmn-hant
 
 messages:
 - key: cmd title
@@ -21,7 +20,7 @@ messages:
   message:
     msg: 參數
 
-- key: sub command not found
+- key: sub command not found %s
   message:
     msg: >
       子命令 %[1]s 未找到
@@ -66,13 +65,6 @@ messages:
 - key: show full version
   message:
     msg: 顯示完整的版本號信息
-
-- key: version content
-  message:
-    msg: |
-      %[1]s %[2]s
-      build with %[3]s
-
 
 ## styles
 
@@ -175,11 +167,11 @@ messages:
   message:
     msg: key 證書
 
-- key: preview rebuild success
+- key: preview rebuild success %s
   message:
     msg: 重新編譯成功
 
-- key: preview trigger event
+- key: preview trigger event %s
   message:
     msg: 觸發事件 %[1]s，開始重新編譯！
 
@@ -187,7 +179,7 @@ messages:
   message:
     msg: 未支持的協議 %[1]s
 
-- key: preview ignore
+- key: preview ignore %s
   message:
     msg: 'watcher.Events: 更新太頻繁，該監控事件 %[1]s 被忽略！'
 
@@ -216,7 +208,7 @@ messages:
   message:
     msg: 缺少參數
 
-- key: create file
+- key: create file %s
   message:
     msg: 創建文件 %[1]s
 
@@ -251,7 +243,7 @@ messages:
   message:
     msg: 不存在
 
-- key: template not found in
+- key: template not found in %s
   message:
     msg: 模板不存在於 %[1]s
 
@@ -259,7 +251,7 @@ messages:
   message:
     msg: 不能包含空格
 
-- key: post must in
+- key: post must in %s
   message:
     msg: 文章必須包含在 %[1]s 目錄之下
 
@@ -270,7 +262,7 @@ messages:
 # 1 message
 # 2 file
 # 3 field
-- key: field error without value
+- key: '%s at %s:%d'
   message:
     msg: '%[1]s 位於 %[2]s:%[3]s'
 
@@ -278,16 +270,16 @@ messages:
 # 2 file
 # 3 field
 # 4 value
-- key: field error with value
+- key: '%s at %s:%d,value is %s'
   message:
     msg: '%[1]s 位於 %[2]s:%[3]s，實際值為 %[4]s'
 
 ## common
 
-- key: visit url
+- key: visit url %d %s
   message:
     msg: 訪問 URL [%[1]d] %[2]s
 
-- key: start server
+- key: start server %s
   message:
     msg: 啟動服務：%[1]s

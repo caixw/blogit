@@ -147,17 +147,17 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 			}
 
 			if time.Since(o.b.Builded()) <= time.Second {
-				info.Println(o.p.Sprintf("preview ignore", event))
+				info.Println(localeutil.Phrase("preview ignore %s", event).LocaleString(o.p))
 				continue
 			}
 
-			info.Println(o.p.Sprintf("preview trigger event", event))
+			info.Println(localeutil.Phrase("preview trigger event %s", event).LocaleString(o.p))
 
 			go func() {
 				if !o.build(erro) {
 					return
 				}
-				succ.Println(o.p.Sprintf("preview rebuild success"))
+				succ.Println(localeutil.Phrase("preview rebuild success %s").LocaleString(o.p))
 			}()
 		case err := <-watcher.Errors:
 			erro.Println(err)
@@ -171,7 +171,7 @@ func (o *options) watch(succ, info, erro *console.Logger) error {
 func (o *options) close() error { return o.srv.Close() }
 
 func (o *options) serve(info *console.Logger) error {
-	info.Println(o.p.Sprintf("start server", o.addr))
+	info.Println(localeutil.Phrase("start server %s", o.addr).LocaleString(o.p))
 
 	if o.cert != "" && o.key != "" {
 		return o.srv.ListenAndServeTLS(o.cert, o.key)

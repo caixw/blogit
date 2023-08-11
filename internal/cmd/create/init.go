@@ -8,6 +8,7 @@ import (
 	"io/fs"
 
 	"github.com/issue9/cmdopt"
+	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/v2"
@@ -15,12 +16,14 @@ import (
 	"github.com/caixw/blogit/v2/internal/testdata"
 )
 
+const initUsage = localeutil.StringPhrase("init usage")
+
 // InitInit 注册 init 子命令
 func InitInit(opt *cmdopt.CmdOpt, erro *console.Logger, p *message.Printer) {
-	opt.New("init", p.Sprintf("init usage"), p.Sprintf("init usage"), func(initFS *flag.FlagSet) cmdopt.DoFunc {
+	opt.New("init", initUsage.LocaleString(p), initUsage.LocaleString(p), func(initFS *flag.FlagSet) cmdopt.DoFunc {
 		return func(w io.Writer) error {
 			if initFS.NArg() != 1 {
-				erro.Println(p.Sprintf("miss argument"))
+				erro.Println(localeutil.StringPhrase("miss argument").LocaleString(p))
 				return nil
 			}
 

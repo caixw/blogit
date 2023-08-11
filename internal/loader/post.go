@@ -105,11 +105,11 @@ func LoadPosts(f fs.FS, preview bool) ([]*Post, error) {
 	}
 
 	for _, p := range posts {
-		cnt := sliceutil.Count(posts, func(i *Post) bool {
+		cnt := sliceutil.Count(posts, func(i *Post, _ int) bool {
 			return p.Slug == i.Slug && p.Slug != i.Slug
 		})
 		if cnt > 1 {
-			return nil, &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "slug"}
+			return nil, &FieldError{Message: DupValue, Field: "slug"}
 		}
 	}
 
@@ -131,7 +131,7 @@ func loadPost(f fs.FS, path string) (*Post, error) {
 
 func (p *Post) sanitize(path string) *FieldError {
 	if p.Title == "" {
-		return &FieldError{Field: "title", Message: localeutil.Phrase("can not be empty")}
+		return &FieldError{Field: "title", Message: Required}
 	}
 	if p.State == StateDraft { // 对草稿稍微做一下标记
 		p.Title = vars.DraftTitleAround + p.Title + vars.DraftTitleAround
@@ -142,20 +142,20 @@ func (p *Post) sanitize(path string) *FieldError {
 		slug = slug[:len(slug)-len(vars.MarkdownExt)] // 不能用 strings.TrimSuffix，后缀名可能是大写的
 	}
 	if strings.IndexFunc(slug, func(r rune) bool { return unicode.IsSpace(r) }) >= 0 {
-		return &FieldError{Field: "slug", Message: localeutil.Phrase("can not contain spaces"), Value: slug}
+		return &FieldError{Field: "slug", Message: localeutil.StringPhrase("can not contain spaces"), Value: slug}
 	}
 	if !strings.HasPrefix(slug, vars.PostsDir+"/") {
-		return &FieldError{Field: "slug", Message: localeutil.Phrase("post must in", vars.PostsDir), Value: slug}
+		return &FieldError{Field: "slug", Message: localeutil.Phrase("post must in %s", vars.PostsDir), Value: slug}
 	}
 	p.Slug = slug
 
 	if len(p.Tags) == 0 {
-		return &FieldError{Field: "tags", Message: localeutil.Phrase("can not be empty")}
+		return &FieldError{Field: "tags", Message: Required}
 	}
 
 	// state
 	if p.State != StateDefault && p.State != StateLast && p.State != StateTop && p.State != StateDraft {
-		return &FieldError{Message: localeutil.Phrase("invalid value"), Field: "state", Value: p.State}
+		return &FieldError{Message: InvalidValue, Field: "state", Value: p.State}
 	}
 
 	// template

@@ -69,7 +69,7 @@ func LoadConfig(fs fs.FS, path string) (*Config, error) {
 
 func (conf *Config) sanitize() *FieldError {
 	if len(conf.URL) == 0 || !is.URL(conf.URL) {
-		return &FieldError{Message: localeutil.Phrase("invalid format"), Field: "url", Value: conf.URL}
+		return &FieldError{Message: localeutil.StringPhrase("invalid format"), Field: "url", Value: conf.URL}
 	}
 
 	if len(conf.Language) == 0 {
@@ -77,7 +77,7 @@ func (conf *Config) sanitize() *FieldError {
 	}
 
 	if conf.Uptime.IsZero() {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "uptime"}
+		return &FieldError{Message: Required, Field: "uptime"}
 	}
 
 	// icon
@@ -90,7 +90,7 @@ func (conf *Config) sanitize() *FieldError {
 
 	// Authors
 	if conf.Author == nil {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "authors"}
+		return &FieldError{Message: Required, Field: "authors"}
 	}
 	if err := conf.Author.sanitize(); err != nil {
 		err.Field = "author." + err.Field
@@ -98,12 +98,12 @@ func (conf *Config) sanitize() *FieldError {
 	}
 
 	if len(conf.Title) == 0 {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
+		return &FieldError{Message: Required, Field: "title"}
 	}
 
 	// theme
 	if len(conf.Theme) == 0 {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "theme"}
+		return &FieldError{Message: Required, Field: "theme"}
 	}
 
 	// menus
@@ -115,12 +115,12 @@ func (conf *Config) sanitize() *FieldError {
 	}
 
 	if conf.TOC < 0 {
-		return &FieldError{Message: localeutil.Phrase("should great than zero"), Field: "toc", Value: conf.TOC}
+		return &FieldError{Message: GreatZero, Field: "toc", Value: conf.TOC}
 	}
 
 	// index
 	if conf.Index == nil {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "index"}
+		return &FieldError{Message: Required, Field: "index"}
 	}
 	if err := conf.Index.sanitize(); err != nil {
 		err.Field = "index." + err.Field
@@ -129,7 +129,7 @@ func (conf *Config) sanitize() *FieldError {
 
 	// archive
 	if conf.Archive == nil {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "archive"}
+		return &FieldError{Message: Required, Field: "archive"}
 	}
 	if err := conf.Archive.sanitize(); err != nil {
 		err.Field = "archive." + err.Field
@@ -138,7 +138,7 @@ func (conf *Config) sanitize() *FieldError {
 
 	// license
 	if conf.License == nil {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "license"}
+		return &FieldError{Message: Required, Field: "license"}
 	}
 	if err := conf.License.sanitize(); err != nil {
 		err.Field = "license." + err.Field
@@ -190,11 +190,11 @@ func (conf *Config) sanitize() *FieldError {
 
 func (rss *RSS) sanitize() *FieldError {
 	if rss.Title == "" {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
+		return &FieldError{Message: Required, Field: "title"}
 	}
 
 	if rss.Size <= 0 {
-		return &FieldError{Message: localeutil.Phrase("should great than zero"), Field: "size", Value: rss.Size}
+		return &FieldError{Message: GreatZero, Field: "size", Value: rss.Size}
 	}
 
 	return nil
@@ -202,11 +202,11 @@ func (rss *RSS) sanitize() *FieldError {
 
 func (index *Index) sanitize() *FieldError {
 	if index.Size < 1 {
-		return &FieldError{Message: localeutil.Phrase("should great than zero"), Field: "size", Value: index.Size}
+		return &FieldError{Message: GreatZero, Field: "size", Value: index.Size}
 	}
 
 	if index.Title == "" {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
+		return &FieldError{Message: Required, Field: "title"}
 	}
 
 	return nil

@@ -4,17 +4,24 @@ package console
 
 import (
 	"github.com/issue9/localeutil"
+	"github.com/issue9/localeutil/message/serialize"
 	"golang.org/x/text/message"
 	"golang.org/x/text/message/catalog"
 	"gopkg.in/yaml.v3"
 
-	"github.com/caixw/blogit/v2/locale"
+	"github.com/caixw/blogit/v2/locales"
 )
 
 func NewPrinter() (*message.Printer, error) {
 	b := catalog.NewBuilder()
-	if err := localeutil.LoadMessageFromFSGlob(b, locale.Locales(), "*.yaml", yaml.Unmarshal); err != nil {
+	l, err := serialize.LoadFSGlob(locales.Locales(), "*.yaml", yaml.Unmarshal)
+	if err != nil {
 		return nil, err
+	}
+	for _, ll := range l {
+		if err := ll.Catalog(b); err != nil {
+			return nil, err
+		}
 	}
 
 	systag, _ := localeutil.DetectUserLanguageTag() // 即使出错，依然会返回 language.Tag

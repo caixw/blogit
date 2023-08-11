@@ -5,6 +5,7 @@ package console
 import (
 	"net/http"
 
+	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 )
 
@@ -27,7 +28,7 @@ func (r *visiterResponse) WriteHeader(status int) {
 }
 
 func (r *visiterResponse) printLog(p *message.Printer, url string, succ, erro *Logger) {
-	msg := p.Sprintf("visit url", r.status, url)
+	msg := localeutil.Phrase("visit url %d %s", r.status, url).LocaleString(p)
 	if r.status > 399 {
 		erro.Println(msg)
 	} else {

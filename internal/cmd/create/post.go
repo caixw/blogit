@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/issue9/cmdopt"
+	"github.com/issue9/localeutil"
 	"golang.org/x/text/message"
 
 	"github.com/caixw/blogit/v2"
@@ -31,12 +32,14 @@ state: draft
 此处书写文章的具体内容
 `
 
+const initPostUsage = localeutil.StringPhrase("init post usage")
+
 // InitPost 注册 post 子命令
 func InitPost(opt *cmdopt.CmdOpt, succ, erro *console.Logger, lp *message.Printer) {
-	opt.New("post", lp.Sprintf("init post usage"), lp.Sprintf("init post usage"), func(fs *flag.FlagSet) cmdopt.DoFunc {
+	opt.New("post", initPostUsage.LocaleString(lp), initPostUsage.LocaleString(lp), func(fs *flag.FlagSet) cmdopt.DoFunc {
 		return func(w io.Writer) error {
 			if fs.NArg() != 1 {
-				erro.Println(lp.Printf("miss argument"))
+				erro.Println(localeutil.StringPhrase("miss argument").LocaleString(lp))
 				return nil
 			}
 
@@ -58,7 +61,7 @@ func InitPost(opt *cmdopt.CmdOpt, succ, erro *console.Logger, lp *message.Printe
 				erro.Println(err)
 				return nil
 			}
-			succ.Println(lp.Sprintf("create file", p))
+			succ.Println(localeutil.Phrase("create file", p).LocaleString(lp))
 
 			return nil
 		}

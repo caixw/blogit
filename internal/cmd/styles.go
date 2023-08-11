@@ -8,13 +8,15 @@ import (
 	"io"
 
 	"github.com/alecthomas/chroma/v2/styles"
-	"golang.org/x/text/message"
-
 	"github.com/issue9/cmdopt"
+	"github.com/issue9/localeutil"
+	"golang.org/x/text/message"
 )
 
+const stylesUsage = localeutil.StringPhrase("styles usage")
+
 func initStyles(opt *cmdopt.CmdOpt, p *message.Printer) {
-	opt.New("styles", p.Sprintf("styles usage"), p.Sprintf("styles usage"), func(fs *flag.FlagSet) cmdopt.DoFunc {
+	opt.New("styles", stylesUsage.LocaleString(p), stylesUsage.LocaleString(p), func(fs *flag.FlagSet) cmdopt.DoFunc {
 		return func(w io.Writer) error {
 			_, err := fmt.Fprintln(w, styles.Names())
 			return err

@@ -50,7 +50,7 @@ func LoadTags(fs fs.FS, path string) (*Tags, error) {
 
 func (tags *Tags) sanitize() *FieldError {
 	if tags.Title == "" {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
+		return &FieldError{Message: Required, Field: "title"}
 	}
 
 	switch tags.Order {
@@ -58,13 +58,13 @@ func (tags *Tags) sanitize() *FieldError {
 		tags.Order = OrderDesc
 	case OrderAsc, OrderDesc:
 	default:
-		return &FieldError{Message: localeutil.Phrase("invalid value"), Field: "order"}
+		return &FieldError{Message: InvalidValue, Field: "order"}
 	}
 
 	switch tags.OrderType {
 	case TagOrderTypeDefault, TagOrderTypeSize:
 	default:
-		return &FieldError{Message: localeutil.Phrase("invalid value"), Field: "orderType"}
+		return &FieldError{Message: InvalidValue, Field: "orderType"}
 	}
 
 	for index, tag := range tags.Tags {
@@ -79,15 +79,15 @@ func (tags *Tags) sanitize() *FieldError {
 
 func (tag *Tag) sanitize(tags *Tags) *FieldError {
 	if len(tag.Slug) == 0 {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "slug"}
+		return &FieldError{Message: Required, Field: "slug"}
 	}
 
 	if len(tag.Title) == 0 {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "title"}
+		return &FieldError{Message: Required, Field: "title"}
 	}
 
 	if len(tag.Content) == 0 {
-		return &FieldError{Message: localeutil.Phrase("can not be empty"), Field: "content"}
+		return &FieldError{Message: Required, Field: "content"}
 	}
 
 	// 将 markdown 转换成 html
@@ -98,11 +98,11 @@ func (tag *Tag) sanitize(tags *Tags) *FieldError {
 	tag.Content = buf.String()
 
 	if tags != nil && tags.Tags != nil {
-		cnt := sliceutil.Count(tags.Tags, func(t *Tag) bool {
+		cnt := sliceutil.Count(tags.Tags, func(t *Tag, _ int) bool {
 			return t.Slug == tag.Slug
 		})
 		if cnt > 1 {
-			return &FieldError{Message: localeutil.Phrase("duplicate value"), Field: "slug", Value: tag.Slug}
+			return &FieldError{Message: DupValue, Field: "slug", Value: tag.Slug}
 		}
 	}
 

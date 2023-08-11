@@ -8,23 +8,30 @@ import (
 
 	"github.com/issue9/assert/v3"
 	"github.com/issue9/localeutil"
-	"golang.org/x/text/message"
+	"github.com/issue9/localeutil/message/serialize"
+	xm "golang.org/x/text/message"
 	"golang.org/x/text/message/catalog"
 	"gopkg.in/yaml.v3"
 
 	"github.com/caixw/blogit/v2/internal/testdata"
-	"github.com/caixw/blogit/v2/locale"
+	"github.com/caixw/blogit/v2/locales"
 )
 
-func newPrinter() (*message.Printer, error) {
+func newPrinter() (*xm.Printer, error) {
 	systag, _ := localeutil.DetectUserLanguageTag() // 即使出错，依然会返回 language.Tag
 
 	b := catalog.NewBuilder()
-	if err := localeutil.LoadMessageFromFSGlob(b, locale.Locales(), "*.yaml", yaml.Unmarshal); err != nil {
+	l, err := serialize.LoadFSGlob(locales.Locales(), "*.yaml", yaml.Unmarshal)
+	if err != nil {
 		return nil, err
 	}
+	for _, ll := range l {
+		if err := ll.Catalog(b); err != nil {
+			return nil, err
+		}
+	}
 
-	return message.NewPrinter(systag, message.Catalog(b)), nil
+	return xm.NewPrinter(systag, xm.Catalog(b)), nil
 }
 
 func TestTag_sanitize(t *testing.T) {
