@@ -61,7 +61,7 @@ func InitPost(opt *cmdopt.CmdOpt, succ, erro *console.Logger, lp *message.Printe
 				erro.Println(err)
 				return nil
 			}
-			succ.Println(localeutil.Phrase("create file", p).LocaleString(lp))
+			succ.Println(localeutil.Phrase("create file %s", p).LocaleString(lp))
 
 			return nil
 		}

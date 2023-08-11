@@ -1,0 +1,209 @@
+id: zh-CN
+messages:
+    - key: '%s at %s:%d'
+      message:
+        msg: '%[1]s 位于 %[2]s:%[3]d'
+    - key: '%s at %s:%d,value is %s'
+      message:
+        msg: '%[1]s 位于 %[2]s:%[3]s，实际值为 %[4]s'
+    - key: build complete
+      message:
+        msg: 完成编译，用时：%[1]s
+    - key: build dest
+      message:
+        msg: 指定输出目录
+    - key: build src
+      message:
+        msg: 指定源码目录
+    - key: build title
+      message:
+        msg: 编译内容
+    - key: build usage
+      message:
+        msg: |
+            编译内容
+            参数： {{flags}}
+    - key: can not be empty
+      message:
+        msg: 不能为空
+    - key: can not contain spaces
+      message:
+        msg: 不能包含空格
+    - key: cmd usage
+      message:
+        msg: |
+            静态博客工具
+
+            源码以 MIT 许可发布于 %[1]s
+    - key: create file %s
+      message:
+        msg: 创建文件 %[1]s
+    - key: drafts src usage
+      message:
+        msg: drafts src usage
+    - key: drafts title
+      message:
+        msg: 显示指定目录下的草稿列表
+    - key: drafts usage
+      message:
+        msg: |
+            显示指定目录下的草稿列表
+            参数： {{flags}}
+    - key: duplicate value
+      message:
+        msg: 重复的值
+    - key: help usage
+      message:
+        msg: |
+            显示帮助内容
+    - key: init post usage
+      message:
+        msg: |
+            创建新文章
+
+            执行该命令会在 posts 目录下创建一个同名的文件，如果未指定扩展名，
+            则自动添加 .md 作为扩展名，可以带目录结构，比如：blogit post 2021/03/31/file
+            会在项目上目录下添加 posts/2021/03/31.file.md 文件，并在文件内添加必要的字段内容。
+
+            执行命令时，当前工作目录必须为项目的根目录。
+    - key: init usage
+      message:
+        msg: |
+            初始化博客内容
+
+            在指定目录下初始化项目的必须文件，比如 conf.yaml、tags.yaml 等文件。
+    - key: invalid format
+      message:
+        msg: 无效的格式
+    - key: invalid url
+      message:
+        msg: 无效的 URL 格式
+    - key: invalid value
+      message:
+        msg: 无效的值
+    - key: miss argument
+      message:
+        msg: 缺少参数
+    - key: not found
+      message:
+        msg: 不存在
+    - key: post must in %s
+      message:
+        msg: 文章必须包含在 %[1]s 目录之下
+    - key: preview base url
+      message:
+        msg: 服务基地址
+    - key: preview dest
+      message:
+        msg: 指定保存了对象，为空表示保存在内存。
+    - key: preview http cert
+      message:
+        msg: cert 证书
+    - key: preview http key
+      message:
+        msg: key 证书
+    - key: preview ignore %s
+      message:
+        msg: 'watcher.Events: 更新太频繁，该监控事件 %[1]s 被忽略！'
+    - key: preview rebuild success %s
+      message:
+        msg: 重新编译成功
+    - key: preview src
+      message:
+        msg: 指定源码目录
+    - key: preview title
+      message:
+        msg: 以预览的方式运行 HTTP 服务
+    - key: preview trigger event %s
+      message:
+        msg: 触发事件 %[1]s，开始重新编译！
+    - key: preview unknown protocol %s
+      message:
+        msg: 未支持的协议 %[1]s
+    - key: preview usage
+      message:
+        msg: |
+            以预览的方式运行 HTTP 服务
+            参数： {{flags}}
+    - key: serve dest
+      message:
+        msg: 指定输出目录，如果为空表示采用内存保存。
+    - key: serve hook method can not be empty
+      message:
+        msg: hook.method 不能为空
+    - key: serve hook url can not be empty
+      message:
+        msg: hook.url 不能为空
+    - key: serve http cert
+      message:
+        msg: cert 证书
+    - key: serve http key
+      message:
+        msg: key 证书
+    - key: serve path
+      message:
+        msg: 项目的访问路径
+    - key: serve port
+      message:
+        msg: 服务端口
+    - key: serve src
+      message:
+        msg: 指定源码目录
+    - key: serve title
+      message:
+        msg: 以 HTTP 服务运行
+    - key: serve usage
+      message:
+        msg: |
+            以 HTTP 服务运行
+            参数： {{flags}}
+    - key: serve web hook auth
+      message:
+        msg: 指定调用编译的 web hook 时通过 authorization 报头传递的验证数据
+    - key: serve web hook method
+      message:
+        msg: 指定调用编译的 web hook 请求方法
+    - key: serve web hook url
+      message:
+        msg: 指定调用编译的 web hook 的地址
+    - key: should be float
+      message:
+        msg: 必须为一个有效的浮点数
+    - key: should great than zero
+      message:
+        msg: 必须大于零
+    - key: show full version
+      message:
+        msg: 显示完整的版本号信息
+    - key: start build
+      message:
+        msg: 开始编译
+    - key: start server %s
+      message:
+        msg: 启动服务：%[1]s
+    - key: styles usage
+      message:
+        msg: |
+            显示可用的代码高亮名称
+
+            代码高亮的相关样式表是以文件的方式关联到 HTML 的，
+            这些文件将以 themes/{id}/{name}.css 格式出现，
+            其中 {id} 是主题名称，面 {name} 则是当前命令列的值。
+    - key: sub command not found %s
+      message:
+        msg: |
+            子命令 %[1]s 未找到
+    - key: template not found in %s
+      message:
+        msg: 模板不存在于 %[1]s
+    - key: version title
+      message:
+        msg: 显示版本号
+    - key: version usage
+      message:
+        msg: |
+            显示版本号
+            参数： {{flags}}
+    - key: visit url %d %s
+      message:
+        msg: 访问 URL [%[1]d] %[2]s

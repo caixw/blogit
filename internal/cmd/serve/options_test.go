@@ -10,6 +10,7 @@ import (
 
 	"github.com/issue9/assert/v3"
 	"github.com/issue9/term/v3/colors"
+	"golang.org/x/text/language"
 
 	"github.com/caixw/blogit/v2/internal/cmd/console"
 	"github.com/caixw/blogit/v2/internal/vars"
@@ -22,7 +23,7 @@ func (o *options) close() error {
 func TestOptions_sanitize(t *testing.T) {
 	a := assert.New(t, false)
 
-	p, err := console.NewPrinter()
+	p, err := console.NewPrinter(language.SimplifiedChinese)
 	a.NotError(err).NotNil(p)
 
 	// 都采用默认值
@@ -46,7 +47,7 @@ func TestOptions_sanitize(t *testing.T) {
 func TestOptions_serve(t *testing.T) {
 	a := assert.New(t, false)
 
-	p, err := console.NewPrinter()
+	p, err := console.NewPrinter(language.SimplifiedChinese)
 	a.NotError(err).NotNil(p)
 
 	o := &options{

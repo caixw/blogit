@@ -21,17 +21,17 @@ var opt *options
 //
 // 与 preview 的区别在于，preview 会显示草稿，且可以修改 baseURL，而 serve 不行。
 func Init(o *cmdopt.CmdOpt, succ, info, erro *console.Logger, p *message.Printer) {
-	o.New("serve", p.Sprintf("serve title"), p.Sprintf("serve usage"), func(fs *flag.FlagSet) cmdopt.DoFunc {
+	o.New("serve", localeutil.StringPhrase("serve title").LocaleString(p), localeutil.StringPhrase("serve usage").LocaleString(p), func(fs *flag.FlagSet) cmdopt.DoFunc {
 		opt = &options{p: p}
-		fs.StringVar(&opt.source, "src", "./", p.Sprintf("serve src"))
-		fs.StringVar(&opt.dest, "dest", "", p.Sprintf("serve dest"))
-		fs.StringVar(&opt.addr, "addr", ":8080", p.Sprintf("serve port"))
-		fs.StringVar(&opt.path, "path", "/", p.Sprintf("serve path"))
-		fs.StringVar(&opt.cert, "cert", "", p.Sprintf("serve http cert"))
-		fs.StringVar(&opt.key, "key", "", p.Sprintf("serve http key"))
-		fs.StringVar(&opt.hookMethod, "hook.method", http.MethodPost, p.Sprintf("serve web hook method"))
-		fs.StringVar(&opt.hookURL, "hook.url", "", p.Sprintf("serve web hook url"))
-		fs.StringVar(&opt.hookAuth, "hook.auth", "", p.Sprintf("serve web hook auth"))
+		fs.StringVar(&opt.source, "src", "./", localeutil.StringPhrase("serve src").LocaleString(p))
+		fs.StringVar(&opt.dest, "dest", "", localeutil.StringPhrase("serve dest").LocaleString(p))
+		fs.StringVar(&opt.addr, "addr", ":8080", localeutil.StringPhrase("serve port").LocaleString(p))
+		fs.StringVar(&opt.path, "path", "/", localeutil.StringPhrase("serve path").LocaleString(p))
+		fs.StringVar(&opt.cert, "cert", "", localeutil.StringPhrase("serve http cert").LocaleString(p))
+		fs.StringVar(&opt.key, "key", "", localeutil.StringPhrase("serve http key").LocaleString(p))
+		fs.StringVar(&opt.hookMethod, "hook.method", http.MethodPost, localeutil.StringPhrase("serve web hook method").LocaleString(p))
+		fs.StringVar(&opt.hookURL, "hook.url", "", localeutil.StringPhrase("serve web hook url").LocaleString(p))
+		fs.StringVar(&opt.hookAuth, "hook.auth", "", localeutil.StringPhrase("serve web hook auth").LocaleString(p))
 
 		return func(w io.Writer) error {
 			if err := opt.serve(succ, info, erro); err != nil {

@@ -44,7 +44,8 @@ const (
 
 // Exec 执行命令行
 func Exec(args []string) error {
-	p, err := console.NewPrinter()
+	systag, _ := localeutil.DetectUserLanguageTag() // 即使出错，依然会返回 language.Tag
+	p, err := console.NewPrinter(systag)
 	if err != nil {
 		return err
 	}

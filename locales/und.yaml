@@ -1,0 +1,179 @@
+id: und
+messages:
+    - key: '%s at %s:%d'
+      message:
+        msg: '%s at %s:%d'
+    - key: '%s at %s:%d,value is %s'
+      message:
+        msg: '%s at %s:%d,value is %s'
+    - key: build complete
+      message:
+        msg: build complete
+    - key: build dest
+      message:
+        msg: build dest
+    - key: build src
+      message:
+        msg: build src
+    - key: build title
+      message:
+        msg: build title
+    - key: build usage
+      message:
+        msg: build usage
+    - key: can not be empty
+      message:
+        msg: can not be empty
+    - key: can not contain spaces
+      message:
+        msg: can not contain spaces
+    - key: cmd usage
+      message:
+        msg: cmd usage
+    - key: create file %s
+      message:
+        msg: create file %s
+    - key: drafts src usage
+      message:
+        msg: drafts src usage
+    - key: drafts title
+      message:
+        msg: drafts title
+    - key: drafts usage
+      message:
+        msg: drafts usage
+    - key: duplicate value
+      message:
+        msg: duplicate value
+    - key: help usage
+      message:
+        msg: help usage
+    - key: init post usage
+      message:
+        msg: init post usage
+    - key: init usage
+      message:
+        msg: init usage
+    - key: invalid format
+      message:
+        msg: invalid format
+    - key: invalid url
+      message:
+        msg: invalid url
+    - key: invalid value
+      message:
+        msg: invalid value
+    - key: miss argument
+      message:
+        msg: miss argument
+    - key: not found
+      message:
+        msg: not found
+    - key: post must in %s
+      message:
+        msg: post must in %s
+    - key: preview base url
+      message:
+        msg: preview base url
+    - key: preview dest
+      message:
+        msg: preview dest
+    - key: preview http cert
+      message:
+        msg: preview http cert
+    - key: preview http key
+      message:
+        msg: preview http key
+    - key: preview ignore %s
+      message:
+        msg: preview ignore %s
+    - key: preview rebuild success %s
+      message:
+        msg: preview rebuild success %s
+    - key: preview src
+      message:
+        msg: preview src
+    - key: preview title
+      message:
+        msg: preview title
+    - key: preview trigger event %s
+      message:
+        msg: preview trigger event %s
+    - key: preview unknown protocol %s
+      message:
+        msg: preview unknown protocol %s
+    - key: preview usage
+      message:
+        msg: preview usage
+    - key: serve dest
+      message:
+        msg: serve dest
+    - key: serve hook method can not be empty
+      message:
+        msg: serve hook method can not be empty
+    - key: serve hook url can not be empty
+      message:
+        msg: serve hook url can not be empty
+    - key: serve http cert
+      message:
+        msg: serve http cert
+    - key: serve http key
+      message:
+        msg: serve http key
+    - key: serve path
+      message:
+        msg: serve path
+    - key: serve port
+      message:
+        msg: serve port
+    - key: serve src
+      message:
+        msg: serve src
+    - key: serve title
+      message:
+        msg: serve title
+    - key: serve usage
+      message:
+        msg: serve usage
+    - key: serve web hook auth
+      message:
+        msg: serve web hook auth
+    - key: serve web hook method
+      message:
+        msg: serve web hook method
+    - key: serve web hook url
+      message:
+        msg: serve web hook url
+    - key: should be float
+      message:
+        msg: should be float
+    - key: should great than zero
+      message:
+        msg: should great than zero
+    - key: show full version
+      message:
+        msg: show full version
+    - key: start build
+      message:
+        msg: start build
+    - key: start server %s
+      message:
+        msg: start server %s
+    - key: styles usage
+      message:
+        msg: styles usage
+    - key: sub command not found %s
+      message:
+        msg: sub command not found %s
+    - key: template not found in %s
+      message:
+        msg: template not found in %s
+    - key: version title
+      message:
+        msg: version title
+    - key: version usage
+      message:
+        msg: version usage
+    - key: visit url %d %s
+      message:
+        msg: visit url %d %s

@@ -83,7 +83,7 @@ func (o *options) parseURL() error {
 		case "http", "":
 			o.addr = ":80"
 		default:
-			return errors.New(o.p.Sprintf("preview unknown protocol", scheme))
+			return errors.New(localeutil.Phrase("preview unknown protocol %s", scheme).LocaleString(o.p))
 		}
 	} else {
 		o.addr = ":" + o.addr

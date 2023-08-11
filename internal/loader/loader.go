@@ -68,9 +68,9 @@ func (err *FieldError) Error() string {
 
 func (err *FieldError) LocaleString(p *message.Printer) string {
 	if err.Value == nil {
-		return p.Sprintf("%s at %s:%d", err.Message.LocaleString(p), err.File, err.Field)
+		return localeutil.Phrase("%s at %s:%d", err.Message.LocaleString(p), err.File, err.Field).LocaleString(p)
 	}
-	return p.Sprintf("%s at %s:%d,value is %s", err.Message.LocaleString(p), err.File, err.Field, err.Value)
+	return localeutil.Phrase("%s at %s:%d,value is %s", err.Message.LocaleString(p), err.File, err.Field, err.Value).LocaleString(p)
 }
 
 func loadYAML(f fs.FS, path string, v interface{}) error {

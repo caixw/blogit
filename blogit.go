@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
-//go:generate web locale -l=en-US -m -f=yaml ./
-//go:generate web update-locale -src=./locales/en-US.yaml -dest=./locales/zh-Hans.yaml
+//go:generate web locale -l=und -m -f=yaml ./
+//go:generate web update-locale -src=./locales/und.yaml -dest=./locales/zh-CN.yaml,./locales/zh-TW.yaml
 
 // Package blogit 静态博客生成工具
 //
