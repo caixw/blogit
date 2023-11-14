@@ -99,7 +99,7 @@ func (o *options) parseURL() error {
 
 func (o *options) build(erro *console.Logger) (ok bool) {
 	if err := o.b.Rebuild(); err != nil {
-		if ls, ok := err.(localeutil.LocaleStringer); ok {
+		if ls, ok := err.(localeutil.Stringer); ok {
 			erro.Println(ls.LocaleString(o.p))
 		} else {
 			erro.Println(err)

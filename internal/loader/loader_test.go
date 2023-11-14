@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	_ localeutil.LocaleStringer = &FieldError{}
-	_ error                     = &FieldError{}
+	_ localeutil.Stringer = &FieldError{}
+	_ error               = &FieldError{}
 )
 
 func TestLicense_sanitize(t *testing.T) {

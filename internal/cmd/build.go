@@ -35,7 +35,7 @@ func initBuild(opt *cmdopt.CmdOpt, p *message.Printer) {
 
 			info.Println(localeutil.StringPhrase("start build").LocaleString(p))
 			if err := blogit.Build(os.DirFS(buildSrc), blogit.DirFS(buildDest), info.AsLogger()); err != nil {
-				if ls, ok := err.(localeutil.LocaleStringer); ok {
+				if ls, ok := err.(localeutil.Stringer); ok {
 					erro.Println(ls.LocaleString(p))
 				} else {
 					erro.Println(err)

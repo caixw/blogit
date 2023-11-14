@@ -37,7 +37,7 @@ const (
 type FieldError struct {
 	File    string
 	Field   string
-	Message localeutil.LocaleStringer
+	Message localeutil.Stringer
 	Value   interface{}
 }
 

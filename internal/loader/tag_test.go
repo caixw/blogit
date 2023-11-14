@@ -21,7 +21,7 @@ func newPrinter() (*xm.Printer, error) {
 	systag, _ := localeutil.DetectUserLanguageTag() // 即使出错，依然会返回 language.Tag
 
 	b := catalog.NewBuilder()
-	l, err := serialize.LoadFSGlob(locales.Locales(), "*.yaml", yaml.Unmarshal)
+	l, err := serialize.LoadFSGlob(func(string) func([]byte, any) error { return yaml.Unmarshal }, "*.yaml", locales.Locales())
 	if err != nil {
 		return nil, err
 	}

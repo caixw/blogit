@@ -35,7 +35,7 @@ func Init(o *cmdopt.CmdOpt, succ, info, erro *console.Logger, p *message.Printer
 
 		return func(w io.Writer) error {
 			if err := opt.serve(succ, info, erro); err != nil {
-				if ls, ok := err.(localeutil.LocaleStringer); ok {
+				if ls, ok := err.(localeutil.Stringer); ok {
 					erro.Println(ls.LocaleString(p))
 				} else {
 					erro.Println(err)

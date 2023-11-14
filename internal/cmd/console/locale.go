@@ -14,7 +14,7 @@ import (
 
 func NewPrinter(tag language.Tag) (*message.Printer, error) {
 	b := catalog.NewBuilder()
-	l, err := serialize.LoadFSGlob(locales.Locales(), "*.yaml", yaml.Unmarshal)
+	l, err := serialize.LoadFSGlob(func(string) func([]byte, any) error { return yaml.Unmarshal }, "*.yaml", locales.Locales())
 	if err != nil {
 		return nil, err
 	}
