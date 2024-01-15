@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/issue9/localeutil"
-	"github.com/issue9/validation/is"
 )
 
 // Config 配置信息，用于从文件中读取
@@ -68,7 +67,7 @@ func LoadConfig(fs fs.FS, path string) (*Config, error) {
 }
 
 func (conf *Config) sanitize() *FieldError {
-	if len(conf.URL) == 0 || !is.URL(conf.URL) {
+	if len(conf.URL) == 0 || !isURL(conf.URL) {
 		return &FieldError{Message: localeutil.StringPhrase("invalid format"), Field: "url", Value: conf.URL}
 	}
 

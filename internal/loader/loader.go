@@ -12,7 +12,6 @@ import (
 	"path"
 
 	"github.com/issue9/localeutil"
-	"github.com/issue9/validation/is"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"gopkg.in/yaml.v3"
@@ -110,15 +109,15 @@ func (author *Author) sanitize() *FieldError {
 		return &FieldError{Field: "name", Message: Required}
 	}
 
-	if len(author.URL) > 0 && !is.URL(author.URL) {
+	if len(author.URL) > 0 && !isURL(author.URL) {
 		return &FieldError{Field: "url", Message: InvalidURL, Value: author.URL}
 	}
 
-	if len(author.Avatar) > 0 && !is.URL(author.Avatar) {
+	if len(author.Avatar) > 0 && !isURL(author.Avatar) {
 		return &FieldError{Field: "avatar", Message: InvalidURL, Value: author.Avatar}
 	}
 
-	if len(author.Email) > 0 && !is.Email(author.Email) {
+	if len(author.Email) > 0 && !isEmail(author.Email) {
 		return &FieldError{Field: "email", Message: InvalidURL, Value: author.Email}
 	}
 
