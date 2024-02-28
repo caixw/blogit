@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2020-2024 caixw
+//
 // SPDX-License-Identifier: MIT
 
 package builder
@@ -7,8 +9,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/issue9/assert/v3"
-	"github.com/issue9/assert/v3/rest"
+	"github.com/issue9/assert/v4"
+	"github.com/issue9/assert/v4/rest"
 
 	"github.com/caixw/blogit/v2/internal/testdata"
 	"github.com/caixw/blogit/v2/internal/vars"

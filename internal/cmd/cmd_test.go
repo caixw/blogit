@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2020-2024 caixw
+//
 // SPDX-License-Identifier: MIT
 
 package cmd
@@ -6,7 +8,7 @@ import (
 	"bytes"
 	"flag"
 
-	"github.com/issue9/assert/v3"
+	"github.com/issue9/assert/v4"
 	"github.com/issue9/cmdopt"
 	"github.com/issue9/localeutil"
 	"golang.org/x/text/language"

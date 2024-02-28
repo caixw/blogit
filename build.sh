@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# SPDX-FileCopyrightText: 2020-2024 caixw
 # SPDX-License-Identifier: MIT
 
 cd $(dirname $0) || exit

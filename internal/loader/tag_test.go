@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2020-2024 caixw
+//
 // SPDX-License-Identifier: MIT
 
 package loader
@@ -6,7 +8,7 @@ import (
 	"io/fs"
 	"testing"
 
-	"github.com/issue9/assert/v3"
+	"github.com/issue9/assert/v4"
 	"github.com/issue9/localeutil"
 	"github.com/issue9/localeutil/message/serialize"
 	xm "golang.org/x/text/message"

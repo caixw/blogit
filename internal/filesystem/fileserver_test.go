@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2020-2024 caixw
+//
 // SPDX-License-Identifier: MIT
 
 package filesystem
@@ -8,8 +10,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/issue9/assert/v3"
-	"github.com/issue9/assert/v3/rest"
+	"github.com/issue9/assert/v4"
+	"github.com/issue9/assert/v4/rest"
 )
 
 func TestFileServer(t *testing.T) {
