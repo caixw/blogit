@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020-2024 caixw
+// SPDX-FileCopyrightText: 2020-2026 caixw
 //
 // SPDX-License-Identifier: MIT
 
@@ -52,8 +52,14 @@ func Exec(args []string) error {
 		return err
 	}
 
-	opt := cmdopt.New(os.Stdout, flag.ExitOnError, cmdUsage.LocaleString(p), nil, func(name string) string {
-		return localeutil.Phrase("sub command not found %s", name).LocaleString(p)
+	opt := cmdopt.New(&cmdopt.Options{
+		Name:          "blogit",
+		Output:        os.Stdout,
+		ErrorHandling: flag.ExitOnError,
+		UsageTemplate: cmdUsage.LocaleString(p),
+		NotFound: func(name string) string {
+			return localeutil.Phrase("sub command not found %s", name).LocaleString(p)
+		},
 	})
 
 	initDrafts(opt, p)

@@ -2,7 +2,7 @@
 
 FROM scratch
 
-MAINTAINER caixw <https://caixw.io>
+LABEL org.opencontainers.image.authors="caixw <https://caixw.io>"
 
 COPY ./blogit /
 

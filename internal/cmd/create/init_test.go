@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020-2024 caixw
+// SPDX-FileCopyrightText: 2020-2026 caixw
 //
 // SPDX-License-Identifier: MIT
 
@@ -10,7 +10,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/issue9/assert/v4"
+	"github.com/issue9/assert/v5"
 	"github.com/issue9/cmdopt"
 	"github.com/issue9/term/v3/colors"
 	"golang.org/x/text/language"
@@ -23,7 +23,10 @@ import (
 
 func TestCmd_Init(t *testing.T) {
 	a := assert.New(t, false)
-	opt := cmdopt.New(os.Stdout, flag.ContinueOnError, "", nil, nil)
+	opt := cmdopt.New(&cmdopt.Options{
+		Output:        os.Stdout,
+		ErrorHandling: flag.ContinueOnError,
+	})
 	erro := &console.Logger{Colorize: colors.New(os.Stderr)}
 	dir, err := os.MkdirTemp(os.TempDir(), "blogit")
 	a.NotError(err)

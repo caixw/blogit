@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020-2024 caixw
+// SPDX-FileCopyrightText: 2020-2026 caixw
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,6 +6,7 @@ package data
 
 import (
 	"path"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -100,7 +101,7 @@ func sortTags(tags []*Tag, typ, order string) {
 	}
 
 	if order == loader.OrderDesc {
-		sliceutil.Reverse(tags)
+		slices.Reverse(tags)
 	}
 }
 
