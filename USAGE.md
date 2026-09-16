@@ -79,9 +79,9 @@
 | title           | string      | 标题，部分模板可能会引用到。
 | enableTag       | boolean     | 是否将标签页也放入 sitemap
 | postPriority    | number      | 对应文章的 priority 值
-| postChangefreq  | string     | 对应文章的 changefreq 值
+| postChangefreq  | string      | 对应文章的 changefreq 值
 | priority        | number      | 其它页面的 priority 值
-| changefreq      | string     | 其它页面的 changefreq 值
+| changefreq      | string      | 其它页面的 changefreq 值
 
 #### Agent
 
